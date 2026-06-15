@@ -2,6 +2,8 @@ package teamManagement;
 
 import java.util.List;
 
+import common.TeamOptionDTO;
+
 public class TeamManagementService {
 
 	public List<ScheduleListDTO> getGameScheduleList() {
@@ -32,11 +34,11 @@ public class TeamManagementService {
 		return false;
 	}
 	
-	public List<TeamInfoDTO> getTeamOptions(){
+	public List<TeamOptionDTO> getTeamOptions(){
 		return null;
 	}
 	
-	public List<TeamInfoDTO> getStadiumOptions(){
+	public List<TeamOptionDTO> getStadiumOptions(){
 		return null;
 	}
 }
