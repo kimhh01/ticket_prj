@@ -2,7 +2,7 @@ package stadium;
 
 import java.util.List;
 
-import common.TeamOptionDTO;
+import common.StadiumOptionDTO;
 
 public class StadiumManagementDAO {
 	
@@ -38,7 +38,7 @@ public class StadiumManagementDAO {
 		return stadiumSeatCode;
 	}
 	
-	public List<TeamOptionDTO> selectTeamOptions() {
+	public List<StadiumOptionDTO> selectTeamOptions() {
 		return null;
 	}
 }

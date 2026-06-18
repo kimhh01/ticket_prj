@@ -2,7 +2,7 @@ package stadium;
 
 import java.util.List;
 
-import common.TeamOptionDTO;
+import common.StadiumOptionDTO;
 
 public class StadiumManagementService {
 	public List<StadiumListDTO> getStadiumList(){
@@ -42,7 +42,7 @@ public class StadiumManagementService {
 		return false;
 	}
 	
-	public List<TeamOptionDTO> getTeamOption(){
+	public List<StadiumOptionDTO> getTeamOption(){
 		return null;
 	}
 }
