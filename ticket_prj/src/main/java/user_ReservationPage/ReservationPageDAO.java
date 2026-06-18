@@ -33,7 +33,7 @@ public class ReservationPageDAO {
 	}
 	
 	//구장 이미지
-	public ReservationPageDTO selectGameStadium(int stadiumCode) {
+	public ReservationPageDTO selectGameStadium(int game) {
 		
 		return null;
 	}

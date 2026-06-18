@@ -1,36 +1,55 @@
 package user_Team;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class TeamPageService {
 
-	//팀메인이미지
-		public TeamDTO getTeamImg(int teamCode) {
-			TeamDTO tDTO=null;
+	//팀메인이미지 //없앨수도 있음
+		public String getTeamImg(int teamCode) {
+			String teamImg=null;
 			
 			TeamPageDAO tpDAO=TeamPageDAO.getInstance();
 			
 			try {
-				tDTO=tpDAO.selectTeamImg(teamCode);
+				teamImg=tpDAO.selectTeamImg(teamCode);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 			
-			return tDTO;
+			return teamImg;
 		}
 		
 		//경기리스트
-		public TeamDTO getGame(TeamDTO tDTO) {
+		public List<TeamDTO> getGame(int teamCode) {
+			List<TeamDTO> list=new ArrayList<TeamDTO>();
 			
-			return null;
+			TeamPageDAO tpDAO=TeamPageDAO.getInstance();
+			
+			try {
+				list=tpDAO.selectGame(teamCode);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return list;
 		}
 		
 		//각팀공지사항
 		public List<TeamDTO> getNotice(int teamCode) {
+			List<TeamDTO> list=new ArrayList<TeamDTO>();
 			
-			return null;
+			TeamPageDAO tpDAO=TeamPageDAO.getInstance();
+			
+			try {
+				list=tpDAO.selectNotice(teamCode);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return list;
 		}
 		
 		//리그안내페이지

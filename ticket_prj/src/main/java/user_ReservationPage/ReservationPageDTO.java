@@ -3,11 +3,11 @@ package user_ReservationPage;
 import java.util.Date;
 
 public class ReservationPageDTO {
-	private int reservationId;//예매코드
+	private int reservationCode;//예매코드
 	private int teamHomeCode;//홈팀코드
 	private int teamOtherCode;//원정팀코드
 	private int stadiumCode;//구장코드
-	private String memberId;//회원아이디
+	private String memberCode;//회원아이디
 	private Date reservationDate;//예매일
 	private int totalPrice; //총금액
 	private int payPrice;//결제금액
@@ -32,16 +32,16 @@ public class ReservationPageDTO {
 		super();
 	}
 	
-	public ReservationPageDTO(int reservationId, int teamHomeCode, int teamOtherCode, int stadiumCode, String memberId,
+	public ReservationPageDTO(int reservationCode, int teamHomeCode, int teamOtherCode, int stadiumCode, String memberCode,
 			Date reservationDate, int totalPrice, int payPrice, int discountPrice, Date gameDate, String stadiumName,
 			String stadiumImg, String teamHomeName, String teamHomeImg, String teamOtherName, String teamOtherImg,
 			int stadiumSeatNum, int adultSeatPrice, int adultSeatNum, int youthSeatPrice, int youthSeatNum,
 			int childSeatPrice, int childSeatNum) {
-		this.reservationId = reservationId;
+		this.reservationCode = reservationCode;
 		this.teamHomeCode = teamHomeCode;
 		this.teamOtherCode = teamOtherCode;
 		this.stadiumCode = stadiumCode;
-		this.memberId = memberId;
+		this.memberCode = memberCode;
 		this.reservationDate = reservationDate;
 		this.totalPrice = totalPrice;
 		this.payPrice = payPrice;
@@ -63,10 +63,10 @@ public class ReservationPageDTO {
 	}
 	
 	public int getReservationId() {
-		return reservationId;
+		return reservationCode;
 	}
-	public void setReservationId(int reservationId) {
-		this.reservationId = reservationId;
+	public void setReservationId(int reservationCode) {
+		this.reservationCode = reservationCode;
 	}
 	public int getTeamHomeCode() {
 		return teamHomeCode;
@@ -87,10 +87,10 @@ public class ReservationPageDTO {
 		this.stadiumCode = stadiumCode;
 	}
 	public String getMemberId() {
-		return memberId;
+		return memberCode;
 	}
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
+	public void setMemberId(String memberCode) {
+		this.memberCode = memberCode;
 	}
 	public Date getReservationDate() {
 		return reservationDate;
@@ -204,8 +204,8 @@ public class ReservationPageDTO {
 	
 	@Override
 	public String toString() {
-		return "ReservationPageDTO [reservationId=" + reservationId + ", teamHomeCode=" + teamHomeCode
-				+ ", teamOtherCode=" + teamOtherCode + ", stadiumCode=" + stadiumCode + ", memberId=" + memberId
+		return "ReservationPageDTO [reservationCode=" + reservationCode + ", teamHomeCode=" + teamHomeCode
+				+ ", teamOtherCode=" + teamOtherCode + ", stadiumCode=" + stadiumCode + ", memberCode=" + memberCode
 				+ ", reservationDate=" + reservationDate + ", totalPrice=" + totalPrice + ", payPrice=" + payPrice
 				+ ", discountPrice=" + discountPrice + ", gameDate=" + gameDate + ", stadiumName=" + stadiumName
 				+ ", stadiumImg=" + stadiumImg + ", teamHomeName=" + teamHomeName + ", teamHomeImg=" + teamHomeImg
