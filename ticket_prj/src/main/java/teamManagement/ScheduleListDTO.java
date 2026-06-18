@@ -4,6 +4,7 @@ package teamManagement;
 public class ScheduleListDTO {
 	private int gameScheduleCode;
 	private String gameDate;
+	private String gameTime;
 	private String homeTeam;
 	private String awayTeam;
 	private String stadiumName;
@@ -73,6 +74,16 @@ public class ScheduleListDTO {
 	@Override
 	public String toString() {
 		return "ScheduleListDTO []";
+	}
+
+
+	public String getGameTime() {
+		return gameTime;
+	}
+
+
+	public void setGameTime(String gameTime) {
+		this.gameTime = gameTime;
 	}
 }
 

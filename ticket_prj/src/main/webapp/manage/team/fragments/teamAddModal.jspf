@@ -1,0 +1,178 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="common.StadiumOptionDTO"%>
+<div class="modal-overlay" id="teamModal">
+
+    <div class="modal team-modal">
+
+        <div class="modal-header">
+            <h2 class="modal-title">팀 등록</h2>
+
+            <button type="button"
+                    class="modal-close"
+                    id="closeTeamModal">
+                ×
+            </button>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/manage/team/add"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div class="modal-body">
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        기본 정보
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label class="form-label required">
+                                팀 이름
+                            </label>
+
+                            <input type="text"
+                                   name="teamName"
+                                   class="form-control"
+                                   maxlength="20"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">
+                                팀 약칭
+                            </label>
+
+                            <input type="text"
+                                   name="teamShortName"
+                                   class="form-control"
+                                   maxlength="3"
+                                   required>
+
+                            <div class="form-help">
+                                마크에 표시됩니다 (최대 3자)
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            홈 경기장
+                        </label>
+
+                        <select name="stadiumCode"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                선택하세요
+                            </option>
+
+                            <% for (StadiumOptionDTO s : stadiumOptionList) { %>
+
+                                <option value="<%= s.getStadiumCode() %>">
+                                    <%= s.getStadiumName() %>
+                                </option>
+
+                            <% } %>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        팀 로고
+                    </div>
+
+                    <div class="upload-box">
+
+                        <input type="file"
+                               id="teamLogo"
+                               name="teamLogo"
+                               accept="image/png,image/svg+xml,image/jpeg"
+                               hidden>
+
+                        <label for="teamLogo"
+                               class="upload-label">
+
+                            <div class="upload-icon">
+                                ⬆
+                            </div>
+
+                            <div class="upload-text">
+                                이미지를 드래그하거나 클릭해서 업로드
+                            </div>
+
+                            <div class="upload-desc">
+                                PNG, SVG 권장 · 최대 2MB
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        미리보기
+                    </div>
+
+                    <div class="preview-card">
+
+                        <div class="preview-logo"
+                             id="previewLogo">
+                        </div>
+
+                        <div class="preview-info">
+
+                            <div class="preview-name"
+                                 id="previewName">
+                                팀 이름
+                            </div>
+
+                            <div class="preview-short"
+                                 id="previewShort">
+                                약칭
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-help">
+                        팀 목록에 표시되는 모습입니다.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn-cancel"
+                        id="cancelTeamModal">
+                    취소
+                </button>
+
+                <button type="submit"
+                        class="btn-submit btn-red">
+                    팀 등록
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
