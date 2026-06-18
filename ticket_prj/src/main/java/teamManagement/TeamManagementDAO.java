@@ -2,7 +2,7 @@ package teamManagement;
 
 import java.util.List;
 
-import common.TeamOptionDTO;
+import common.StadiumOptionDTO;
 
 public class TeamManagementDAO {
 	
@@ -34,11 +34,11 @@ public class TeamManagementDAO {
 		return 0;
 	}
 	
-	public List<TeamOptionDTO> selecteTeamOption(){
+	public List<StadiumOptionDTO> selecteTeamOption(){
 		return null;
 	}
 	
-	public List<TeamOptionDTO> selecteStadiumOption(){
+	public List<StadiumOptionDTO> selecteStadiumOption(){
 		return null;
 	}
 }

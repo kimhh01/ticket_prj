@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.DBConnection;
 import dbConnection.DbConnection;
 import dbConnection.Path;
 
@@ -35,7 +36,7 @@ public class TeamPageDAO {
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		DbConnection dbCon=DbConnection.getInstance();
+		DBConnection dbCon=DbConnection.getInstance();
 		
 		
 		try {

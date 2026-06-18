@@ -1,0 +1,144 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="common.TeamOptionDTO" %>
+<%@ page import="common.StadiumOptionDTO" %>
+<div class="modal-overlay" id="scheduleModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2 class="modal-title">경기 일정 추가</h2>
+
+            <button type="button"
+                    class="modal-close"
+                    id="closeScheduleModal">
+                ×
+            </button>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/teamManagement/scheduleAdd"
+              method="post">
+
+            <div class="modal-body">
+
+                <div class="form-section">
+
+                    <div class="form-section-title">대진 설정</div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label class="form-label required">홈팀</label>
+
+                            <select name="homeTeamCode"
+                                    class="form-control"
+                                    required>
+
+                                <option value="">선택하세요</option>
+
+                                <% for (TeamOptionDTO t : teamOptionList) { %>
+
+                                    <option value="<%= t.getTeamCode() %>">
+                                        <%= t.getTeamName() %>
+                                    </option>
+
+                                <% } %>
+
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">원정팀</label>
+
+                            <select name="awayTeamCode"
+                                    class="form-control"
+                                    required>
+
+                                <option value="">선택하세요</option>
+
+                                <% for (TeamOptionDTO t : teamOptionList) { %>
+
+                                    <option value="<%= t.getTeamCode() %>">
+                                        <%= t.getTeamName() %>
+                                    </option>
+
+                                <% } %>
+
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <div class="form-section-title">경기 정보</div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label class="form-label required">경기일</label>
+
+                            <input type="date"
+                                   name="gameDate"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">경기 시작 시간</label>
+
+                            <input type="time"
+                                   name="gameTime"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="form-label required">구장</label>
+
+                        <select name="stadiumCode"
+                                class="form-control"
+                                required>
+
+                            <option value="">선택하세요</option>
+
+                            <% for (StadiumOptionDTO s : stadiumOptionList) { %>
+
+                                <option value="<%= s.getStadiumCode() %>">
+                                    <%= s.getStadiumName() %>
+                                </option>
+
+                            <% } %>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn-cancel"
+                        id="cancelScheduleModal">
+                    취소
+                </button>
+
+                <button type="submit"
+                        class="btn-submit">
+                    일정 추가
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
