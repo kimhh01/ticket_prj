@@ -2,6 +2,7 @@ package common;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBConnection {
@@ -28,8 +29,13 @@ public class DBConnection {
 		
 	}//getConnection
 	
-	public void dbClose(ResultSet rs, Statement stmt, Connection con) {
-		
+	public void dbClose(ResultSet rs, Statement stmt, Connection con)throws SQLException {
+		try {
+			if(rs != null) {rs.close();}//end if
+			if(stmt != null) {stmt.close();}//end if
+		}finally {
+			if(con != null) {con.close();}//end if
+		}//end finally
 	}//dbClose
 	
 }//class
