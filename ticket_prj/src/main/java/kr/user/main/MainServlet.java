@@ -1,4 +1,4 @@
-package kr.co.baseball.main;
+package kr.user.main;
 
 import java.io.IOException;
 import java.util.List;
