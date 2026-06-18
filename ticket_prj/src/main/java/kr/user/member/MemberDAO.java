@@ -1,4 +1,4 @@
-package kr.co.baseball.member;
+package kr.user.member;
 
 public class MemberDAO {
 
