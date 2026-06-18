@@ -48,7 +48,7 @@ public class ReservationPageDAO {
 			con=dbCon.getConn(new File(Path.DATABASE_PROPERTIES));
 			StringBuilder selectTeamImg=new StringBuilder();
 			selectTeamImg
-			.append("	select s.stadium_img as stadimImg	")
+			.append("	select s.stadium_seat_img as stadimImg	")
 			.append("	from game_schedule gs	")
 			.append("	join stadium s ")
 			.append("	on gs.stadium_id = s.stadium_id ")
