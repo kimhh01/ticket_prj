@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class ReservationPageDTO {
 	private int reservationCode;//예매코드
+	private int gameScheduleCode;//경기코드
 	private int teamHomeCode;//홈팀코드
 	private int teamOtherCode;//원정팀코드
 	private int stadiumCode;//구장코드
@@ -31,13 +32,16 @@ public class ReservationPageDTO {
 	public ReservationPageDTO() {
 		super();
 	}
-	
-	public ReservationPageDTO(int reservationCode, int teamHomeCode, int teamOtherCode, int stadiumCode, String memberCode,
-			Date reservationDate, int totalPrice, int payPrice, int discountPrice, Date gameDate, String stadiumName,
-			String stadiumImg, String teamHomeName, String teamHomeImg, String teamOtherName, String teamOtherImg,
-			int stadiumSeatNum, int adultSeatPrice, int adultSeatNum, int youthSeatPrice, int youthSeatNum,
-			int childSeatPrice, int childSeatNum) {
+
+
+	public ReservationPageDTO(int reservationCode, int gameScheduleCode, int teamHomeCode, int teamOtherCode,
+			int stadiumCode, String memberCode, Date reservationDate, int totalPrice, int payPrice, int discountPrice,
+			Date gameDate, String stadiumName, String stadiumImg, String teamHomeName, String teamHomeImg,
+			String teamOtherName, String teamOtherImg, int stadiumSeatNum, int adultSeatPrice, int adultSeatNum,
+			int youthSeatPrice, int youthSeatNum, int childSeatPrice, int childSeatNum) {
+		super();
 		this.reservationCode = reservationCode;
+		this.gameScheduleCode = gameScheduleCode;
 		this.teamHomeCode = teamHomeCode;
 		this.teamOtherCode = teamOtherCode;
 		this.stadiumCode = stadiumCode;
@@ -61,159 +65,262 @@ public class ReservationPageDTO {
 		this.childSeatPrice = childSeatPrice;
 		this.childSeatNum = childSeatNum;
 	}
-	
-	public int getReservationId() {
+
+
+	public int getReservationCode() {
 		return reservationCode;
 	}
-	public void setReservationId(int reservationCode) {
+
+
+	public void setReservationCode(int reservationCode) {
 		this.reservationCode = reservationCode;
 	}
+
+
+	public int getGameScheduleCode() {
+		return gameScheduleCode;
+	}
+
+
+	public void setGameScheduleCode(int gameScheduleCode) {
+		this.gameScheduleCode = gameScheduleCode;
+	}
+
+
 	public int getTeamHomeCode() {
 		return teamHomeCode;
 	}
+
+
 	public void setTeamHomeCode(int teamHomeCode) {
 		this.teamHomeCode = teamHomeCode;
 	}
+
+
 	public int getTeamOtherCode() {
 		return teamOtherCode;
 	}
+
+
 	public void setTeamOtherCode(int teamOtherCode) {
 		this.teamOtherCode = teamOtherCode;
 	}
+
+
 	public int getStadiumCode() {
 		return stadiumCode;
 	}
+
+
 	public void setStadiumCode(int stadiumCode) {
 		this.stadiumCode = stadiumCode;
 	}
-	public String getMemberId() {
+
+
+	public String getMemberCode() {
 		return memberCode;
 	}
-	public void setMemberId(String memberCode) {
+
+
+	public void setMemberCode(String memberCode) {
 		this.memberCode = memberCode;
 	}
+
+
 	public Date getReservationDate() {
 		return reservationDate;
 	}
+
+
 	public void setReservationDate(Date reservationDate) {
 		this.reservationDate = reservationDate;
 	}
+
+
 	public int getTotalPrice() {
 		return totalPrice;
 	}
+
+
 	public void setTotalPrice(int totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+
+
 	public int getPayPrice() {
 		return payPrice;
 	}
+
+
 	public void setPayPrice(int payPrice) {
 		this.payPrice = payPrice;
 	}
+
+
 	public int getDiscountPrice() {
 		return discountPrice;
 	}
+
+
 	public void setDiscountPrice(int discountPrice) {
 		this.discountPrice = discountPrice;
 	}
+
+
 	public Date getGameDate() {
 		return gameDate;
 	}
+
+
 	public void setGameDate(Date gameDate) {
 		this.gameDate = gameDate;
 	}
+
+
 	public String getStadiumName() {
 		return stadiumName;
 	}
+
+
 	public void setStadiumName(String stadiumName) {
 		this.stadiumName = stadiumName;
 	}
+
+
 	public String getStadiumImg() {
 		return stadiumImg;
 	}
+
+
 	public void setStadiumImg(String stadiumImg) {
 		this.stadiumImg = stadiumImg;
 	}
+
+
 	public String getTeamHomeName() {
 		return teamHomeName;
 	}
+
+
 	public void setTeamHomeName(String teamHomeName) {
 		this.teamHomeName = teamHomeName;
 	}
+
+
 	public String getTeamHomeImg() {
 		return teamHomeImg;
 	}
+
+
 	public void setTeamHomeImg(String teamHomeImg) {
 		this.teamHomeImg = teamHomeImg;
 	}
+
+
 	public String getTeamOtherName() {
 		return teamOtherName;
 	}
+
+
 	public void setTeamOtherName(String teamOtherName) {
 		this.teamOtherName = teamOtherName;
 	}
+
+
 	public String getTeamOtherImg() {
 		return teamOtherImg;
 	}
+
+
 	public void setTeamOtherImg(String teamOtherImg) {
 		this.teamOtherImg = teamOtherImg;
 	}
+
+
 	public int getStadiumSeatNum() {
 		return stadiumSeatNum;
 	}
+
+
 	public void setStadiumSeatNum(int stadiumSeatNum) {
 		this.stadiumSeatNum = stadiumSeatNum;
 	}
+
+
 	public int getAdultSeatPrice() {
 		return adultSeatPrice;
 	}
+
+
 	public void setAdultSeatPrice(int adultSeatPrice) {
 		this.adultSeatPrice = adultSeatPrice;
 	}
+
+
 	public int getAdultSeatNum() {
 		return adultSeatNum;
 	}
+
+
 	public void setAdultSeatNum(int adultSeatNum) {
 		this.adultSeatNum = adultSeatNum;
 	}
+
+
 	public int getYouthSeatPrice() {
 		return youthSeatPrice;
 	}
+
+
 	public void setYouthSeatPrice(int youthSeatPrice) {
 		this.youthSeatPrice = youthSeatPrice;
 	}
+
+
 	public int getYouthSeatNum() {
 		return youthSeatNum;
 	}
+
+
 	public void setYouthSeatNum(int youthSeatNum) {
 		this.youthSeatNum = youthSeatNum;
 	}
+
+
 	public int getChildSeatPrice() {
 		return childSeatPrice;
 	}
+
+
 	public void setChildSeatPrice(int childSeatPrice) {
 		this.childSeatPrice = childSeatPrice;
 	}
+
+
 	public int getChildSeatNum() {
 		return childSeatNum;
 	}
+
+
 	public void setChildSeatNum(int childSeatNum) {
 		this.childSeatNum = childSeatNum;
 	}
-	
-	
+
+
 	@Override
 	public String toString() {
-		return "ReservationPageDTO [reservationCode=" + reservationCode + ", teamHomeCode=" + teamHomeCode
-				+ ", teamOtherCode=" + teamOtherCode + ", stadiumCode=" + stadiumCode + ", memberCode=" + memberCode
-				+ ", reservationDate=" + reservationDate + ", totalPrice=" + totalPrice + ", payPrice=" + payPrice
-				+ ", discountPrice=" + discountPrice + ", gameDate=" + gameDate + ", stadiumName=" + stadiumName
-				+ ", stadiumImg=" + stadiumImg + ", teamHomeName=" + teamHomeName + ", teamHomeImg=" + teamHomeImg
-				+ ", teamOtherName=" + teamOtherName + ", teamOtherImg=" + teamOtherImg + ", stadiumSeatNum="
-				+ stadiumSeatNum + ", adultSeatPrice=" + adultSeatPrice + ", adultSeatNum=" + adultSeatNum
-				+ ", youthSeatPrice=" + youthSeatPrice + ", youthSeatNum=" + youthSeatNum + ", childSeatPrice="
-				+ childSeatPrice + ", childSeatNum=" + childSeatNum + "]";
+		return "ReservationPageDTO [reservationCode=" + reservationCode + ", gameScheduleCode=" + gameScheduleCode
+				+ ", teamHomeCode=" + teamHomeCode + ", teamOtherCode=" + teamOtherCode + ", stadiumCode=" + stadiumCode
+				+ ", memberCode=" + memberCode + ", reservationDate=" + reservationDate + ", totalPrice=" + totalPrice
+				+ ", payPrice=" + payPrice + ", discountPrice=" + discountPrice + ", gameDate=" + gameDate
+				+ ", stadiumName=" + stadiumName + ", stadiumImg=" + stadiumImg + ", teamHomeName=" + teamHomeName
+				+ ", teamHomeImg=" + teamHomeImg + ", teamOtherName=" + teamOtherName + ", teamOtherImg=" + teamOtherImg
+				+ ", stadiumSeatNum=" + stadiumSeatNum + ", adultSeatPrice=" + adultSeatPrice + ", adultSeatNum="
+				+ adultSeatNum + ", youthSeatPrice=" + youthSeatPrice + ", youthSeatNum=" + youthSeatNum
+				+ ", childSeatPrice=" + childSeatPrice + ", childSeatNum=" + childSeatNum + "]";
 	}
 	
+	
+
 	
 }

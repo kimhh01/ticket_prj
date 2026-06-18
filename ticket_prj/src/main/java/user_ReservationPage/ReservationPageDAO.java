@@ -1,6 +1,14 @@
 package user_ReservationPage;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+
+import dbConnection.DbConnection;
+import dbConnection.Path;
 
 public class ReservationPageDAO {
 	
@@ -25,11 +33,42 @@ public class ReservationPageDAO {
 		return null;
 	}//insertReservation
 	
-	//보여줄 경기 일정
-	public ReservationPageDTO selectGameDate(int teamHomeCode, int teamOtherCode) {
+	//예매창에서 보여줄 경기 구장 이미지
+	public String selectGameDate(int gameScheduleCode) {
+		String stadiumImg=null;
+		
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		DbConnection dbCon=DbConnection.getInstance();
 		
 		
-		return null;
+		try {
+			con=dbCon.getConn(new File(Path.DATABASE_PROPERTIES));
+			StringBuilder selectTeamImg=new StringBuilder();
+			selectTeamImg
+			.append("	select s.stadium_img as stadimImg	")
+			.append("	from game_schedule gs	")
+			.append("	join stadium s ")
+			.append("	on gs.stadium_id = s.stadium_id ")
+			.append("	where gs.game_schedule_id = ? ");
+			
+			pstmt=con.prepareStatement(selectTeamImg.toString());
+				pstmt.setInt(1, gameScheduleCode);
+				rs=pstmt.executeQuery();
+				
+			if(rs.next()) {
+				stadiumImg=rs.getString("stadiumImg");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			dbCon.dbClose(rs, pstmt, con);
+		}
+		
+		return stadiumImg;
+		
 	}
 	
 	//구장 이미지
