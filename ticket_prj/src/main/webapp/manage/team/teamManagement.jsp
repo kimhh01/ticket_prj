@@ -13,7 +13,7 @@
     List<TeamInfoDTO>     teamList     = (List<TeamInfoDTO>)     request.getAttribute("teamList");
     List<TeamOptionDTO> teamOptionList =
     	    (List<TeamOptionDTO>) request.getAttribute("teamOptionList");
-    	List<StadiumOptionDTO> stadiumOptionList =
+    List<StadiumOptionDTO> stadiumOptionList =
     	    (List<StadiumOptionDTO>) request.getAttribute("stadiumOptionList");
 
     // null 방어
@@ -27,6 +27,7 @@
     String activeTab = request.getParameter("tab");
     if (activeTab == null || activeTab.isEmpty()) activeTab = "schedule";
 %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -138,7 +139,7 @@
         .team-badge {
             display: inline-flex; align-items: center; justify-content: center;
             padding: 3px 8px; border-radius: 4px;
-            font-size: 12px; font-weight: 600; color: #fff;
+            font-size: 12px; font-weight: 600; color: #333;
             min-width: 36px;
         }
         .vs { font-size: 11px; color: #9CA3AF; }
@@ -391,6 +392,99 @@
 		        width: 100%;
 		    }
 		}
+		
+		/* ===== 팀 추가 모달 ===== */
+		.team-modal {
+		    width: 720px;
+		}
+		
+		.form-help {
+		    margin-top: 8px;
+		
+		    font-size: 13px;
+		    color: #6b7280;
+		}
+		
+		.upload-box {
+		    border: 2px dashed #d1d5db;
+		    border-radius: 12px;
+		
+		    padding: 40px 20px;
+		
+		    text-align: center;
+		
+		    cursor: pointer;
+		}
+		
+		.upload-label {
+		    display: block;
+		    cursor: pointer;
+		}
+		
+		.upload-icon {
+		    font-size: 40px;
+		    color: #6b7280;
+		
+		    margin-bottom: 12px;
+		}
+		
+		.upload-text {
+		    font-size: 16px;
+		    color: #374151;
+		
+		    margin-bottom: 8px;
+		}
+		
+		.upload-desc {
+		    font-size: 13px;
+		    color: #9ca3af;
+		}
+		
+		.preview-card {
+		    display: flex;
+		    align-items: center;
+		    gap: 16px;
+		
+		    border: 1px solid #e5e7eb;
+		    border-radius: 12px;
+		
+		    padding: 20px;
+		}
+		
+		.preview-logo {
+		    width: 64px;
+		    height: 64px;
+		
+		    border-radius: 8px;
+		
+		    background: #f3f4f6;
+		    background-size: cover;
+		    background-position: center;
+		}
+		
+		.preview-info {
+		    display: flex;
+		    flex-direction: column;
+		    gap: 6px;
+		}
+		
+		.preview-name {
+		    font-size: 16px;
+		    font-weight: 700;
+		}
+		
+		.preview-short {
+		    font-size: 14px;
+		    color: #6b7280;
+		}
+		
+		.btn-red {
+		    background: #dc2626;
+		}
+		
+		.btn-red:hover {
+		    background: #b91c1c;
+		}
     </style>
 </head>
 <body>
@@ -422,7 +516,7 @@
             <%
             if (activeTab.equals("schedule")) {
             %>
-
+			
             <div class="section-header">
                 <span class="section-title">경기 일정</span>
 				<button type="button" class="add-btn" id="openScheduleModal">
@@ -434,78 +528,94 @@
                 <thead>
                     <tr>
                         <th>경기일</th>
-                        <th>대진</th>
-                        <th>구장</th>
-                        <th>티켓</th>
-                        <th></th>
+                        <th style="width: 200px">시작시간</th>
+                        <th style="width: 320px">대진</th>
+                        <th style="width: 250px">구장</th>
+                        <th style="width: 120px">티켓상태</th>
+                        <th style="width: 80px">관리</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
-                    <%
-                    if (scheduleList.isEmpty()) {
-                    %>
-                    <tr>
-                        <td colspan="5">
-                            <div class="empty-body">
-                                <i class="ti ti-calendar-off empty-icon" aria-hidden="true"></i>
-                                <p class="empty-text">등록된 경기 일정이 없습니다.</p>
-                                <p class="empty-sub">DB 연결 후 데이터가 표시됩니다.</p>
-                            </div>
-                        </td>
-                    </tr>
-                    <%
-                    } else {
-                    %>
-                        <%
-                        for (ScheduleListDTO s : scheduleList) {
-                        %>
-                        <tr>
-                            <td><%=s.getGameDate()%></td>
-                            <td>
-                                <div class="matchup">
-                                    <span class="team-badge team-<%=s.getHomeTeam().toLowerCase()%>">
-                                        <%=s.getHomeTeam()%>
-                                    </span>
-                                    <span class="vs">vs</span>
-                                    <span class="team-badge team-<%=s.getAwayTeam().toLowerCase()%>">
-                                        <%=s.getAwayTeam()%>
-                                    </span>
-                                </div>
-                            </td>
-                            <td><%=s.getStadiumName()%></td>
-                            <td>
-                                <%
-                                String status = s.getSalesState();
-                                                                                                    String statusClass = "";
-                                                                                                    String statusLabel = "";
-                                                                                                    if ("판매중".equals(status)) {
-                                                                                                        statusClass = "status-on-sale";
-                                                                                                        statusLabel = "판매중";
-                                                                                                    } else if ("종료".equals(status)) {
-                                                                                                        statusClass = "status-ended";
-                                                                                                        statusLabel = "종료";
-                                                                                                    } else {
-                                                                                                        statusClass = "status-scheduled";
-                                                                                                        statusLabel = "예정";
-                                                                                                    }
-                                %>
-                                <span class="ticket-status <%=statusClass%>"><%=statusLabel%></span>
-                            </td>
-                            <td>
-                                <button class="edit-btn"
-                                        aria-label="수정"
-                                        onclick="location.href='${pageContext.request.contextPath}/teamManagement/scheduleEdit?gameScheduleCode=<%= s.getGameScheduleCode() %>'">
-                                    <i class="ti ti-edit"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <%
-                        }
-                        %>
-                    <%
-                    }
-                    %>
-                </tbody>
+			    <%
+			    if (scheduleList.isEmpty()) {
+			    %>
+			    <tr>
+			        <td colspan="6">
+			            <div class="empty-body">
+			                <i class="ti ti-calendar-off empty-icon" aria-hidden="true"></i>
+			                <p class="empty-text">등록된 경기 일정이 없습니다.</p>
+			                <p class="empty-sub">DB 연결 후 데이터가 표시됩니다.</p>
+			            </div>
+			        </td>
+			    </tr>
+			    <%
+			    } else {
+			        for (ScheduleListDTO s : scheduleList) {
+			    %>
+			    <tr>
+			
+			        <td><%= s.getGameDate() %></td>
+			
+			        <td><%= s.getGameTime() %></td>
+			
+			        <td>
+			            <div class="matchup">
+			
+			                <span class="team-badge team-<%= s.getHomeTeam().toLowerCase() %>">
+			                    <%= s.getHomeTeam() %>
+			                </span>
+			
+			                <span class="vs">vs</span>
+			
+			                <span class="team-badge team-<%= s.getAwayTeam().toLowerCase() %>">
+			                    <%= s.getAwayTeam() %>
+			                </span>
+			
+			            </div>
+			        </td>
+			
+			        <td><%= s.getStadiumName() %></td>
+			
+			        <td>
+			            <%
+			            String status = s.getSalesState();
+			            String statusClass = "";
+			            String statusLabel = "";
+			
+			            if ("판매중".equals(status)) {
+			                statusClass = "status-on-sale";
+			                statusLabel = "판매중";
+			            } else if ("종료".equals(status)) {
+			                statusClass = "status-ended";
+			                statusLabel = "종료";
+			            } else {
+			                statusClass = "status-scheduled";
+			                statusLabel = "예정";
+			            }
+			            %>
+			
+			            <span class="ticket-status <%= statusClass %>">
+			                <%= statusLabel %>
+			            </span>
+			        </td>
+			
+			        <td>
+			            <button class="edit-btn"
+			                    aria-label="수정"
+			                    onclick="location.href='${pageContext.request.contextPath}/teamManagement/scheduleEdit?gameScheduleCode=<%= s.getGameScheduleCode() %>'">
+			
+			                <i class="ti ti-edit"></i>
+			
+			            </button>
+			        </td>
+			
+			    </tr>
+			    <%
+			        }
+			    }
+			    %>
+			</tbody>
             </table>
 
             <%-- ════════════════════════════════
@@ -517,18 +627,20 @@
 
             <div class="section-header">
                 <span class="section-title">팀 목록</span>
-                <a class="add-btn" href="${pageContext.request.contextPath}/teamManagement/teamAdd">
-                    + 팀 등록
-                </a>
+					<button type="button"
+					        class="add-btn"
+					        id="openTeamModal">
+					    + 팀 등록
+					</button>
             </div>
 
             <table>
                 <thead>
                     <tr>
-                        <th style="width:80px;">마크</th>
-                        <th>팀 이름</th>
-                        <th>홈 경기장</th>
-                        <th style="width:60px;"></th>
+						<td>로고</td>
+						<td>팀 이름</td>
+						<td>구장</td>
+						<td>수정 버튼</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -595,9 +707,11 @@
 
         </div><%-- /card --%>
         <%@ include file="fragments/scheduleAddModal.jspf" %>
+        <%@ include file="fragments/teamAddModal.jspf" %>
     </main>
 
 </div><%-- /layout --%>
+<!-- 일정 추가 모달 Script -->
 <script>
     const scheduleModal = document.getElementById('scheduleModal');
 
@@ -639,6 +753,63 @@
         }
     });
 </script>
+
+<!-- 팀 추가 모달 Script -->
+<script>
+    const teamModal = document.getElementById('teamModal');
+
+    function openTeamModal() {
+        teamModal.classList.add('show');
+    }
+
+    function closeTeamModal() {
+        teamModal.classList.remove('show');
+    }
+
+    document.getElementById('openTeamModal')
+        .addEventListener('click', openTeamModal);
+
+    document.getElementById('closeTeamModal')
+        .addEventListener('click', closeTeamModal);
+
+    document.getElementById('cancelTeamModal')
+        .addEventListener('click', closeTeamModal);
+
+    teamModal.addEventListener('click', function(e) {
+        if (e.target === teamModal) {
+            closeTeamModal();
+        }
+    });
+
+    const teamName = document.querySelector('input[name="teamName"]');
+    const teamShortName = document.querySelector('input[name="teamShortName"]');
+    const teamLogo = document.getElementById('teamLogo');
+
+    teamName.addEventListener('input', function() {
+        document.getElementById('previewName').textContent =
+            this.value || '팀 이름';
+    });
+
+    teamShortName.addEventListener('input', function() {
+        document.getElementById('previewShort').textContent =
+            this.value || '약칭';
+    });
+
+    teamLogo.addEventListener('change', function(e) {
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+            document.getElementById('previewLogo').style.backgroundImage =
+                `url(${event.target.result})`;
+        };
+
+        reader.readAsDataURL(file);
+    });
+</script>
 </body>
 </html>
-s

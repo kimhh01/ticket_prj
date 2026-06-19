@@ -23,12 +23,12 @@
     </div>
     <div class="nav-item <%= activeMenu.equals("teamManagement") ? "active" : "" %>"
          onclick="location.href='${pageContext.request.contextPath}/teamManagement'">
-        <i class="ti ti-building-stadium" aria-hidden="true"></i>
+        <i class="ti ti-ball-baseball" aria-hidden="true"></i>
         야구팀 관리
     </div>
     <div class="nav-item <%= activeMenu.equals("stadium") ? "active" : "" %>"
          onclick="location.href='${pageContext.request.contextPath}/stadium'">
-        <i class="ti ti-map-pin" aria-hidden="true"></i>
+        <i class="ti ti-building-stadium" aria-hidden="true"></i>
         구장관리
     </div>
     <div class="nav-item <%= activeMenu.equals("event") ? "active" : "" %>"
@@ -40,5 +40,10 @@
          onclick="location.href='${pageContext.request.contextPath}/inquiry'">
         <i class="ti ti-message-circle" aria-hidden="true"></i>
         1:1 문의 관리
+    </div>
+    <div class="nav-item <%= activeMenu.equals("inquiry") ? "active" : "" %>"
+         onclick="location.href='${pageContext.request.contextPath}/inquiry'">
+        <i class="ti ti-bell" aria-hidden="true"></i>
+        공지사항 관리
     </div>
 </nav>

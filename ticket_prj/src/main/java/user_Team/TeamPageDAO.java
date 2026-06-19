@@ -28,11 +28,11 @@ public class TeamPageDAO {
 		return tpDAO;
 	}
 	
-	//팀메인이미지
-	public TeamDTO selectTeamImg(int teamCode) throws SQLException {
-		TeamDTO tDTO=null;
+	//팀메인이미지 //없앨수도 있음
+	public String selectTeamImg(int teamCode) throws SQLException {
+		String teamImg=null; //이미지 경로 받을 변수
 		
-		Connection con=null;
+		Connection con=null; 
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
@@ -42,6 +42,8 @@ public class TeamPageDAO {
 		try {
 			con=dbCon.getConn(new File(Path.DATABASE_PROPERTIES));
 			StringBuilder selectTeamImg=new StringBuilder();
+			
+			//데이터 베이스의 팀 id를 검색하여 팀 로고를 가져옴
 			selectTeamImg
 			.append("	select team_logo_img	")
 			.append("	from team	")
@@ -52,8 +54,7 @@ public class TeamPageDAO {
 				rs=pstmt.executeQuery();
 				
 			if(rs.next()) {
-				    tDTO = new TeamDTO();
-				    tDTO.setTeamHomeImg(rs.getString("team_logo_img"));
+				    teamImg=rs.getString("team_logo_img");
 			}
 
 		} catch (SQLException e) {
@@ -61,11 +62,11 @@ public class TeamPageDAO {
 		}finally {
 			dbCon.dbClose(rs, pstmt, con);
 		}
-		return tDTO;
+		return teamImg;
 	}
 	
-	//경기리스트 //수정중
-	public List<TeamDTO> selectGame(TeamDTO tDTO) throws SQLException {
+	//경기리스트 //수정완료
+	public List<TeamDTO> selectGame(int teamCode) throws SQLException {
 		List<TeamDTO> list=new ArrayList<TeamDTO>();
 		Connection con=null;
 		PreparedStatement pstmt=null;
@@ -78,19 +79,34 @@ public class TeamPageDAO {
 			con=dbCon.getConn(new File(Path.DATABASE_PROPERTIES));
 			StringBuilder selectTeamImg=new StringBuilder();
 			selectTeamImg
-			.append("	select team_logo_img	")
-			.append("	from team	")
-			.append("	where team_id in(?, ?)	");
+			.append("	select gs.game_date,	")
+			.append("	ht.team_name AS home_team_name, ht.team_logo_img AS home_team_logo,	")
+			.append("	ot.team_name AS other_team_name, ot.team_logo_img AS other_team_logo,	")
+			.append(" 	s.stadium_name ")
+			.append("	from game_schedule gs	")
+			.append("	JOIN team ht	")
+			.append("	ON gs.team_home = ht.team_id	")
+			.append("	JOIN team ot	")
+			.append("	ON gs.team_other = ot.team_id	")
+			.append("	JOIN stadium s	")
+			.append("	ON gs.stadium_id = s.stadium_id	")
+			.append("	WHERE ht.team_id = ?	");
 			
 			pstmt=con.prepareStatement(selectTeamImg.toString());
-				pstmt.setString(1, tDTO.getTeamHomeName());
-				pstmt.setString(2, tDTO.getTeamOtherName());
+				pstmt.setInt(1, teamCode);
 				rs=pstmt.executeQuery();
 				
-			if(rs.next()) {
-				    tDTO = new TeamDTO();
-				    tDTO.setTeamHomeImg(rs.getString("team_logo_img"));
-				    tDTO.setTeamOtherImg(rs.getString("team_logo_img"));
+			while(rs.next()) {
+				TeamDTO tDTO = new TeamDTO();
+				tDTO.setGameDate(rs.getDate("game_date"));
+			    tDTO.setTeamHomeName(rs.getString("home_team_name"));
+			    tDTO.setTeamHomeImg(rs.getString("home_team_logo"));
+			    tDTO.setTeamOtherName(rs.getString("other_team_name"));
+			    tDTO.setTeamOtherImg(rs.getString("other_team_logo"));
+			    tDTO.setStadiumName(rs.getString("stadium_name"));
+			    
+
+			    list.add(tDTO);
 			}
 
 		} catch (SQLException e) {
@@ -98,7 +114,10 @@ public class TeamPageDAO {
 		}finally {
 			dbCon.dbClose(rs, pstmt, con);
 		}
+		
 		return list;
+		
+		
 	}
 	
 	//각팀공지사항 //공지사항 고민

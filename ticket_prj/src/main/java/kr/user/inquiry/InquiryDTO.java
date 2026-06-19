@@ -1,4 +1,4 @@
-package kr.co.baseball.inquiry;
+package kr.user.inquiry;
 
 import java.util.Date;
 
