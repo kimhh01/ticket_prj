@@ -1,5 +1,5 @@
 <%@page import="java.util.List"%>
-<%@page import="user_Team.TeamDTO"%>
+<%@page import="kr.user.team.TeamDTO"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.ArrayList"%>

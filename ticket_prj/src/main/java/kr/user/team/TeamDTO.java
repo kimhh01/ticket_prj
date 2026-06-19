@@ -1,4 +1,4 @@
-package user_Team;
+package kr.user.team;
 
 import java.util.Date;
 
