@@ -1,4 +1,4 @@
-package ticket_site.view;
+package user_event;
 
 public class EventPageView {
 

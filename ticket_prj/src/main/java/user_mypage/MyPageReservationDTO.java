@@ -1,4 +1,4 @@
-package ticket_site.dto;
+package user_mypage;
 
 import java.sql.Date;
 

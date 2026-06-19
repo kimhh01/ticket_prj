@@ -1,12 +1,12 @@
-package ticket_site.service;
+package user_mypage;
 
 import java.sql.Date;
 import java.util.List;
 
-import ticket_site.dao.MyPageDAO;
-import ticket_site.dto.MemberDTO;
-import ticket_site.dto.MyPageReservationDTO;
-import ticket_site.dto.ReservationDetailDTO;
+import user_mypage.MyPageDAO;
+import user_mypage.MemberDTO;
+import user_mypage.MyPageReservationDTO;
+import user_mypage.ReservationDetailDTO;
 
 public class MyPageService {
 
