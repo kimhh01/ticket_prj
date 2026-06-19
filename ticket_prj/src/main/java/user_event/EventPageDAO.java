@@ -1,9 +1,9 @@
-package ticket_site.dao;
+package user_event;
 
 import java.sql.Date;
 import java.util.List;
 
-import ticket_site.dto.EventDTO;
+import user_event.EventDTO;
 
 public class EventPageDAO {
 

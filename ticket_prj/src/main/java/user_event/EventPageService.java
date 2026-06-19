@@ -1,10 +1,10 @@
-package ticket_site.service;
+package user_event;
 
 import java.sql.Date;
 import java.util.List;
 
-import ticket_site.dao.EventPageDAO;
-import ticket_site.dto.EventDTO;
+import user_event.EventPageDAO;
+import user_event.EventDTO;
 
 public class EventPageService {
 
