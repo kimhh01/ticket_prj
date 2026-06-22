@@ -127,13 +127,45 @@ codeInput.addEventListener("input", function() {
 });
 
 document.getElementById("duplicateButton").addEventListener("click", function() {
-    if (!codePattern.test(codeInput.value.trim())) {
-        alert("회원코드는 영문 또는 숫자 4~20자로 입력해 주세요.");
-        codeInput.focus();
+    const memberCode = document.getElementById("memberCode").value.trim();
+
+    codeChecked.value = "N";
+
+    if (memberCode === "") {
+        alert("회원코드를 입력해 주세요.");
         return;
     }
-    codeChecked.value = "Y";
-    alert("입력 형식이 확인되었습니다. 실제 중복확인은 DB 연결 후 적용됩니다.");
+
+    const idPattern = /^[A-Za-z0-9]{4,20}$/;
+
+    if (!idPattern.test(memberCode)) {
+        alert("회원코드는 영문 또는 숫자 4~20자로 입력해 주세요.");
+        return;
+    }
+
+    fetch("${pageContext.request.contextPath}/member/check-id?memberCode=" + encodeURIComponent(memberCode))
+        .then(function(response) {
+            return response.text();
+        })
+        .then(function(result) {
+            if (result === "INVALID") {
+                codeChecked.value = "N";
+                alert("회원코드는 영문 또는 숫자 4~20자로 입력해 주세요.");
+            } else if (result === "DUPLICATE") {
+                codeChecked.value = "N";
+                alert("이미 사용 중인 아이디입니다.");
+            } else if (result === "AVAILABLE") {
+                codeChecked.value = "Y";
+                alert("사용 가능한 아이디입니다.");
+            } else {
+                codeChecked.value = "N";
+                alert("중복확인 중 오류가 발생했습니다.");
+            }
+        })
+        .catch(function() {
+            codeChecked.value = "N";
+            alert("중복확인 요청에 실패했습니다.");
+        });
 });
 
 document.getElementById("postcodeButton").addEventListener("click", function() {

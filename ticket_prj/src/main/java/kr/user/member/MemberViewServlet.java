@@ -10,8 +10,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.annotation.WebServlet;
 
+
+
+
 @WebServlet("/member/*")
 public class MemberViewServlet extends HttpServlet {
+	
+	private MemberService memberService;
+	
+	public MemberViewServlet() {
+		this.memberService = new MemberService();
+	}
+	
 	private static final long serialVersionUID = 1L;
 
 	private static final Pattern MEMBER_CODE_PATTERN = Pattern.compile("^[A-Za-z0-9]{4,20}$");
@@ -33,6 +43,12 @@ public class MemberViewServlet extends HttpServlet {
 		switch (path) {
 		case "/login":
 			forward(request, response, "login.jsp");
+			break;
+		case "/logout":
+		    handleLogout(request, response);
+		    break;
+		case "/check-id":
+			handleCheckId(request, response);
 			break;
 		case "/find-code":
 			forward(request, response, "findCode.jsp");
@@ -101,7 +117,21 @@ public class MemberViewServlet extends HttpServlet {
 			return;
 		}
 
-		response.sendRedirect(request.getContextPath() + "/main.do");
+		MemberDTO memberDTO = new MemberDTO();
+		memberDTO.setMemberCode(memberCode);
+		memberDTO.setPassword(password);
+
+		MemberDTO loginMember = memberService.login(memberDTO);
+
+		if (loginMember == null) {
+			request.setAttribute("errorMessage", "아이디 또는 비밀번호가 일치하지 않습니다.");
+			forward(request, response, "login.jsp");
+			return;
+		}
+
+		request.getSession().setAttribute("loginMember", loginMember);
+
+		response.sendRedirect(request.getContextPath() + "/main");
 	}
 
 	private void handleFindCodePreview(HttpServletRequest request, HttpServletResponse response)
@@ -160,6 +190,7 @@ public class MemberViewServlet extends HttpServlet {
 		String passwordConfirm = trim(request.getParameter("passwordConfirm"));
 		String name = trim(request.getParameter("name"));
 		String email = trim(request.getParameter("email"));
+		String phone1 = trim(request.getParameter("phone1"));
 		String phone2 = trim(request.getParameter("phone2"));
 		String phone3 = trim(request.getParameter("phone3"));
 		String zipcode = trim(request.getParameter("zipcode"));
@@ -171,6 +202,7 @@ public class MemberViewServlet extends HttpServlet {
 				&& password.equals(passwordConfirm)
 				&& !name.isEmpty()
 				&& EMAIL_PATTERN.matcher(email).matches()
+				&& phone1.matches("^01[016789]$")
 				&& phone2.matches("^\\d{3,4}$")
 				&& phone3.matches("^\\d{4}$")
 				&& zipcode.matches("^\\d{5}$")
@@ -185,9 +217,67 @@ public class MemberViewServlet extends HttpServlet {
 			return;
 		}
 
+		if (memberService.checkDuplicateId(memberCode)) {
+			request.setAttribute("errorMessage", "이미 사용 중인 아이디입니다.");
+			request.setAttribute("smsReceiveYN", defaultConsent(request.getParameter("smsReceiveYN")));
+			request.setAttribute("emailReceiveYN", defaultConsent(request.getParameter("emailReceiveYN")));
+			forward(request, response, "joinForm.jsp");
+			return;
+		}
+
+		MemberDTO memberDTO = new MemberDTO();
+
+		memberDTO.setMemberCode(memberCode);
+		memberDTO.setPassword(password);
+		memberDTO.setName(name);
+		memberDTO.setEmail(email);
+		memberDTO.setPhone(phone1 + "-" + phone2 + "-" + phone3);
+		memberDTO.setZipcode(Integer.parseInt(zipcode));
+		memberDTO.setAddress(address);
+		memberDTO.setAddress2(address2);
+		memberDTO.setState("활성");
+		memberDTO.setSmsReceiveYN(defaultConsent(request.getParameter("smsReceiveYN")).charAt(0));
+		memberDTO.setEmailReceiveYN(defaultConsent(request.getParameter("emailReceiveYN")).charAt(0));
+
+		boolean registerFlag = memberService.register(memberDTO);
+
+		if (!registerFlag) {
+			request.setAttribute("errorMessage", "회원가입 중 오류가 발생했습니다.");
+			request.setAttribute("smsReceiveYN", defaultConsent(request.getParameter("smsReceiveYN")));
+			request.setAttribute("emailReceiveYN", defaultConsent(request.getParameter("emailReceiveYN")));
+			forward(request, response, "joinForm.jsp");
+			return;
+		}
+
 		request.setAttribute("joinedName", escapeHtml(name));
 		request.setAttribute("joinedMemberCode", escapeHtml(memberCode));
 		forward(request, response, "joinComplete.jsp");
+	}//handleJoinPreview
+	
+	private void handleCheckId(HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		String memberCode = trim(request.getParameter("memberCode"));
+
+		response.setContentType("text/plain; charset=UTF-8");
+
+		if (!MEMBER_CODE_PATTERN.matcher(memberCode).matches()) {
+			response.getWriter().write("INVALID");
+			return;
+		}
+
+		boolean duplicateFlag = memberService.checkDuplicateId(memberCode);
+
+		if (duplicateFlag) {
+			response.getWriter().write("DUPLICATE");
+		} else {
+			response.getWriter().write("AVAILABLE");
+		}
+	}//handleCheckId
+	
+	private void handleLogout(HttpServletRequest request, HttpServletResponse response)
+	        throws IOException {
+	    request.getSession().invalidate();
+	    response.sendRedirect(request.getContextPath() + "/main");
 	}
 
 	private void forward(HttpServletRequest request, HttpServletResponse response, String jsp)
@@ -217,4 +307,5 @@ public class MemberViewServlet extends HttpServlet {
 				.replace("\"", "&quot;")
 				.replace("'", "&#39;");
 	}
+	
 }
