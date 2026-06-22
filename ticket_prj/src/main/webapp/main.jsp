@@ -2,6 +2,7 @@
 <%@page import="kr.user.main.TeamRankDTO"%>
 <%@page import="kr.user.main.MainGameDTO"%>
 <%@page import="kr.user.main.MainBannerDTO"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -21,6 +22,22 @@
 List<MainBannerDTO> bannerList = (List<MainBannerDTO>) request.getAttribute("bannerList");
 List<MainGameDTO> gameList = (List<MainGameDTO>) request.getAttribute("gameList");
 List<TeamRankDTO> rankList = (List<TeamRankDTO>) request.getAttribute("rankList");
+
+// DB 연결 전에도 배너 UI를 확인할 수 있도록 정적 이미지를 기본값으로 사용한다.
+// 실제 배너 데이터가 조회되면 이 기본 목록은 사용하지 않는다.
+if (bannerList == null || bannerList.isEmpty()) {
+	bannerList = new ArrayList<MainBannerDTO>();
+	bannerList.add(new MainBannerDTO(1, 1, "lg_banner.png", 1, "Y"));
+	bannerList.add(new MainBannerDTO(2, 2, "hanhwa_banner.png", 2, "Y"));
+	bannerList.add(new MainBannerDTO(3, 3, "samsung_banner.png", 3, "Y"));
+	bannerList.add(new MainBannerDTO(4, 4, "kt_banner.png", 4, "Y"));
+	bannerList.add(new MainBannerDTO(5, 5, "kia_banner.png", 5, "Y"));
+	bannerList.add(new MainBannerDTO(6, 6, "nc_banner.png", 6, "Y"));
+	bannerList.add(new MainBannerDTO(7, 7, "ssg_banner.png", 7, "Y"));
+	bannerList.add(new MainBannerDTO(8, 8, "doosan_banner.png", 8, "Y"));
+	bannerList.add(new MainBannerDTO(9, 9, "kiwoom_banner.png", 9, "Y"));
+	bannerList.add(new MainBannerDTO(10, 10, "lotte_banner.png", 10, "Y"));
+}
 
 // 경기 날짜를 보기 좋게 출력하기 위한 날짜 포맷
 SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
@@ -397,19 +414,6 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 			}
 			%>
 
-		<!-- 배너 하단 점 버튼 -->
-		<div class="hero-dots">
-			<%
-				for (int i = 0; i < bannerList.size(); i++) {
-				%>
-			<span class="hero-dot <%=i == 0 ? "active" : ""%>"
-				data-index="<%=i%>"></span>
-			<%
-				}
-				%>
-		</div>
-
-		
 	</section>
 
 	<!-- ===================== 최근 경기 ===================== -->
@@ -523,7 +527,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 	</section>
 
 	<!-- ===================== 이벤트 이미지 배너 ===================== -->
-	<section class="event-section">
+	<section class="event-section" id="event">
 		<h2 class="section-title">이벤트</h2>
 
 		<div class="event-list">

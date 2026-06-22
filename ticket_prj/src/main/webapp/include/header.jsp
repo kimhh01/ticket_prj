@@ -26,29 +26,29 @@
 <header class="header-wrap">
     <div class="header-top">
         <div class="header-top-inner">
-            <a href="#login">로그인</a>
-            <a href="#ticket">예매확인/취소</a>
-            <a href="#join">회원가입</a>
-            <a href="#cs">고객센터</a>
+            <a href="${pageContext.request.contextPath}/member/login">로그인</a>
+            <a href="${pageContext.request.contextPath}/mypage_user/reservation.jsp">예매확인/취소</a>
+            <a href="${pageContext.request.contextPath}/member/join-agree">회원가입</a>
+            <a href="${pageContext.request.contextPath}/inquiry/main.jsp">고객센터</a>
         </div>
     </div>
     <div class="header-main">
-        <div class="logo"><a href="/">BallPick⚾</a></div>
+        <div class="logo"><a href="${pageContext.request.contextPath}/main.do">BallPick⚾</a></div>
         <div class="search-box">
             <input type="text" placeholder="검색어를 입력해 주세요.">
             <button type="button">🔍</button>
         </div>
     </div>
     <nav class="header-nav">
-        <a href="/lg">LG트윈스</a>
-        <a href="/hanwha">한화이글스</a>
-        <a href="/samsung">삼성 라이온즈</a>
-        <a href="/kt">kt wiz</a>
-        <a href="/kia">KIA 타이거즈</a>
-        <a href="/nc">NC 다이노스</a>
-        <a href="/ssg">SSG 랜더스</a>
-        <a href="/doosan">두산 베어스</a>
-        <a href="/kiwoom">키움 히어로즈</a>
-        <a href="/event">이벤트</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=1">LG트윈스</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=2">한화이글스</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=3">삼성 라이온즈</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=4">kt wiz</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=5">KIA 타이거즈</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=6">NC 다이노스</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=7">SSG 랜더스</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=8">두산 베어스</a>
+        <a href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=9">키움 히어로즈</a>
+        <a href="${pageContext.request.contextPath}/main.do#event">이벤트</a>
     </nav>
 </header>
