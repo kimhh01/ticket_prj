@@ -29,7 +29,7 @@
             <a href="${pageContext.request.contextPath}/member/login">로그인</a>
             <a href="${pageContext.request.contextPath}/mypage_user/reservation.jsp">예매확인/취소</a>
             <a href="${pageContext.request.contextPath}/member/join-agree">회원가입</a>
-            <a href="${pageContext.request.contextPath}/inquiry/main.jsp">고객센터</a>
+            <a href="${pageContext.request.contextPath}/user-inquiry">고객센터</a>
         </div>
     </div>
     <div class="header-main">
