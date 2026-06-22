@@ -1,4 +1,4 @@
-package user_ReservationPage;
+package kr.user.reservation;
 
 import java.util.List;
 

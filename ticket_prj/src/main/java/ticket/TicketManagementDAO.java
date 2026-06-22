@@ -8,8 +8,7 @@ public class TicketManagementDAO {
         return 0;
     }//selectTotalCount
 
-    public List<TicketMatchListDTO> selectMatchDashboard(
-            TicketRangeDTO range) {
+    public List<TicketMatchListDTO> selectMatchDashboard(TicketRangeDTO range) {
         return null;
     }//selectMatchDashboard
 
@@ -19,18 +18,15 @@ public class TicketManagementDAO {
     }//selectZoneDashboard
 
     // 구역 정보 조회
-    public List<TicketZoneInfoDTO> selectZoneInfo(
-            int scheduleCode) {
+    public List<TicketZoneInfoDTO> selectZoneInfo(int scheduleCode) {
         return null;
     }//selectZoneInfo
 
-    public List<TicketSalesDTO> selectZoneSales(
-            int scheduleCode) {
+    public List<TicketZoneSalesDTO> selectZoneSales(int scheduleCode) {
         return null;
     }//selectZoneSales
 
-    public List<TicketReservationViewDTO> selectReservationDetail(
-            int seatCode) {
+    public List<TicketReservationViewDTO> selectReservationDetail(int seatCode) {
         return null;
     }//selectReservationDetail
 
@@ -39,8 +35,7 @@ public class TicketManagementDAO {
         return null;
     }//selectSearchReservations
 
-    public int cancelReservation(
-            int reservationCode) {
+    public int cancelReservation(int reservationCode) {
         return 0;
     }//cancelReservation
 

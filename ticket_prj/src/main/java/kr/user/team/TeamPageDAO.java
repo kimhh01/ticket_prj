@@ -1,4 +1,4 @@
-package user_Team;
+package kr.user.team;
 
 import java.io.File;
 import java.sql.Connection;
@@ -122,7 +122,7 @@ public class TeamPageDAO {
 	
 	//각팀공지사항 //공지사항 고민
 	public List<TeamDTO> selectNotice(int teamCode) throws SQLException {
-		List<TeamDTO> list=new ArrayList<TeamDTO>();
+		List<TeamDTO> noticeList=new ArrayList<TeamDTO>();
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
@@ -150,6 +150,8 @@ public class TeamPageDAO {
 					tDTO.setNoticeContent(rs.getString("notice_content"));
 					tDTO.setNoticeWriteDate(rs.getString("notice_write_date"));
 					
+					noticeList.add(tDTO);
+					
 				}
 
 		} catch (SQLException e) {
@@ -157,7 +159,7 @@ public class TeamPageDAO {
 		}finally {
 			dbCon.dbClose(rs, pstmt, con);
 		}
-		return list;
+		return noticeList;
 	}
 	
 	//리그안내페이지
