@@ -118,10 +118,55 @@ public class MainDAO {
 	/**
 	 * 메인화면 팀 순위 목록 조회
 	 * 
-	 * 아직 DB 연결 전이면 null 유지.
+	 * GAME_RECORD 테이블의 팀 성적 정보를 TEAM 테이블과 조인해서
+	 * 승률 기준으로 팀 순위를 조회한다.
 	 */
 	public List<TeamRankDTO> selectTeamRankList() {
-		return null;
-	}// selectTeamRankList
+		List<TeamRankDTO> rankList = new ArrayList<TeamRankDTO>();
+
+		String sql =
+				"SELECT ROW_NUMBER() OVER (ORDER BY gr.win_rate DESC, gr.win_cnt DESC) AS rank_no, "
+				+ "       gr.team_id, "
+				+ "       t.team_name, "
+				+ "       t.team_logo_img, "
+				+ "       gr.game_cnt, "
+				+ "       gr.win_cnt, "
+				+ "       gr.lose_cnt, "
+				+ "       gr.draw_cnt, "
+				+ "       gr.win_rate, "
+				+ "       gr.score_gap, "
+				+ "       gr.record_date "
+				+ "FROM game_record gr "
+				+ "JOIN team t "
+				+ "ON gr.team_id = t.team_id "
+				+ "ORDER BY gr.win_rate DESC, gr.win_cnt DESC";
+
+		try (Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);
+				ResultSet rs = pstmt.executeQuery()) {
+
+			while (rs.next()) {
+				TeamRankDTO dto = new TeamRankDTO();
+
+				dto.setRankNo(rs.getInt("rank_no"));
+				dto.setTeamCode(rs.getInt("team_id"));
+				dto.setTeamName(rs.getString("team_name"));
+				dto.setTeamLogo(rs.getString("team_logo_img"));
+
+				dto.setWin(rs.getInt("win_cnt"));
+				dto.setLose(rs.getInt("lose_cnt"));
+				dto.setDraw(rs.getInt("draw_cnt"));
+				dto.setWinRate(rs.getDouble("win_rate"));
+				dto.setRankUpdateDate(rs.getDate("record_date"));
+
+				rankList.add(dto);
+			}
+
+		} catch (SQLException se) {
+			se.printStackTrace();
+		}
+
+		return rankList;
+	}
 
 }
