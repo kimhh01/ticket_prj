@@ -1,45 +1,32 @@
-package kr.admin.event;
+package event;
 
 import java.util.List;
 
 import common.BoardRangeDTO;
 
 public class EventManagementService {
-	
-    private EventManagementDAO dao;
-
-    public EventManagementService() {
-        dao = new EventManagementDAO();
-    }
-    
 	public int totalCount(BoardRangeDTO range) {
-		return dao.selectTotalCount(range);
+		return 0;
 	}
 	
 	public int pageScale() {
-		return 5;
+		return 0;
 	}
 	
 	public int totalPage(int totalCount, int pageScale) {
-        int totalPage = totalCount / pageScale;
-
-        if(totalCount % pageScale != 0) {
-            totalPage++;
-        }
-
-        return totalPage;
+		return pageScale;
 	}
 	
 	public int startNum (int currentPage, int pageScale) {
-		return (currentPage - 1) * pageScale + 1;
+		return pageScale;
 	}
 	
 	public int endNum (int currentPage, int pageScale) {
-		return currentPage * pageScale;
+		return pageScale;
 	}
 	
 	public List<EventListDTO> getEventDashboardList(BoardRangeDTO range){
-		return dao.selectMatchDashboard(range);
+		return null;
 	}
 	
 	public List<EventDetailDTO> getEventDetail(int eventCode){

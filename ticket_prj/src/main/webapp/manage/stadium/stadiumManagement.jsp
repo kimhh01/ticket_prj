@@ -3,9 +3,9 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.HashMap" %>
-<%@ page import="kr.admin.stadium.StadiumListDTO" %>
-<%@ page import="kr.admin.stadium.StadiumDetailDTO" %>
-<%@ page import="kr.admin.stadium.StadiumSeatDTO" %>
+<%@ page import="stadium.StadiumListDTO" %>
+<%@ page import="stadium.StadiumDetailDTO" %>
+<%@ page import="stadium.StadiumSeatDTO" %>
 
 <%
 	request.setAttribute("activeMenu", "stadium");
@@ -311,217 +311,6 @@
         font-size: 13px;
         color: #9CA3AF;
     }
-    
-    .stadium-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-	}
-	
-	.edit-btn,
-	.seat-add-btn {
-	    display: flex;
-	    align-items: center;
-	    gap: 6px;
-	
-	    height: 36px;
-	    padding: 0 14px;
-	
-	    border: 1px solid #D1D5DB;
-	    border-radius: 8px;
-	
-	    background: #fff;
-	
-	    cursor: pointer;
-	
-	    font-size: 13px;
-	    font-weight: 500;
-	}
-	
-	.edit-btn:hover,
-	.seat-add-btn:hover {
-	    background: #F9FAFB;
-	}
-	
-	.detail-header {
-	    display: flex;
-	    justify-content: space-between;
-	    align-items: center;
-	
-	    margin-bottom: 20px;
-	}
-    
-    /* ===== 구장 추가/수정 모달 ===== */
-	.modal-overlay {
-	    display: none;
-	    position: fixed;
-	    inset: 0;
-	
-	    background: rgba(0, 0, 0, 0.45);
-	
-	    justify-content: center;
-	    align-items: center;
-	
-	    z-index: 9999;
-	
-	    padding: 20px;
-	}
-	
-	.modal-overlay.show {
-	    display: flex;
-	}
-	
-	.modal {
-	    width: 760px;
-	    max-width: 100%;
-	
-	    max-height: 90vh;
-	
-	    background: #fff;
-	    border-radius: 16px;
-	
-	    overflow: hidden;
-	
-	    display: flex;
-	    flex-direction: column;
-	
-	    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-	}
-	
-	.modal-header {
-	    display: flex;
-	    justify-content: space-between;
-	    align-items: center;
-	
-	    padding: 20px 24px;
-	
-	    border-bottom: 1px solid #E5E7EB;
-	}
-	
-	.modal-title {
-	    font-size: 20px;
-	    font-weight: 700;
-	    color: #111827;
-	}
-	
-	.modal-close {
-	    border: none;
-	    background: transparent;
-	
-	    font-size: 28px;
-	    color: #6B7280;
-	
-	    cursor: pointer;
-	}
-	
-	.modal-body {
-	    padding: 24px;
-	
-	    overflow-y: auto;
-	
-	    flex: 1;
-	}
-	
-	.modal-footer {
-	    display: flex;
-	    justify-content: flex-end;
-	    gap: 12px;
-	
-	    padding: 20px 24px;
-	
-	    border-top: 1px solid #E5E7EB;
-	}
-	
-	.btn-cancel,
-	.btn-submit {
-	    height: 42px;
-	
-	    padding: 0 20px;
-	
-	    border-radius: 8px;
-	
-	    font-size: 14px;
-	    font-weight: 600;
-	
-	    cursor: pointer;
-	}
-	
-	.btn-cancel {
-	    border: 1px solid #D1D5DB;
-	    background: #fff;
-	    color: #374151;
-	}
-	
-	.btn-submit {
-	    border: none;
-	    background: #2563EB;
-	    color: #fff;
-	}
-	
-	.btn-submit:hover {
-	    background: #1D4ED8;
-	}
-	
-	.form-section {
-	    margin-bottom: 28px;
-	}
-	
-	.form-section-title {
-	    font-size: 16px;
-	    font-weight: 700;
-	
-	    margin-bottom: 16px;
-	
-	    color: #111827;
-	}
-	
-	.form-row {
-	    display: flex;
-	    gap: 16px;
-	}
-	
-	.form-group {
-	    flex: 1;
-	
-	    display: flex;
-	    flex-direction: column;
-	
-	    gap: 8px;
-	
-	    margin-bottom: 16px;
-	}
-	
-	.form-label {
-	    font-size: 14px;
-	    font-weight: 500;
-	
-	    color: #374151;
-	}
-	
-	.form-label.required::after {
-	    content: " *";
-	    color: #EF4444;
-	}
-	
-	.form-control {
-	    width: 100%;
-	    height: 42px;
-	
-	    padding: 0 12px;
-	
-	    border: 1px solid #D1D5DB;
-	    border-radius: 8px;
-	
-	    font-size: 14px;
-	}
-	
-	.form-control:focus {
-	    outline: none;
-	
-	    border-color: #2563EB;
-	
-	    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-	}
 </style>
 </head>
 
@@ -542,11 +331,11 @@
             <div class="section-header">
                 <span class="section-title">구장 목록</span>
 
-                <button type="button" class="add-btn" id="openStadiumModal">
+                <button type="button" class="add-btn">
                     + 구장 등록
                 </button>
             </div>
-			
+
             <div class="stadium-list">
 
             <%
@@ -620,22 +409,9 @@
 
                         </div>
 
-					 <div class="stadium-actions">
-					
-					        <button type="button"
-					                class="edit-btn"
-					                onclick="event.stopPropagation();
-					                         openEditStadiumModal(<%= stadium.getStadiumCode() %>)">
-					
-					            <i class="ti ti-edit"></i>
-					            편집
-					        </button>
-					
-					        <button class="toggle-btn">
-					            <i class="ti ti-chevron-down"></i>
-					        </button>
-					
-					    </div>
+                        <button class="toggle-btn">
+                            <i class="ti ti-chevron-down"></i>
+                        </button>
 
                     </div>
 
@@ -646,14 +422,6 @@
 
                             <%= detail != null ? detail.getAddress() : "-" %>
                         </p>
-                        
-                        <button type="button"
-					            class="seat-add-btn"
-					            onclick="openSeatModal(<%= stadium.getStadiumCode() %>)">
-					
-					        <i class="ti ti-plus"></i>
-					        좌석 추가
-					    </button>
 
                         <table class="seat-table">
 
@@ -664,7 +432,6 @@
                                     <th>청소년</th>
                                     <th>어린이</th>
                                     <th>수량</th>
-                                    <th>수정</th>
                                 </tr>
                             </thead>
 
@@ -680,22 +447,6 @@
                                     <td><%= String.format("%,d원", seat.getYouthPrice()) %></td>
                                     <td><%= String.format("%,d원", seat.getChildPrice()) %></td>
                                     <td><%= String.format("%,d석", seat.getSeatQty()) %></td>
-                                    
-                                    <td>
-								        <button type="button"
-								                class="icon-btn"
-								                onclick="openSeatEditModal(
-								                    <%= seat.getSeatCode() %>,
-								                    '<%= seat.getSeatName() %>',
-								                    <%= seat.getAdultPrice() %>,
-								                    <%= seat.getYouthPrice() %>,
-								                    <%= seat.getChildPrice() %>,
-								                    <%= seat.getSeatQty() %>
-								                )">
-								
-								            <i class="ti ti-edit"></i>
-								        </button>
-								    </td>
                                 </tr>
 
                             <%
@@ -718,10 +469,11 @@
             </div>
 
         </div>
+
     </main>
 
 </div>
-<%@ include file="fragments/stadiumModal.jspf" %>
+
 <script>
 document.querySelectorAll('.toggle-btn').forEach(function(btn) {
 
@@ -739,89 +491,6 @@ document.querySelectorAll('.toggle-btn').forEach(function(btn) {
     });
 
 });
-
-const stadiumModal = document.getElementById('stadiumModal');
-const openStadiumModalBtn = document.getElementById('openStadiumModal');
-const closeStadiumModalBtn = document.getElementById('closeStadiumModal');
-const cancelStadiumModalBtn = document.getElementById('cancelStadiumModal');
-const addSeatRowBtn = document.getElementById('addSeatRowBtn');
-const seatTableBody = document.getElementById('seatTableBody');
-const seatRowTemplate = document.getElementById('seatRowTemplate');
-
-function openStadiumModal(mode = 'insert') {
-    if (!stadiumModal) return;
-
-    document.getElementById('stadiumModalMode').value = mode;
-    document.getElementById('stadiumModalTitle').textContent =
-        mode === 'edit' ? '구장 수정' : '구장 추가';
-
-    document.getElementById('stadiumSubmitBtn').textContent =
-        mode === 'edit' ? '수정' : '등록';
-
-    stadiumModal.classList.add('show');
-}
-
-function closeStadiumModal() {
-    if (!stadiumModal) return;
-    stadiumModal.classList.remove('show');
-}
-
-if (openStadiumModalBtn) {
-    openStadiumModalBtn.addEventListener('click', function () {
-        openStadiumModal('insert');
-    });
-}
-
-if (closeStadiumModalBtn) {
-    closeStadiumModalBtn.addEventListener('click', closeStadiumModal);
-}
-
-if (cancelStadiumModalBtn) {
-    cancelStadiumModalBtn.addEventListener('click', closeStadiumModal);
-}
-
-if (stadiumModal) {
-    stadiumModal.addEventListener('click', function (e) {
-        if (e.target === stadiumModal) {
-            closeStadiumModal();
-        }
-    });
-}
-
-if (addSeatRowBtn && seatRowTemplate && seatTableBody) {
-    addSeatRowBtn.addEventListener('click', function () {
-        const emptyRow = seatTableBody.querySelector('.empty-seat-row');
-        if (emptyRow) {
-            emptyRow.remove();
-        }
-
-        const clone = seatRowTemplate.content.cloneNode(true);
-        seatTableBody.appendChild(clone);
-
-        const removeBtn = seatTableBody.querySelector('.remove-seat-btn:last-of-type');
-        if (removeBtn) {
-            removeBtn.addEventListener('click', function () {
-                this.closest('tr').remove();
-
-                if (!seatTableBody.querySelector('.seat-row')) {
-                    seatTableBody.innerHTML = `
-                        <tr class="empty-seat-row">
-                            <td colspan="5">
-                                <div class="empty-body" style="padding: 34px 20px;">
-                                    <i class="ti ti-ticket empty-icon" aria-hidden="true" style="font-size:30px;"></i>
-                                    <p class="empty-text" style="font-size:14px;">좌석 정보를 추가해주세요.</p>
-                                    <p class="empty-sub" style="font-size:13px;">
-                                        우측의 + 좌석 추가 버튼을 클릭하여 좌석을 등록할 수 있습니다.
-                                    </p>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                }
-            });
-        }
-    });
-}
 </script>
 
 </body>

@@ -1,18 +1,13 @@
-package kr.admin.team;
+package teamManagement;
 
 import java.util.List;
 
 import common.StadiumOptionDTO;
-import common.TeamOptionDTO;
 
 public class TeamManagementService {
-	
-	private TeamManagementDAO dao = new TeamManagementDAO();
-
 
 	public List<ScheduleListDTO> getGameScheduleList() {
-
-	    return dao.selectGameScheduleList();
+		return null;
 	}
 	
 	public boolean registerGameSchedule(ScheduleSaveDTO schedule) {
@@ -23,8 +18,8 @@ public class TeamManagementService {
 		return false;
 	}
 	
-	public List<TeamInfoDTO> getTeamList() {
-	    return dao.selectTeamList();
+	public List<TeamInfoDTO> getTeamList(){
+		return null;
 	}
 	
 	public boolean registerTeam(TeamSaveDTO team) {
@@ -39,7 +34,7 @@ public class TeamManagementService {
 		return false;
 	}
 	
-	public List<TeamOptionDTO> getTeamOptions(){
+	public List<StadiumOptionDTO> getTeamOptions(){
 		return null;
 	}
 	

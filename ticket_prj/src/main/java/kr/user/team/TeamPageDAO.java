@@ -36,11 +36,11 @@ public class TeamPageDAO {
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		DBConnection dbCon=DBConnection.getInstance();
+		DBConnection dbCon=DbConnection.getInstance();
 		
 		
 		try {
-			con=dbCon.getConnection(new File(Path.DATABASE_PROPERTIES));
+			con=dbCon.getConn(new File(Path.DATABASE_PROPERTIES));
 			StringBuilder selectTeamImg=new StringBuilder();
 			
 			//데이터 베이스의 팀 id를 검색하여 팀 로고를 가져옴

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="kr.admin.team.ScheduleListDTO" %>
-<%@ page import="kr.admin.team.TeamInfoDTO" %>
+<%@ page import="teamManagement.ScheduleListDTO" %>
+<%@ page import="teamManagement.TeamInfoDTO" %>
 <%@ page import="common.TeamOptionDTO" %>
 <%@ page import="common.StadiumOptionDTO" %>
 <%

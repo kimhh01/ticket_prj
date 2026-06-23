@@ -1,4 +1,4 @@
-package kr.admin.team;
+package teamManagement;
 
 public class ScheduleSaveDTO {
 	

@@ -41,7 +41,7 @@
         <i class="ti ti-message-circle" aria-hidden="true"></i>
         1:1 문의 관리
     </div>
-    <div class="nav-item <%= activeMenu.equals("notification") ? "active" : "" %>"
+    <div class="nav-item <%= activeMenu.equals("inquiry") ? "active" : "" %>"
          onclick="location.href='${pageContext.request.contextPath}/inquiry'">
         <i class="ti ti-bell" aria-hidden="true"></i>
         공지사항 관리
