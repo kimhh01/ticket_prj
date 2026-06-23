@@ -23,9 +23,22 @@ public class InquiryService {
 	 * 1:1 문의 등록
 	 * 
 	 * @param inquiryDTO 등록할 문의 정보
+	 * @return 등록 성공 여부
 	 */
-	public void addInquiry(InquiryDTO inquiryDTO) {
-		inquiryDAO.insertInquiry(inquiryDTO);
+	public boolean addInquiry(InquiryDTO inquiryDTO) {
+		boolean resultFlag = false;
+
+		try {
+			int result = inquiryDAO.insertInquiry(inquiryDTO);
+
+			// inquiry 1건 + inquiry_category 1건 = 총 2건 등록되면 성공
+			resultFlag = result == 2;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return resultFlag;
 	}
 
 	/**

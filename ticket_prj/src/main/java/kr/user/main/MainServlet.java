@@ -10,15 +10,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// /main.do 주소로 들어오면 이 서블릿이 실행됨
-@WebServlet("/main.do")
+// /main 주소로 들어오면 이 서블릿이 실행됨
+@WebServlet("/main")
 public class MainServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 메인 화면 요청 처리
 	 * 
-	 * 사용자가 /main.do로 접속하면
+	 * 사용자가 /main로 접속하면
 	 * MainService를 통해 메인 화면에 필요한 데이터를 조회한 뒤
 	 * main.jsp로 전달한다.
 	 */
