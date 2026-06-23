@@ -1,5 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Map" %>
+<%@ page import="kr.user.member.MemberDTO" %>
+<%
+if (request.getAttribute("categories") == null) {
+	response.sendRedirect(request.getContextPath() + "/user-inquiry/write");
+	return;
+} // 문의 작성 페이지에 필요한 카테고리 정보가 없으면 다시 문의 작성 페이지로 리다이렉트
+
+MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+
+if (loginMember == null) {
+	response.sendRedirect(request.getContextPath() + "/member/login?redirect=/user-inquiry/write");
+	return;
+} // 로그인하지 않은 사용자는 문의 작성 페이지에 접근할 수 없도록 처리
+%>
+
 <%
 @SuppressWarnings("unchecked")
 Map<Integer, String> categories = (Map<Integer, String>) request.getAttribute("categories");
