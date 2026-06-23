@@ -13,7 +13,7 @@
 <main class="member-page">
     <section class="member-shell member-shell-narrow">
         <h1 class="member-title">로그인</h1>
-        <p class="member-description">볼픽 회원코드와 비밀번호를 입력해 주세요.</p>
+        <p class="member-description">BallPick 아이디와 비밀번호를 입력해 주세요.</p>
 
         <% if (request.getAttribute("errorMessage") != null) { %>
         <div class="member-error"><%=request.getAttribute("errorMessage")%></div>
@@ -22,9 +22,9 @@
         <form class="member-form" id="loginForm" method="post"
               action="<%=request.getContextPath()%>/member/login" novalidate>
             <div class="member-field">
-                <label for="memberCode">회원코드</label>
+                <label for="memberCode">아이디</label>
                 <input class="member-input" type="text" id="memberCode" name="memberCode"
-                       maxlength="20" autocomplete="username" placeholder="회원코드를 입력해 주세요.">
+                       maxlength="20" autocomplete="username" placeholder="아이디를 입력해 주세요.">
                 <p class="member-help">영문 또는 숫자 4~20자</p>
             </div>
             <div class="member-field">
@@ -37,13 +37,13 @@
         </form>
 
         <div class="member-link-row">
-            <a href="<%=request.getContextPath()%>/member/find-code">회원코드 찾기</a>
+            <a href="<%=request.getContextPath()%>/member/find-code">아이디 찾기</a>
             <span class="member-link-divider"></span>
             <a href="<%=request.getContextPath()%>/member/find-password">비밀번호 찾기</a>
         </div>
 
         <div class="member-join-panel">
-            <p>아직 볼픽 회원이 아니신가요?</p>
+            <p>아직 BallPick 회원이 아니신가요?</p>
             <a class="member-button member-button-light"
                href="<%=request.getContextPath()%>/member/join-agree">회원가입</a>
         </div>
@@ -59,7 +59,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
 
     if (!/^[A-Za-z0-9]{4,20}$/.test(code)) {
         event.preventDefault();
-        error.textContent = "회원코드는 영문 또는 숫자 4~20자로 입력해 주세요.";
+        error.textContent = "아이디는 영문 또는 숫자 4~20자로 입력해 주세요.";
         error.hidden = false;
         document.getElementById("memberCode").focus();
         return;

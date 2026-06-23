@@ -61,7 +61,7 @@
                     <button class="member-agreement-toggle" type="button" data-target="privacyContent">내용보기</button>
                 </div>
                 <div class="member-agreement-content" id="privacyContent">
-                    수집 항목은 회원코드, 이름, 이메일, 휴대폰번호, 주소입니다. 수집한 정보는 회원 식별, 예매 서비스 제공,
+                    수집 항목은 아이디, 이름, 이메일, 휴대폰번호, 주소입니다. 수집한 정보는 회원 식별, 예매 서비스 제공,
                     고객 문의 응대 목적으로 이용하며 관련 법령 및 내부 정책에 따라 보관합니다.
                 </div>
             </div>
@@ -88,7 +88,7 @@
 
             <div id="clientError" class="member-error" hidden></div>
             <div class="member-actions">
-                <a class="member-button member-button-light" href="<%=request.getContextPath()%>/main.do">취소</a>
+                <a class="member-button member-button-light" href="<%=request.getContextPath()%>/main">취소</a>
                 <button class="member-button" type="submit">다음</button>
             </div>
         </form>

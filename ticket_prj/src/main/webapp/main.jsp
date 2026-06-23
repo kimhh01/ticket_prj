@@ -384,7 +384,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 	%>
 			<div class="hero-slide <%=i == 0 ? "active" : ""%>">
 				<a
-					href="<%=request.getContextPath()%>/reservation/list.do?teamCode=<%=banner.getTeamCode()%>">
+					href="<%=request.getContextPath()%>/reservation/list?teamCode=<%=banner.getTeamCode()%>">
 
 					<img
 					src="<%=request.getContextPath()%>/images/banner/<%=banner.getBannerImg()%>"
@@ -467,7 +467,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 				boolean canReserve = "예매가능".equals(game.getSaleStatus());
 				%>
 				<a class="reserve-btn <%=canReserve ? "" : "wait"%>"
-					href="<%=request.getContextPath()%>/reservation/detail.do?gameScheduleCode=<%=game.getGameScheduleCode()%>">
+					href="<%=request.getContextPath()%>/reservation/detail?gameScheduleCode=<%=game.getGameScheduleCode()%>">
 					<%=canReserve ? "예매하기" : "예매대기"%>
 				</a>
 			</article>
@@ -534,7 +534,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
 			<!-- 이벤트 1 : 신규 회원 이벤트 -->
 			<div class="event-banner">
-				<a href="<%=request.getContextPath()%>/event/detail.do?eventCode=1">
+				<a href="<%=request.getContextPath()%>/event/detail?eventCode=1">
 					<img
 					src="<%=request.getContextPath()%>/images/event/event_new_member.png"
 					alt="신규 회원 이벤트"
@@ -545,7 +545,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
 			<!-- 이벤트 2 : 구단 할인 이벤트 -->
 			<div class="event-banner">
-				<a href="<%=request.getContextPath()%>/event/detail.do?eventCode=2">
+				<a href="<%=request.getContextPath()%>/event/detail?eventCode=2">
 					<img
 					src="<%=request.getContextPath()%>/images/event/event_team_discount.png"
 					alt="구단 할인 이벤트"

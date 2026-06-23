@@ -101,6 +101,15 @@
     line-height: 1.5;
 }
 
+.member-error-list {
+    margin: 8px 0 0;
+    padding-left: 18px;
+}
+
+.member-error-list li + li {
+    margin-top: 4px;
+}
+
 .member-button {
     display: inline-flex;
     width: 100%;

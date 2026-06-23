@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>회원코드 찾기 | BallPick</title>
+<title>아이디 찾기 | BallPick</title>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/kr.user.member/member.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
 
 <main class="member-page">
     <section class="member-shell member-shell-narrow">
-        <h1 class="member-title">회원코드 찾기</h1>
+        <h1 class="member-title">아이디 찾기</h1>
         <p class="member-description">가입할 때 등록한 이름과 이메일을 입력해 주세요.</p>
 
         <% if (request.getAttribute("errorMessage") != null) { %>

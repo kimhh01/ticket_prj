@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>회원코드 찾기 결과 | BallPick</title>
+<title>아이디 찾기 결과 | BallPick</title>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/kr.user.member/member.css">
 </head>
 <body>
@@ -12,14 +12,15 @@
 
 <main class="member-page">
     <section class="member-shell member-shell-narrow">
-        <h1 class="member-title">회원코드 찾기</h1>
+        <h1 class="member-title">아이디 찾기</h1>
         <div class="member-result">
             <div class="member-result-icon">i</div>
-            <h2>회원정보가 확인되었습니다.</h2>
-            <p>DB 연결 후 일치하는 회원코드를 이 영역에 표시합니다.</p>
+            <h2>회원 정보가 확인되었습니다.</h2>
+            <p>입력하신 정보와 일치하는 아이디입니다.</p>
             <div class="member-result-summary">
                 이름: ${verifiedName}<br>
-                이메일: ${verifiedEmail}
+                이메일: ${verifiedEmail}<br>
+                아이디: <strong>${foundMemberCode}</strong>
             </div>
         </div>
         <div class="member-actions">
