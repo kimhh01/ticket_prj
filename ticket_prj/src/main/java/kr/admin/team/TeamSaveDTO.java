@@ -1,4 +1,4 @@
-package teamManagement;
+package kr.admin.team;
 
 public class TeamSaveDTO {
 	private int teamCode;

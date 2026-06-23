@@ -1,20 +1,28 @@
-package stadium;
+package kr.admin.stadium;
 
 import java.util.List;
+
 
 import common.StadiumOptionDTO;
 
 public class StadiumManagementService {
+	
+	private StadiumManagementDAO dao;
+	
+	public StadiumManagementService() {
+        dao = new StadiumManagementDAO();
+    }
+	
 	public List<StadiumListDTO> getStadiumList(){
-		return null;
+		return dao.selectStadiumList();
 	}
 	
 	public StadiumDetailDTO getStadiumDetail(int stadiumCode){
-		return null;
+		return dao.selectStadiumDetail(stadiumCode);
 	}
 	
 	public List<StadiumSeatDTO> getStadiumSeat(int stadiumCode){
-		return null;
+		return dao.selectStadiumSeat(stadiumCode);
 	}
 	
 	public boolean registerStadium (StadiumDetailDTO stadium, StadiumSeatDTO[] seat) {

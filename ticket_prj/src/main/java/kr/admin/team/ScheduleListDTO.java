@@ -1,4 +1,4 @@
-package teamManagement;
+package kr.admin.team;
 
 
 public class ScheduleListDTO {
@@ -28,6 +28,15 @@ public class ScheduleListDTO {
 
 	public void setGameDate(String gameDate) {
 		this.gameDate = gameDate;
+	}
+	
+	public String getGameTime() {
+		return gameTime;
+	}
+	
+	
+	public void setGameTime(String gameTime) {
+		this.gameTime = gameTime;
 	}
 
 
@@ -74,16 +83,6 @@ public class ScheduleListDTO {
 	@Override
 	public String toString() {
 		return "ScheduleListDTO []";
-	}
-
-
-	public String getGameTime() {
-		return gameTime;
-	}
-
-
-	public void setGameTime(String gameTime) {
-		this.gameTime = gameTime;
 	}
 }
 

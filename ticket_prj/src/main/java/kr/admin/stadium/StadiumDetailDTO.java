@@ -1,13 +1,12 @@
-package stadium;
+package kr.admin.stadium;
 
-public class StadiumListDTO {
+public class StadiumDetailDTO {
 	private int stadiumCode;
 	private String stadiumName;
 	private String stadiumLocation;
-	private int totalSeats;
+	private String address;
 	private int homeTeamCode;
 	private String homeTeamName;
-	
 	public int getStadiumCode() {
 		return stadiumCode;
 	}
@@ -26,11 +25,11 @@ public class StadiumListDTO {
 	public void setStadiumLocation(String stadiumLocation) {
 		this.stadiumLocation = stadiumLocation;
 	}
-	public int getTotalSeats() {
-		return totalSeats;
+	public String getAddress() {
+		return address;
 	}
-	public void setTotalSeats(int totalSeats) {
-		this.totalSeats = totalSeats;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	public int getHomeTeamCode() {
 		return homeTeamCode;
@@ -44,16 +43,16 @@ public class StadiumListDTO {
 	public void setHomeTeamName(String homeTeamName) {
 		this.homeTeamName = homeTeamName;
 	}
-	public StadiumListDTO() {
+	public StadiumDetailDTO() {
 		super();
 	}
-	public StadiumListDTO(int stadiumCode, String stadiumName, String stadiumLocation, int totalSeats, int homeTeamCode,
-			String homeTeamName) {
+	public StadiumDetailDTO(int stadiumCode, String stadiumName, String stadiumLocation, String address,
+			int homeTeamCode, String homeTeamName) {
 		super();
 		this.stadiumCode = stadiumCode;
 		this.stadiumName = stadiumName;
 		this.stadiumLocation = stadiumLocation;
-		this.totalSeats = totalSeats;
+		this.address = address;
 		this.homeTeamCode = homeTeamCode;
 		this.homeTeamName = homeTeamName;
 	}

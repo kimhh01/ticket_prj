@@ -1,4 +1,4 @@
-package stadium;
+package kr.admin.stadium;
 
 public class StadiumSeatDTO {
 	private int seatCode;
