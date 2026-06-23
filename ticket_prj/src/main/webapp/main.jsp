@@ -40,7 +40,7 @@ if (bannerList == null || bannerList.isEmpty()) {
 }
 
 // 경기 날짜를 보기 좋게 출력하기 위한 날짜 포맷
-SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 %>
 
 <style>
@@ -379,9 +379,9 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 		<div class="hero-slider" id="heroSlider">
 
 			<%
-	for (int i = 0; i < bannerList.size(); i++) {
-		MainBannerDTO banner = bannerList.get(i);
-	%>
+			for (int i = 0; i < bannerList.size(); i++) {
+				MainBannerDTO banner = bannerList.get(i);
+			%>
 			<div class="hero-slide <%=i == 0 ? "active" : ""%>">
 				<a
 					href="<%=request.getContextPath()%>/reservation/list?teamCode=<%=banner.getTeamCode()%>">
@@ -394,25 +394,25 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 				</a>
 			</div>
 			<%
-	}
-	%>
+			}
+			%>
 
 			<!-- 배너 하단 점 버튼 -->
 			<div class="hero-dots">
 				<%
-		for (int i = 0; i < bannerList.size(); i++) {
-		%>
+				for (int i = 0; i < bannerList.size(); i++) {
+				%>
 				<span class="hero-dot <%=i == 0 ? "active" : ""%>"
 					data-index="<%=i%>"></span>
 				<%
-		}
-		%>
+				}
+				%>
 			</div>
 
 		</div>
 		<%
-			}
-			%>
+		}
+		%>
 
 	</section>
 
@@ -435,6 +435,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 			<article class="game-card">
 				<div class="game-date">
 					<%=game.getGameDate() != null ? sdf.format(game.getGameDate()) : "경기일 미정"%>
+					<%=game.getGameStartTime() != null ? " " + game.getGameStartTime() : ""%>
 				</div>
 
 				<div class="team-match">
@@ -460,11 +461,11 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 				<div class="game-info">
 					구장 :
 					<%=game.getStadiumName()%><br> 상태 :
-					<%=game.getSaleStatus()%>
+					<%=game.getSaleStatus() == null ? "예매상태 미정" : game.getSaleStatus()%>
 				</div>
 
 				<%
-				boolean canReserve = "예매가능".equals(game.getSaleStatus());
+				boolean canReserve = "판매중".equals(game.getSaleStatus());
 				%>
 				<a class="reserve-btn <%=canReserve ? "" : "wait"%>"
 					href="<%=request.getContextPath()%>/reservation/detail?gameScheduleCode=<%=game.getGameScheduleCode()%>">
