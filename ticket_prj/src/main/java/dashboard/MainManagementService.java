@@ -1,49 +1,58 @@
 package dashboard;
 
+import java.util.List;
+
 public class MainManagementService {
-	
-	public int getTotalBooking() {
-        return 0;
-    }//getTotalBooking
 
-    public int getBookingTrend() {
-        return 0;
-    }//getBookingTrend
+    private MainManagementDAO mainManagementDAO;
 
-    public int getTotalMember() {
-        return 0;
-    }//getTotalMember
+    public MainManagementService(){
+        mainManagementDAO = new MainManagementDAO();
+    }
 
-    public int getMemberTrend() {
-        return 0;
-    }//getMemberTrend
+    public int getTotalBooking(){
+    	System.out.println("Service getTotalBooking 실행");
+        return mainManagementDAO.selectTotalBooking();
+    }
 
-    public int getTotalInquiry() {
-        return 0;
-    }//getTotalInquiry
+    public int getBookingTrend(){
+        return mainManagementDAO.selectBookingTrend();
+    }
 
-    public int getInquiryTrend() {
-        return 0;
-    }//getInquiryTrend
+    public int getTotalMember(){
+        return mainManagementDAO.selectTotalMember();
+    }
 
-    public int getTotalRevenue() {
-        return 0;
-    }//getTotalRevenue
+    public int getMemberTrend(){
+        return mainManagementDAO.selectMemberTrend();
+    }
 
-    public double getRevenueTrend() {
-        return 0.0;
-    }//getRevenueTrend
+    public int getTotalInquiry(){
+        return mainManagementDAO.selectTotalInquiry();
+    }
 
-    public List<MonthlyChartDTO> getMonthlyTrends() {
-        return null;
-    }//getMonthlyTrends
+    public int getInquiryTrend(){
+        return mainManagementDAO.selectInquiryTrend();
+    }
 
-    public DashboardChartDTO getBookingData() {
-        return null;
-    }//getBookingData
+    public long getTotalRevenue(){
+        return mainManagementDAO.selectTotalRevenue();
+    }
 
-    public List<DailyChartDTO> getDailyTrends() {
-        return null;
-    }//getDailyTrends
-	
+    public double getRevenueTrend(){
+        return mainManagementDAO.selectRevenueTrend();
+    }
+
+    public List<MonthlyChartDTO> getMonthlyTrends(){
+        return mainManagementDAO.selectMonthlySalesData();
+    }
+
+    public DashboardChartDTO getBookingData(){
+        return mainManagementDAO.selectBookingCnt();
+    }
+
+    public List<DailyChartDTO> getDailyTrends(){
+        return mainManagementDAO.selectDailySalesData();
+    }
+
 }//class

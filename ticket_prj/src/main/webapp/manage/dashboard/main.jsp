@@ -3,18 +3,43 @@
 
 <%@ page import="java.util.List"%>
 
-<%@ page import="admin.DashboardChartDTO"%>
-<%@ page import="admin.MonthlyChartDTO"%>
-<%@ page import="admin.DailyChartDTO"%>
+<%@ page import="dashboard.DashboardChartDTO"%>
+<%@ page import="dashboard.MonthlyChartDTO"%>
+<%@ page import="dashboard.DailyChartDTO"%>
+
 
 <%
-Integer totalBooking = (Integer) request.getAttribute("totalBooking");
-Integer totalMember = (Integer) request.getAttribute("totalMember");
-Integer totalInquiry = (Integer) request.getAttribute("totalInquiry");
-Long totalRevenue = (Long) request.getAttribute("totalRevenue");
+Number totalBooking = (Number) request.getAttribute("totalBooking");
+Number totalMember = (Number) request.getAttribute("totalMember");
+Number totalInquiry = (Number) request.getAttribute("totalInquiry");
+Number totalRevenue = (Number) request.getAttribute("totalRevenue");
+
+if (totalBooking == null)
+	totalBooking = 0;
+if (totalMember == null)
+	totalMember = 0;
+if (totalInquiry == null)
+	totalInquiry = 0;
+if (totalRevenue == null)
+	totalRevenue = 0;
+
 DashboardChartDTO chartDTO = (DashboardChartDTO) request.getAttribute("bookingData");
+
+if (chartDTO == null) {
+	chartDTO = new DashboardChartDTO();
+}
+
 List<MonthlyChartDTO> monthlyList = (List<MonthlyChartDTO>) request.getAttribute("monthlyData");
+
+if (monthlyList == null) {
+	monthlyList = new java.util.ArrayList<MonthlyChartDTO>();
+}
+
 List<DailyChartDTO> dailyList = (List<DailyChartDTO>) request.getAttribute("dailyData");
+
+if (dailyList == null) {
+	dailyList = new java.util.ArrayList<DailyChartDTO>();
+}
 %>
 
 <!DOCTYPE html>
@@ -22,12 +47,27 @@ List<DailyChartDTO> dailyList = (List<DailyChartDTO>) request.getAttribute("dail
 <head>
 <meta charset="UTF-8">
 <title>관리자 메인</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body {
 	margin: 0;
 	font-family: "Noto Sans KR", sans-serif;
-	background: #fff;
+	background: #f6f7fb;
+}
+
+.dashboard-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 25px;
+}
+
+.dashboard-filter {
+	display: flex;
+	align-items: center;
+	gap: 12px;
 }
 
 .dashboard {
@@ -36,108 +76,148 @@ body {
 }
 
 .title {
-	font-size: 24px;
-	font-weight: bold;
+	font-size: 30px;
+	font-weight: 700;
+}
+
+.date-box {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 8px 12px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.date-box input {
+	border: none;
+	outline: none;
+	font-size: 12px;
+}
+
+.refresh-btn {
+	background: #ff3030;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	padding: 9px 15px;
+	cursor: pointer;
+	font-size: 12px;
 }
 
 .sub {
-	font-size: 13px;
+	margin-top: 8px;
+	margin-bottom: 30px;
 	color: #777;
-	margin-bottom: 25px;
 }
 
 .card-wrap {
-	display: flex;
-	gap: 15px;
-	margin-bottom: 20px;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 18px;
+	margin-bottom: 25px;
 }
 
 .card {
-	flex: 1;
-	height: 90px;
+	background: #fff;
+	border-radius: 16px;
 	border: 1px solid #eee;
-	border-radius: 10px;
-	padding: 18px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+	padding: 22px;
+	height: 110px;
+	box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
 }
 
 .card-title {
-	font-size: 12px;
+	font-size: 13px;
 	color: #777;
 }
 
 .card-value {
-	font-size: 25px;
-	font-weight: bold;
-	margin-top: 10px;
+	margin-top: 14px;
+	font-size: 27px;
+	font-weight: 700;
 }
 
 .chart-row {
-	display: flex;
+	display: grid;
+	grid-template-columns: 3fr 1fr;
 	gap: 20px;
-	margin-bottom: 20px;
+	margin-bottom: 25px;
 }
 
 .chart-box {
 	background: white;
+	border-radius: 16px;
+	padding: 25px;
 	border: 1px solid #eee;
-	border-radius: 10px;
-	padding: 20px;
-	flex: 1;
+	box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
 }
 
 .chart-title {
-	font-size: 14px;
-	font-weight: bold;
-	margin-bottom: 15px;
+	font-weight: 700;
+	font-size: 15px;
+	margin-bottom: 20px;
 }
 
 canvas {
-	max-height: 260px;
+	max-height: 280px;
 }
 </style>
-
 </head>
-
 <body>
-	<%@ include file="../common/topbar.jsp"%>
-	<%@ include file="../common/sidebar.jsp"%>
+
+	<!-- 공통 영역 -->
+	<%@ include file="../common/topBar.jsp"%>
+	<%@ include file="../common/sideBar.jsp"%>
 
 	<div class="dashboard">
-		<div class="title">관리자 메인</div>
-		<div class="sub">ticketLINK 야구 관리자 페이지에 오신 것을 환영합니다.</div>
+		<div class="dashboard-header">
+			<div>
+				<div class="title">관리자 메인</div>
+				<div class="sub">ticketLINK 야구 관리자 페이지에 오신 것을 환영합니다.</div>
+			</div>
+			<div class="dashboard-filter">
+				<div class="date-box">
+					<input type="date" id="startDate"> <span> ~ </span> <input
+						type="date" id="endDate">
+				</div>
+				<button class="refresh-btn" onclick="location.reload();">
+					새로고침</button>
+			</div>
+		</div>
 		<div class="card-wrap">
 			<div class="card">
 				<div class="card-title">총 예매 건수</div>
 				<div class="card-value">
-					<%=totalBooking%>건
+					<%=totalBooking == null ? 0 : totalBooking.intValue()%>건
 				</div>
 			</div>
 			<div class="card">
 				<div class="card-title">총 회원 수</div>
 				<div class="card-value">
-					<%=totalMember%>명
+					<%=totalMember == null ? 0 : totalMember.intValue()%>명
 				</div>
 			</div>
 			<div class="card">
 				<div class="card-title">총 문의 수</div>
 				<div class="card-value">
-					<%=totalInquiry%>건
+					<%=totalInquiry == null ? 0 : totalInquiry.intValue()%>건
 				</div>
 			</div>
 			<div class="card">
 				<div class="card-title">총 결제 금액</div>
 				<div class="card-value">
-					<%=String.format("%,d", totalRevenue)%>원
+					<%=String.format("%,d", totalRevenue == null ? 0 : totalRevenue.longValue())%>원
 				</div>
 			</div>
 		</div>
 		<div class="chart-row">
 			<div class="chart-box">
-				<div class="chart-title">예매 매출 현황</div>
+				<div class="chart-title">예매 현황</div>
 				<canvas id="salesChart"></canvas>
 			</div>
-			<div class="chart-box" style="max-width: 320px;">
+			<div class="chart-box">
 				<div class="chart-title">예매 상태 비율</div>
 				<canvas id="statusChart"></canvas>
 			</div>
@@ -149,8 +229,30 @@ canvas {
 	</div>
 	<script>
 		$(function() {
-			new Chart(
-					$("#salesChart"),
+			let today = new Date().toISOString().substring(0, 10);
+
+			$("#startDate").attr("max", today);
+			$("#endDate").attr("max", today);
+
+			$("#startDate").on("change", function() {
+				let start = $(this).val();
+				$("#endDate").attr("min", start);
+
+				if ($("#endDate").val() && $("#endDate").val() < start) {
+					$("#endDate").val("");
+				}
+			});
+
+			$("#endDate").on("change", function() {
+				let end = $(this).val();
+				$("#startDate").attr("max", end);
+
+				if ($("#startDate").val() && $("#startDate").val() > end) {
+					$("#startDate").val("");
+				}
+			});
+
+			new Chart(document.getElementById("salesChart"),
 					{
 						type : "bar",
 						data : {
@@ -161,44 +263,32 @@ canvas {
 	out.print("'" + monthlyList.get(i).getMonth() + "'");
 }%>
 		],
-							datasets : [
-									{
-										label : "매출",
-										data : [
-	<%for (int i = 0; i < monthlyList.size(); i++) {
-	if (i > 0)
-		out.print(",");
-	out.print(monthlyList.get(i).getRevenue());
-}%>
-		]
-									},
-									{
-										type : "line",
-										label : "예매 건수",
-										data : [
+							datasets : [ {
+								label : "예매 건수",
+								data : [
 	<%for (int i = 0; i < monthlyList.size(); i++) {
 	if (i > 0)
 		out.print(",");
 	out.print(monthlyList.get(i).getCount());
 }%>
 		],
-										tension : .4
-									} ]
+								tension : .4
+							} ]
 						},
 						options : {
 							responsive : true
 						}
 					});
 
-			new Chart($("#statusChart"), {
+			new Chart(document.getElementById("statusChart"), {
 				type : "doughnut",
 				data : {
-					labels : [ "예매 완료", "취소", "대기" ],
+					labels : [ "예매 완료", "취소" ],
 					datasets : [ {
 						data : [
-	<%=chartDTO.getBookingCount()%>,
-	<%=chartDTO.getCancelCount()%>,
-	<%=chartDTO.getTotalCount()%>
+	<%=chartDTO.getBookingCount()%>
+		,
+	<%=chartDTO.getCancelCount()%>
 		]
 					} ]
 				},
@@ -208,7 +298,7 @@ canvas {
 			});
 
 			new Chart(
-					$("#dailyChart"),
+					document.getElementById("dailyChart"),
 					{
 						type : "line",
 						data : {
