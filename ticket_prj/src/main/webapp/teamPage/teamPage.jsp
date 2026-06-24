@@ -740,14 +740,14 @@ $(function(){
      ========================================================================== --%>
 <div id="tab-notice" class="tab-content">
     <section class="notice-detail-wrap">
+    
     <c:forEach var="notice" items="${noticeList}">
-    	<c:if test="${tDTO.teamCode == teamUrl}">
         <div class="notice-detail-header">
             <span class="notice-badge">공지</span>
             
             <h2></h2>
             <div class="notice-meta">
-                <span>${notice.noticeTitle }</span> | <span>등록일: 2026.03.15</span> | <span>조회수: 4,129</span>
+                <span>${notice.noticeTitle }</span> | <span>${notice.noticeWriteDate} </span><span class="notice-btn">ㅇ</span>
             </div>
         </div>
         
@@ -787,7 +787,6 @@ $(function(){
                 </div>
             </div>
         </div>
-        </c:if>
         </c:forEach>
     </section>
 </div>
@@ -876,10 +875,10 @@ $(function(){
         </div>
     </section>
 </div>
-
+<%-- 
 <footer class="footer-wrap">
    <jsp:include page="../include/footer.jsp"/>
-</footer>
+</footer> --%>
 
 </body>
 </html>

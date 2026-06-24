@@ -46,7 +46,7 @@ public class MainServlet extends HttpServlet {
 
 		// main.jsp로 이동
 		// forward는 request에 담은 데이터를 유지한 채 JSP로 넘김
-		RequestDispatcher rd = request.getRequestDispatcher("/main.jsp");
+		RequestDispatcher rd = request.getRequestDispatcher("/kr/user/main/main.jsp");
 		rd.forward(request, response);
 	}
 

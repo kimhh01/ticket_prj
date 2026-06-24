@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Resource
+        name="jdbc/ticketDB"
+        auth="Container"
+        type="javax.sql.DataSource"
+        driverClassName="oracle.jdbc.OracleDriver"
+        url="jdbc:oracle:thin:@211.63.89.137:1521:orcl"
+        username="team1"
+        password="tiger"
+        maxTotal="20"
+        maxIdle="10"
+        maxWaitMillis="10000" />
+</Context>

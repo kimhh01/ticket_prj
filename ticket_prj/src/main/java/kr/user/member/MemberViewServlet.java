@@ -342,7 +342,7 @@ public class MemberViewServlet extends HttpServlet {
 
 	private void forward(HttpServletRequest request, HttpServletResponse response, String jsp)
 			throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/kr.user.member/" + jsp);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/kr/user/member/" + jsp);
 		dispatcher.forward(request, response);
 	}
 

@@ -1,7 +1,5 @@
 package kr.user.main;
 
-import java.io.File;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,28 +8,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import common.DBConnection;
+import kr.user.common.UserDBConnection;
 
+@SuppressWarnings("unused")
 public class MainDAO {
 
 	/**
 	 * DB 연결 객체를 얻는 메서드
-	 * InquiryDAO, MemberDAO와 같은 방식으로 database.properties 파일을 찾아서 DB에 연결한다.
+	 * 사용자 전용 JNDI DataSource에서 DB 연결을 가져온다.
 	 */
 	private Connection getConnection() throws SQLException {
-		try {
-			URL url = MainDAO.class.getClassLoader().getResource("properties/database.properties");
-
-			if (url == null) {
-				throw new SQLException("database.properties 파일을 찾을 수 없습니다.");
-			}
-
-			File file = new File(url.toURI());
-			return DBConnection.getInstance().getConnection(file);
-
-		} catch (Exception e) {
-			throw new SQLException("DB 연결 설정 파일 로딩 실패", e);
-		}
+		return UserDBConnection.getInstance().getConnection();
 	}// getConnection
 
 	/**

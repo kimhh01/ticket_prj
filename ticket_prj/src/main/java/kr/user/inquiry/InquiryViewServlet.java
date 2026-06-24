@@ -319,6 +319,7 @@ public class InquiryViewServlet extends HttpServlet {
 	 * 
 	 * 현재 수정 기능에서만 임시로 사용한다.
 	 */
+	@SuppressWarnings("unused")
 	private void preparePreview(HttpServletRequest request, FormData form) {
 		InquiryDTO inquiry = new InquiryDTO();
 		inquiry.setInquiryCode(0);
@@ -390,7 +391,7 @@ public class InquiryViewServlet extends HttpServlet {
 	private void forward(HttpServletRequest request, HttpServletResponse response, String jsp)
 			throws ServletException, IOException {
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/kr.user.inquiry/" + jsp);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/kr/user/inquiry/" + jsp);
 		dispatcher.forward(request, response);
 	}
 

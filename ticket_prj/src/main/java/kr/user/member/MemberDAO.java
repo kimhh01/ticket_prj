@@ -1,30 +1,16 @@
 package kr.user.member;
 
-import java.io.File;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import common.DBConnection;
+import kr.user.common.UserDBConnection;
 
 public class MemberDAO {
 
 	private Connection getConnection() throws SQLException {
-		try {
-			URL url = MemberDAO.class.getClassLoader().getResource("properties/database.properties");
-
-			if (url == null) {
-				throw new SQLException("database.properties 파일을 찾을 수 없습니다.");
-			}
-
-			File file = new File(url.toURI());
-			return DBConnection.getInstance().getConnection(file);
-
-		} catch (Exception e) {
-			throw new SQLException("DB 연결 설정 파일 로딩 실패", e);
-		}
+		return UserDBConnection.getInstance().getConnection();
 	}
 
 	/**
@@ -75,7 +61,7 @@ public class MemberDAO {
 			se.printStackTrace();
 		} finally {
 			try {
-				DBConnection.getInstance().dbClose(rs, pstmt, con);
+				UserDBConnection.getInstance().close(rs, pstmt, con);
 			} catch (SQLException se) {
 				se.printStackTrace();
 			}
@@ -122,7 +108,7 @@ public class MemberDAO {
 			se.printStackTrace();
 		} finally {
 			try {
-				DBConnection.getInstance().dbClose(null, pstmt, con);
+				UserDBConnection.getInstance().close(null, pstmt, con);
 			} catch (SQLException se) {
 				se.printStackTrace();
 			}
@@ -159,7 +145,7 @@ public class MemberDAO {
 			se.printStackTrace();
 		} finally {
 			try {
-				DBConnection.getInstance().dbClose(rs, pstmt, con);
+				UserDBConnection.getInstance().close(rs, pstmt, con);
 			} catch (SQLException se) {
 				se.printStackTrace();
 			}
@@ -205,7 +191,7 @@ public class MemberDAO {
 			se.printStackTrace();
 		} finally {
 			try {
-				DBConnection.getInstance().dbClose(rs, pstmt, con);
+				UserDBConnection.getInstance().close(rs, pstmt, con);
 			} catch (SQLException se) {
 				se.printStackTrace();
 			}
@@ -253,7 +239,7 @@ public class MemberDAO {
 			se.printStackTrace();
 		} finally {
 			try {
-				DBConnection.getInstance().dbClose(rs, pstmt, con);
+				UserDBConnection.getInstance().close(rs, pstmt, con);
 			} catch (SQLException se) {
 				se.printStackTrace();
 			}
@@ -290,7 +276,7 @@ public class MemberDAO {
 			se.printStackTrace();
 		} finally {
 			try {
-				DBConnection.getInstance().dbClose(null, pstmt, con);
+				UserDBConnection.getInstance().close(null, pstmt, con);
 			} catch (SQLException se) {
 				se.printStackTrace();
 			}
@@ -327,7 +313,7 @@ public class MemberDAO {
 			se.printStackTrace();
 		} finally {
 			try {
-				DBConnection.getInstance().dbClose(rs, pstmt, con);
+				UserDBConnection.getInstance().close(rs, pstmt, con);
 			} catch (SQLException se) {
 				se.printStackTrace();
 			}
@@ -364,7 +350,7 @@ public class MemberDAO {
 			se.printStackTrace();
 		} finally {
 			try {
-				DBConnection.getInstance().dbClose(rs, pstmt, con);
+				UserDBConnection.getInstance().close(rs, pstmt, con);
 			} catch (SQLException se) {
 				se.printStackTrace();
 			}
