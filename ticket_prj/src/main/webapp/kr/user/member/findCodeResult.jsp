@@ -5,10 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>아이디 찾기 결과 | BallPick</title>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/kr.user.member/member.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/kr/user/member/member.css">
 </head>
 <body>
-<jsp:include page="/include/header.jsp" />
+<jsp:include page="/fragment/header.jsp" />
 
 <main class="member-page">
     <section class="member-shell member-shell-narrow">
@@ -31,6 +31,6 @@
     </section>
 </main>
 
-<jsp:include page="/include/footer.jsp" />
+<jsp:include page="/fragment/footer.jsp" />
 </body>
 </html>

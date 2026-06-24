@@ -390,7 +390,7 @@ public class InquiryViewServlet extends HttpServlet {
 	private void forward(HttpServletRequest request, HttpServletResponse response, String jsp)
 			throws ServletException, IOException {
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/kr.user.inquiry/" + jsp);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/kr/user/inquiry/" + jsp);
 		dispatcher.forward(request, response);
 	}
 

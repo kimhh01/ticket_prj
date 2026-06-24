@@ -5,10 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>고객센터 | BallPick</title>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/kr.user.inquiry/inquiry.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/kr/user/inquiry/inquiry.css">
 </head>
 <body>
-<jsp:include page="/include/header.jsp" />
+<jsp:include page="/fragment/header.jsp" />
 
 <main class="inquiry-page">
     <section class="inquiry-shell">
@@ -86,7 +86,7 @@
     </section>
 </main>
 
-<jsp:include page="/include/footer.jsp" />
+<jsp:include page="/fragment/footer.jsp" />
 <script>
 (function() {
     const searchInput = document.getElementById("faqSearch");

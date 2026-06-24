@@ -8,12 +8,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>회원가입 정보입력 | BallPick</title>
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/kr.user.member/member.css">
+	href="<%=request.getContextPath()%>/kr/user/member/member.css">
 <script
 	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body>
-	<jsp:include page="/include/header.jsp" />
+	<jsp:include page="/fragment/header.jsp" />
 
 	<main class="member-page">
 		<section class="member-shell">
@@ -164,7 +164,7 @@
 		</section>
 	</main>
 
-	<jsp:include page="/include/footer.jsp" />
+	<jsp:include page="/fragment/footer.jsp" />
 	<script>
 const codeInput = document.getElementById("memberCode");
 const codeChecked = document.getElementById("codeChecked");
