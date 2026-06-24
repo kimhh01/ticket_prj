@@ -6,17 +6,58 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-	
+
+
 <%
 List<TeamDTO> list=(List<TeamDTO>)request.getAttribute("gameList");
-TeamDTO tDTO=new TeamDTO();
-%>
-<%
-//확인용 JSP
-
-
 SimpleDateFormat output = new SimpleDateFormat("MM.dd");
+TeamDTO tDTO = null;
+
+//임시 가 데이터
+if(list == null){
+    list = new ArrayList<TeamDTO>();
+
+    TeamDTO game1 = new TeamDTO();
+    game1.setTeamHomeName("LG 트윈스");
+    game1.setTeamOtherName("두산 베어스");
+    game1.setStadiumName("잠실야구장");
+    game1.setTeamHomeImg("images/lg.png");
+    game1.setTeamOtherImg("images/doosan.png");
+    game1.setGameDate(new Date());
+
+    TeamDTO game2 = new TeamDTO();
+    game2.setTeamHomeName("한화 이글스");
+    game2.setTeamOtherName("KIA 타이거즈");
+    game2.setStadiumName("대전 한화생명 볼파크");
+    game2.setTeamHomeImg("images/hanwha.png");
+    game2.setTeamOtherImg("images/kia.png");
+    game2.setGameDate(new Date());
+
+    list.add(game1);
+    list.add(game2);
+}
+
+if(list != null && !list.isEmpty()){
+    tDTO = list.get(0);
+}
+
+
+//팀코드를 받고 그 팀코드에 따른 url을 받을 예정
+String teamUrl = "";
+
+switch(tDTO.getTeamCode()){
+    case 1:
+        teamUrl = "https://www.lgtwins.com";
+        break;
+    case 2:
+        teamUrl = "https://www.doosanbears.com";
+        break;
+    case 3:
+        teamUrl = "https://www.hanwhaeagles.co.kr";
+        break;
+}
 %>
+
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -70,8 +111,11 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
     color:#555;
 }
 
-.game-team{
-    width:250px;
+.game-team-img{
+    
+}
+.game-team-name{
+	width:250px;
     font-size:22px;
     font-weight:bold;
 }
@@ -100,9 +144,9 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 }
     
     
-    .team-info{
-    background:black;
-    color:white;
+   .team-info{
+    background:#000;
+    border-top:3px solid #a50034;
 }
 
 .team-inner{
@@ -110,14 +154,23 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
     margin:auto;
     display:flex;
     align-items:center;
-    padding:30px;
+    padding:25px 30px;
 }
 
 .team-logo{
     width:120px;
     height:120px;
-    background:white;
+    background:#fff;
     border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.team-logo img{
+    width:90px;
+    height:90px;
+    object-fit:contain;
 }
 
 .team-name{
@@ -125,15 +178,19 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 }
 
 .team-name h1{
+    color:#fff;
+    font-size:36px;
     margin-bottom:15px;
 }
 
 .team-btns button{
-    width:120px;
-    height:40px;
-    margin-right:10px;
+    width:100px;
+    height:35px;
+    margin-right:8px;
     border:none;
-    border-radius:5px;
+    border-radius:4px;
+    background:#fff;
+    font-size:12px;
     cursor:pointer;
 }
 
@@ -142,9 +199,9 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 .notice-box{
     width:1200px;
     margin:auto;
-    background:white;
     display:flex;
     border:1px solid #ddd;
+    background:#fff;
 }
 
 .notice-title{
@@ -159,12 +216,13 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 
 .notice-content{
     flex:1;
-    padding:20px;
+    padding:15px 25px;
 }
 
 .notice-content li{
-    margin-bottom:10px;
-    color:#555;
+    color:#d40000;
+    font-size:13px;
+    margin-bottom:8px;
 }
 
 /* ================= 탭 ================= */
@@ -177,15 +235,17 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 
 .tab{
     flex:1;
+    height:60px;
+    line-height:60px;
     text-align:center;
-    padding:20px;
-    background:white;
     border:1px solid #ddd;
-    font-size:24px;
+    background:#fff;
+    font-size:18px;
 }
 
 .tab.active{
     font-weight:bold;
+    border-top:3px solid #333;
 }
 
 /* ================= 경기 리스트 ================= */
@@ -193,7 +253,7 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 .game-wrap{
     width:1200px;
     margin:auto;
-    background:white;
+    background:#fff;
     border:1px solid #ddd;
     border-top:none;
 }
@@ -201,28 +261,50 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 .game-row{
     display:flex;
     align-items:center;
-    padding:30px;
+    height:100px;
     border-bottom:1px solid #eee;
+    padding:0 20px;
 }
 
 .game-date{
-    width:150px;
-    font-size:40px;
-    color:#555;
+    width:120px;
+    text-align:center;
+}
+
+.game-date .day{
+    font-size:38px;
+    color:#666;
+    line-height:40px;
+}
+
+.game-date .time{
+    font-size:12px;
+    color:#999;
 }
 
 .game-team{
-    width:250px;
-    font-size:22px;
-    font-weight:bold;
+    width:220px;
+    text-align:center;
+    font-size:14px;
+}
+
+.game-team img{
+    width:45px;
+    height:45px;
+    object-fit:contain;
+    vertical-align:middle;
 }
 
 .game-title{
-    width:300px;
+    width:250px;
+    font-size:15px;
+    font-weight:bold;
 }
 
 .game-place{
     width:150px;
+    font-size:12px;
+    color:#888;
 }
 
 .game-btn{
@@ -230,13 +312,14 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 }
 
 .reserve-btn{
-    width:150px;
-    height:50px;
+    width:90px;
+    height:36px;
     border:none;
-    background:#ff3d3d;
-    color:white;
-    font-size:18px;
-    border-radius:5px;
+    border-radius:4px;
+    background:#ff4040;
+    color:#fff;
+    font-size:12px;
+    font-weight:bold;
     cursor:pointer;
 }
     
@@ -249,52 +332,31 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
     .social-btn { width: 32px; height: 32px; background-color: #dcdcdc; border-radius: 50%; display: inline-block; }
     
 </style>
+<script type="text/javascript">
+
+</script>
 </head>
 <body>
-<header class="header-wrap">
-    <div class="header-top">
-        <div class="header-top-inner">
-            <a href="#login">로그인</a>
-            <a href="#ticket">예매확인/취소</a>
-            <a href="#join">회원가입</a>
-            <a href="#cs">고객센터</a>
-        </div>
-    </div>
-    <div class="header-main">
-        <div class="logo"><a href="/">BallPick⚾</a></div>
-        <div class="search-box">
-            <input type="text" placeholder="검색어를 입력해 주세요.">
-            <button type="button">🔍</button>
-        </div>
-    </div>
-    <nav class="header-nav">
-        <a href="/lg">LG트윈스</a>
-        <a href="/hanwha">한화이글스</a>
-        <a href="/samsung">삼성 라이온즈</a>
-        <a href="/kt">kt wiz</a>
-        <a href="/kia">KIA 타이거즈</a>
-        <a href="/nc">NC 다이노스</a>
-        <a href="/ssg">SSG 랜더스</a>
-        <a href="/doosan">두산 베어스</a>
-        <a href="/kiwoom">키움 히어로즈</a>
-        <a href="/event">이벤트</a>
-    </nav>
-</header>
+<jsp:include page="../pragments/header.jsp"/>
+<%if(tDTO != null){ %>
 <section class="team-info">
 
     <div class="team-inner">
 
-        <div class="team-logo"><img src="<%=tDTO.getTeamHomeImg()%>>"></div>
+        <div class="team-logo"><img src="<%=tDTO.getTeamHomeImg()%>"></div>
 
         <div class="team-name">
 
-            <h1>LG트윈스</h1>
+            <h1><%=tDTO.getTeamHomeName()%></h1>
 
             <div class="team-btns">
-                <button>클린예매</button>
-                <button>취소표대기</button>
-                <button>예매가이드</button>
-                <button>구단소개</button>
+                <button class="cleanBtn">클린예매</button>
+                <button class="cancelBtn">취소표대기</button>
+                <button class="guideBtn">예매가이드</button>
+                <a href="teamIntroduce.do?teamCode=<%=teamName%>"
+class="team-btn">
+    구단소개
+</a>
             </div>
 
         </div>
@@ -302,6 +364,7 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
     </div>
 
 </section>
+<%} %>
 
 <section class="notice-box">
 
@@ -328,22 +391,23 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 
 <section class="game-wrap">
 	<%
-	
-	if(list != null){
-	    for(TeamDTO tDTO1 : list){%>
+	if(list != null && !list.isEmpty()){
+	    for(TeamDTO game : list){%>
     <div class="game-row">
 
         <div class="game-date">
-           <%= output.format(tDTO1.getGameDate()) %>
+           <%= output.format(game.getGameDate()) %>
         </div>
 
-        <div class="game-team">
-        	<img src="<%=tDTO1.getTeamHomeImg()%>>"> VS <img src="<%=tDTO1.getTeamOtherImg()%>>"><br>
-           <%=tDTO1.getTeamHomeName()%> VS <%=tDTO1.getTeamOtherName()%>
+        <div class="game-team-img">
+        	<img src="<%=game.getTeamHomeImg()%>"> VS <img src="<%=game.getTeamOtherImg()%>"><br>
+        </div>
+        <div class="game-team-name">
+         <span><%=game.getTeamHomeName()%> VS <%=game.getTeamOtherName()%></span>
         </div>
 
         <div class="game-title">
-            <%=tDTO1.getStadiumName() %>
+            <%=game.getStadiumName() %>
         </div>
 
         <div class="game-btn">
@@ -359,19 +423,6 @@ SimpleDateFormat output = new SimpleDateFormat("MM.dd");
 
 
 <footer class="footer-wrap">
-    <div class="footer-inner">
-        <div class="footer-info">
-            <span class="company-name">(주)볼픽코퍼레이션</span>
-            <p>주소: 서울특별시 강남구 테헤란로 000, 0층 (볼픽빌딩) | 대표이사: 홍길동 | 사업자등록번호: 000-00-00000</p>
-            <p>대표전화: 1588-0000 | 이메일: cs@ballpick.com | 통신판매업 신고번호: 제 2026-서울강남-0000호</p>
-            <p style="margin-top: 15px; color: #aaa;">Copyright © BALLPICK Corporation. All rights reserved.</p>
-        </div>
-        <div class="footer-social">
-            <a href="#" class="social-btn"></a>
-            <a href="#" class="social-btn"></a>
-            <a href="#" class="social-btn"></a>
-            <a href="#" class="social-btn"></a>
-        </div>
-    </div>
+   <jsp:include page="../pragments/footer.jsp"/>
 </footer>
 </body>

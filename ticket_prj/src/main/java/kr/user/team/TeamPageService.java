@@ -6,27 +6,33 @@ import java.util.List;
 
 public class TeamPageService {
 
-	private TeamPageDAO tpDAO;
+	private TeamPageDAO tpDAO =TeamPageDAO.getInstance();
 	
-		//팀메인이미지
-		public String getTeamImg(int teamCode) throws SQLException {
-			return tpDAO.selectTeamImg(teamCode);
-		}
+	//팀 정보 조회
+	public TeamDTO getTeamInfo(int teamCode) throws SQLException{
+	    return tpDAO.selectTeamInfo(teamCode);
+	}
+	
+	//팀메인이미지
+	public String getTeamImg(int teamCode) throws SQLException {
 		
-		//경기리스트
-		public List<TeamDTO> getGame(int teamCode) throws SQLException {
-			
-			return tpDAO.selectGame(teamCode);
-		}
+		return tpDAO.selectTeamImg(teamCode);
+	}
+	
+	//경기리스트
+	public List<TeamDTO> getGame(int teamCode) throws SQLException {
 		
-		//각팀공지사항
-		public List<TeamDTO> getNotice(int teamCode) throws SQLException {
-			
-			return tpDAO.selectNotice(teamCode);
-		}
+		return tpDAO.selectGame(teamCode);
+	}
+	
+	//각팀공지사항
+	public List<TeamDTO> getNotice(int teamCode) throws SQLException {
 		
-		//리그안내페이지
+		return tpDAO.selectNotice(teamCode);
+	}
+	
+	//리그안내페이지
 		public String getLeagueGuide(int teamCode) throws SQLException {
 			return tpDAO.selectLeagueGuide(teamCode);
-		}
+	}
 }

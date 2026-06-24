@@ -138,13 +138,7 @@ public class ReservationPageDAO {
 		return null;
 	}
 	
-	
-	//경기 로고
-	public ReservationPageDTO selectGameImg(ReservationPageDTO rDTO) {
 		
-		return null;
-	}
-	
 	//예매정보
 	public ReservationPageDTO selectReservationInfo(String memberCode,int reservationCode) {
 		

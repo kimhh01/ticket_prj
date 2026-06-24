@@ -150,23 +150,28 @@ response.setDateHeader("Expires", 0);
 	</div>
 	<nav class="header-nav">
 		<a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=1">LG트윈스</a>
+			href="${pageContext.request.contextPath}/teamPage?teamCode=1">LG트윈스</a>
 		<a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=2">한화이글스</a>
+			href="${pageContext.request.contextPath}/teamPage?teamCode=2">두산베어스</a>
 		<a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=3">삼성
-			라이온즈</a> <a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=4">kt
-			wiz</a> <a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=5">KIA
+			href="${pageContext.request.contextPath}/teamPage?teamCode=3">한화
+			이글스</a> <a
+			href="${pageContext.request.contextPath}/teamPage?teamCode=4">롯데
+			자이언츠</a> <a
+			href="${pageContext.request.contextPath}/teamPage?teamCode=5">KIA
 			타이거즈</a> <a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=6">NC
+			href="${pageContext.request.contextPath}/teamPage?teamCode=6">NC
 			다이노스</a> <a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=7">SSG
+			href="${pageContext.request.contextPath}/teamPage?teamCode=7">SSG
 			랜더스</a> <a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=8">두산
-			베어스</a> <a
-			href="${pageContext.request.contextPath}/TeamPageServlet?teamCode=9">키움
-			히어로즈</a> <a href="${pageContext.request.contextPath}/main#event">이벤트</a>
+			href="${pageContext.request.contextPath}/teamPage?teamCode=8">삼성
+			라이온즈</a> <a
+			href="${pageContext.request.contextPath}/teamPage?teamCode=9">키움
+			히어로즈</a> <a
+			href="${pageContext.request.contextPath}/teamPage?teamCode=10">KT
+			WIZ</a>
+			
+			
+			<a href="${pageContext.request.contextPath}/main#event">이벤트</a>
 	</nav>
 </header>

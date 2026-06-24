@@ -17,16 +17,15 @@ public class TeamDTO {
 	private String noticeContent;//공지사항내용
 	private String noticeTab;//공지사항구분
 	private String noticeImg;//공지사항 이미지 or 리그안내 이미지
-	private String noticeWriteDate;//공지사항일자
+	private Date noticeWriteDate;//공지사항일자
+	
 	public TeamDTO() {
-		super();
 	}
 	
 	
 	public TeamDTO(int teamCode, int gameScheduleCode, Date gameDate, String stadiumName, String teamHomeImg,
 			String teamOtherImg, String teamPageimg, String teamHomeName, String teamOtherName, String commonNotice,
-			String noticeTitle, String noticeContent, String noticeTab, String noticeImg, String noticeWriteDate) {
-		super();
+			String noticeTitle, String noticeContent, String noticeTab, String noticeImg, Date noticeWriteDate) {
 		this.teamCode = teamCode;
 		this.gameScheduleCode = gameScheduleCode;
 		this.gameDate = gameDate;
@@ -133,10 +132,10 @@ public class TeamDTO {
 	public void setNoticeImg(String noticeImg) {
 		this.noticeImg = noticeImg;
 	}
-	public String getNoticeWriteDate() {
+	public Date getNoticeWriteDate() {
 		return noticeWriteDate;
 	}
-	public void setNoticeWriteDate(String noticeWriteDate) {
+	public void setNoticeWriteDate(Date noticeWriteDate) {
 		this.noticeWriteDate = noticeWriteDate;
 	}
 
