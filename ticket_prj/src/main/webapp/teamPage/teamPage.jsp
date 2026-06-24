@@ -10,31 +10,24 @@
 <c:choose>
     <c:when test="${tDTO.teamCode == 1}">
         <c:set var="teamUrl" value="https://www.lgtwins.com" />
-        <c:set var="team_logo" value="lg.png"/>
     </c:when>
     <c:when test="${tDTO.teamCode == 2}">
         <c:set var="teamUrl" value="https://www.doosanbears.com/bears/intro" />
-        <c:set var="team_logo" value="doosan.png"/>
     </c:when>
     <c:when test="${tDTO.teamCode == 3}">
         <c:set var="teamUrl" value="https://www.hanwhaeagles.co.kr/MN/CL/MNCLCI01.do" />
-        <c:set var="team_logo" value="hanwha.png"/>
     </c:when>
     <c:when test="${tDTO.teamCode == 4}">
         <c:set var="teamUrl" value="https://www.giantsclub.com/html/?pcode=855" />
-        <c:set var="team_logo" value="lotte.png"/>
     </c:when>
     <c:when test="${tDTO.teamCode == 5}">
         <c:set var="teamUrl" value="https://tigers.co.kr/tigers/intro" />
-        <c:set var="team_logo" value="kia.png"/>
     </c:when>
     <c:when test="${tDTO.teamCode == 6}">
         <c:set var="teamUrl" value="https://www.ncdinos.com/dinos/intro.do" />
-        <c:set var="team_logo" value="nc.png"/>
     </c:when>
     <c:when test="${tDTO.teamCode == 7}">
         <c:set var="teamUrl" value="https://www.ssglanders.com/main" />
-        <c:set var="team_logo" value="ssg.png"/>
     </c:when>
     <c:when test="${tDTO.teamCode == 8}">
         <c:set var="teamUrl" value="https://www.samsunglions.com/index.asp" />
@@ -42,11 +35,9 @@
     </c:when>
     <c:when test="${tDTO.teamCode == 9}">
         <c:set var="teamUrl" value="https://heroesbaseball.co.kr/heroes/introduce/introduce.do" />
-        <c:set var="team_logo" value="kium.png"/>
     </c:when>
     <c:when test="${tDTO.teamCode == 10}">
         <c:set var="teamUrl" value="https://www.ktwiz.co.kr/ktwiz/about" />
-        <c:set var="team_logo" value="kt.png"/>
     </c:when>
     <c:otherwise>
         <c:set var="teamUrl" value="http://localhost/ticket_prj/main" />
@@ -61,463 +52,7 @@
 <head>
 <meta charset="UTF-8">
 <title>티켓링크 - 야구 예매</title>
-<style>
-    /* 티켓링크 아이덴티티를 살린 깔끔한 레이아웃 */
-    body {
-        font-family: 'Malgun Gothic', sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 0;
-        color: #333;
-    }
-    
-    /* 구단 헤더 배너 */
-    .team-info {
-        background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
-        color: #fff;
-        padding: 35px 0;
-    }
-    .team-inner {
-        max-width: 1000px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        gap: 25px;
-        padding: 0 20px;
-    }
-    .team-logo img {
-        width: 90px;
-        height: auto;
-        background: #fff;
-        border-radius: 50%;
-        padding: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-    .team-name h1 {
-        margin: 0 0 12px 0;
-        font-size: 26px;
-        font-weight: 700;
-    }
-    .team-btns {
-        display: flex;
-        gap: 8px;
-        position: relative;
-    }
-    .team-btns button {
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.25);
-        color: #fff;
-        padding: 8px 14px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 13px;
-        transition: all 0.2s;
-    }
-    .team-btns button:hover {
-        background: #fff;
-        color: #333;
-    }
-    
-    /* 공지사항 한줄 배너 */
-    .notice-box {
-        max-width: 1000px;
-        margin: 20px auto;
-        background: #fff;
-        border: 1px solid #e1e4e6;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        padding: 12px 20px;
-        box-sizing: border-box;
-    }
-    .notice-title {
-        font-weight: bold;
-        color: #f1404b;
-        border-right: 1px solid #e1e4e6;
-        padding-right: 20px;
-        margin-right: 20px;
-        flex-shrink: 0;
-    }
-    .notice-content ul {
-        margin: 0;
-        padding-left: 20px;
-        font-size: 13px;
-        color: #666;
-        line-height: 1.5;
-    }
-    #notice-blue {
-        color: #0066ff;
-        font-weight: bold;
-    }
-
-    /* 탭 메뉴 */
-    .tabs-wrap {
-        border-bottom: 2px solid #e1e4e6;
-        background: #fff;
-    }
-    .tabs {
-        max-width: 1000px;
-        margin: 0 auto;
-        display: flex;
-    }
-    .tab {
-        padding: 15px 30px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 600;
-        color: #666;
-        text-align: center;
-        border-bottom: 3px solid transparent;
-        transition: all 0.15s;
-    }
-    .tab:hover {
-        color: #333;
-    }
-    .tab.active {
-        color: #f1404b;
-        border-bottom-color: #f1404b;
-    }
-
-    /* 컨텐츠 래퍼 */
-    .tab-content {
-        display: none;
-    }
-    .tab-content.active {
-        display: block;
-    }
-
-    /* 필터 영역 */
-    .filter-list {
-        max-width: 1000px;
-        margin: 20px auto 10px auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 10px;
-    }
-    .filter-checkbox {
-        font-size: 14px;
-        color: #444;
-        cursor: pointer;
-    }
-    .calendar-btn {
-        background: none;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 5px 10px;
-        cursor: pointer;
-    }
-
-    /* 경기 리스트 */
-    .game-wrap {
-        max-width: 1000px;
-        margin: 0 auto 50px auto;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        padding: 0 10px;
-        box-sizing: border-box;
-    }
-    .game-row {
-        background: #fff;
-        border: 1px solid #e1e4e6;
-        border-radius: 6px;
-        display: grid;
-        grid-template-columns: 140px 160px 1fr 180px 140px;
-        align-items: center;
-        padding: 18px 20px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-        transition: transform 0.15s, box-shadow 0.15s;
-        box-sizing: border-box;
-    }
-    .game-row:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-    }
-    
-    .game-date {
-        text-align: center;
-        border-right: 1px solid #eee;
-    }
-    .game-date .day {
-        font-size: 21px;
-        font-weight: bold;
-        color: #333;
-    }
-    .game-date .time {
-        font-size: 13px;
-        color: #888;
-        margin-top: 3px;
-    }
-
-    .game-team-img {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        font-size: 13px;
-        color: #bbb;
-    }
-    .game-team-img img {
-        width: 40px;
-        height: 40px;
-        object-fit: contain;
-    }
-
-    .game-team-name {
-        padding-left: 15px;
-    }
-    .game-flag {
-        margin-bottom: 4px;
-    }
-    .flag-clean {
-        background: #eef9f2;
-        color: #2b8a3e;
-        border: 1px solid #c3e6cb;
-        padding: 2px 6px;
-        font-size: 11px;
-        border-radius: 3px;
-        font-weight: bold;
-    }
-    .game-team-name span {
-        font-size: 17px;
-        font-weight: bold;
-    }
-
-    .game-title {
-        color: #666;
-        font-size: 13px;
-    }
-
-    .game-btn {
-        text-align: right;
-    }
-    .reserve-btn {
-        background: #f1404b;
-        color: #fff;
-        border: none;
-        padding: 9px 20px;
-        font-size: 14px;
-        font-weight: bold;
-        border-radius: 4px;
-        cursor: pointer;
-        width: 100%;
-        transition: background 0.2s;
-    }
-    .reserve-btn:hover {
-        background: #d32f2f;
-    }
-    .coming-btn {
-        background: #e1e4e6;
-        color: #888;
-        border: none;
-        padding: 9px 10px;
-        font-size: 13px;
-        font-weight: bold;
-        border-radius: 4px;
-        cursor: not-allowed;
-        width: 100%;
-    }
-
-    /* 팝업 공통 */
-    .common_popup_wrap, .cancel_popup_wrap {
-        display: none;
-        position: absolute;
-        top: 42px;
-        left: 0;
-        z-index: 100;
-        width: 310px;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        color: #333;
-        text-align: left;
-    }
-    .common_popup {
-        padding: 15px;
-    }
-    .common_popup_header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 8px;
-        margin-bottom: 10px;
-    }
-    .common_popup_title {
-        margin: 0;
-        font-size: 13px;
-        color: #333;
-    }
-    .common_popup_close {
-        background: none;
-        border: none;
-        font-size: 15px;
-        cursor: pointer;
-    }
-    .popup_desc {
-        font-size: 12px;
-        line-height: 1.5;
-        margin: 5px 0;
-    }
-    .text_medium {
-        font-weight: bold;
-        color: #2b8a3e;
-    }
-    .text_gray {
-        color: #666;
-    }
-
-    /* [공지사항 탭] */
-    .notice-detail-wrap {
-        max-width: 1000px;
-        margin: 30px auto 50px auto;
-        background: #fff;
-        border: 1px solid #e1e4e6;
-        border-radius: 6px;
-        padding: 35px;
-        box-sizing: border-box;
-    }
-    .notice-detail-header {
-        border-bottom: 2px solid #333;
-        padding-bottom: 15px;
-        margin-bottom: 25px;
-    }
-    .notice-badge {
-        background: #f1404b;
-        color: #fff;
-        font-size: 11px;
-        font-weight: bold;
-        padding: 3px 8px;
-        border-radius: 3px;
-        vertical-align: middle;
-        margin-right: 8px;
-    }
-    .notice-detail-header h2 {
-        display: inline-block;
-        margin: 0;
-        font-size: 21px;
-        font-weight: bold;
-        vertical-align: middle;
-        color: #222;
-    }
-    .notice-meta {
-        font-size: 13px;
-        color: #888;
-        margin-top: 8px;
-    }
-    .notice-detail-body {
-        font-size: 14px;
-        color: #444;
-        line-height: 1.7;
-    }
-    .notice-img-box {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-    .notice-img-box img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 4px;
-        border: 1px solid #eee;
-    }
-    .notice-text-box {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-    .notice-warning {
-        background: #fff5f5;
-        border-left: 4px solid #f1404b;
-        padding: 15px;
-        color: #c92a2a;
-        font-size: 13px;
-        margin-top: 25px;
-        border-radius: 0 4px 4px 0;
-        font-weight: bold;
-    }
-
-    /* [리그안내 탭] */
-    .league-guide-wrap {
-        max-width: 1000px;
-        margin: 30px auto 50px auto;
-        background: #fff;
-        border: 1px solid #e1e4e6;
-        border-radius: 6px;
-        padding: 35px;
-        box-sizing: border-box;
-    }
-    .guide-section {
-        margin-bottom: 40px;
-    }
-    .guide-section:last-child {
-        margin-bottom: 0;
-    }
-    .guide-section h3 {
-        font-size: 19px;
-        margin-top: 0;
-        margin-bottom: 10px;
-        color: #222;
-        border-left: 4px solid #f1404b;
-        padding-left: 10px;
-    }
-    .guide-subtitle {
-        font-size: 13px;
-        color: #666;
-        margin-bottom: 15px;
-    }
-    
-    /* 표(Table) 스타일 */
-    .info-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-        font-size: 13px;
-        text-align: center;
-    }
-    .info-table th {
-        background: #f5f6f7;
-        color: #333;
-        font-weight: 600;
-        padding: 10px;
-        border-top: 1px solid #333;
-        border-bottom: 1px solid #e1e4e6;
-    }
-    .info-table td {
-        padding: 11px;
-        border-bottom: 1px solid #eee;
-        color: #555;
-    }
-    
-    /* 요금 표 컬러링 */
-    .seat-vip { font-weight: bold; color: #a61e4d; }
-    .seat-table { font-weight: bold; color: #d9480f; }
-    .seat-exc { font-weight: bold; color: #0b7285; }
-    .seat-blue { font-weight: bold; color: #1971c2; }
-    .seat-red { font-weight: bold; color: #e03131; }
-    .seat-navy { font-weight: bold; color: #373a3c; }
-    .seat-out { font-weight: bold; color: #2b8a3e; }
-
-    .policy-box {
-        background: #f8f9fa;
-        border: 1px solid #e1e4e6;
-        border-radius: 6px;
-        padding: 20px;
-    }
-    .policy-box ul {
-        margin: 0;
-        padding-left: 18px;
-        font-size: 13px;
-        color: #555;
-        line-height: 1.7;
-    }
-    .policy-box li {
-        margin-bottom: 10px;
-    }
-    .policy-box li:last-child {
-        margin-bottom: 0;
-    }
-</style>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/teamPage/teamPage.css">
 <script type="text/javascript">
 $(function(){
     // 1. JS 기반 무중단 탭 전환 이벤트 구현
@@ -552,11 +87,11 @@ $(function(){
         $(".common_popup_wrap").slideUp(100); 
         $(".cancel_popup_wrap").slideToggle(150);
     });
-
+    
     $("#closeCancel").click(function(){
         $(".cancel_popup_wrap").slideUp(150);
     });
-
+    
     // 바깥 영역 클릭 시 팝업 닫기
     $(document).click(function(){
         $(".common_popup_wrap, .cancel_popup_wrap").slideUp(150);
@@ -566,6 +101,14 @@ $(function(){
     $(".common_popup_wrap, .cancel_popup_wrap").click(function(e){
         e.stopPropagation();
     });
+    
+    //공지사항 팝업
+    $(".notice-meta").click(function(){
+        var body = $(this).closest(".notice-detail-header")
+                          .next(".notice-detail-body");
+        $(this).toggleClass("active");
+        body.toggleClass("active");
+    });
 
     // 홈경기만 보기 필터
     $(".onlyHomeCheck").change(function(){
@@ -574,6 +117,11 @@ $(function(){
         } else {
             $(".game-row").show();
         }
+    });
+       
+    
+    $(".reserve-btn").click(function(){
+    	location.href="${pageContext.request.contextPath}/reservationPage2";
     });
 });
 </script>
@@ -586,7 +134,7 @@ $(function(){
     <div class="team-inner">
         <div class="team-logo">
             <%-- DB에서 읽어온 구단 로고 이미지 (경로가 DB에 담겨있어야 정상 작동) --%>
-            <img src="${pageContext.request.contextPath}/${team_logo}" onerror="this.src='${pageContext.request.contextPath}/images/team_logo/${team_logo}'"/>
+            <img src="${pageContext.request.contextPath}/${tDTO.teamHomeImg}" onerror="this.src='${pageContext.request.contextPath}/images/team_logo/${tDTO.teamHomeImg}'"/>
         </div>
         <div class="team-name">
             <h1>${tDTO.teamHomeName}</h1>
@@ -745,10 +293,11 @@ $(function(){
         <div class="notice-detail-header">
             <span class="notice-badge">공지</span>
             
-            <h2></h2>
+            <article class="notice-item" data-category="reservation">
             <div class="notice-meta">
                 <span>${notice.noticeTitle }</span> | <span>${notice.noticeWriteDate} </span><span class="notice-btn">ㅇ</span>
             </div>
+            </article>
         </div>
         
         <div class="notice-detail-body">

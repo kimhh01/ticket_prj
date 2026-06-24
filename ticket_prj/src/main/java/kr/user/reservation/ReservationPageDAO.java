@@ -45,7 +45,6 @@ public class ReservationPageDAO {
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		DbConnection dbCon=DbConnection.getInstance();
 		
 		
 		try {
@@ -96,7 +95,6 @@ public class ReservationPageDAO {
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-	    DbConnection dbCon=DbConnection.getInstance();
 		
 		
 		try {
