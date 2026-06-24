@@ -15,6 +15,11 @@
 </head>
 <body>
 
+<jsp:include page="../fragment/header.jsp"/>
+<style>
+@import url("myPage.css");
+</style>
+
 <div class="mypage-wrap">
 
     <h1 class="page-title">마이페이지</h1>
@@ -191,5 +196,9 @@ $("#confirmWithdraw").click(function(){
 
 </div>
 
+<jsp:include page="../fragment/footer.jsp"/>
+<style>
+@import url("myPage.css");
+</style>
 </body>
 </html>

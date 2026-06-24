@@ -1,0 +1,150 @@
+
+/* 헤더 링크 복구 */
+
+.header-top-inner a,
+.header-top-inner a:link,
+.header-top-inner a:visited{
+    color:#666 !important;
+    text-decoration:none !important;
+}
+
+.header-nav a,
+.header-nav a:link,
+.header-nav a:visited{
+    color:#333 !important;
+    text-decoration:none !important;
+}
+
+.logo a,
+.logo a:link,
+.logo a:visited{
+    color:#e50020 !important;
+    text-decoration:none !important;
+}
+
+.header-nav a:hover{
+    color:#e50020 !important;
+}
+
+
+.event-wrap{
+    width:1200px;
+    margin:70px auto 100px;
+}
+
+.event-title{
+    font-size:60px;
+    font-weight:800;
+    margin-bottom:50px;
+}
+
+.event-sub-title{
+    font-size:32px;
+    font-weight:700;
+    margin-bottom:25px;
+}
+
+.event-card-wrap{
+    display:flex;
+    gap:30px;
+    margin-bottom:70px;
+}
+
+.event-card{
+    width:585px;
+    border:1px solid #e5e5e5;
+    border-radius:12px;
+    overflow:hidden;
+    background:#fff;
+    box-shadow:0 3px 10px rgba(0,0,0,0.08);
+    transition:0.2s;
+    cursor:pointer;
+}
+
+.event-card:hover{
+    transform:translateY(-5px);
+}
+
+.event-card img{
+     width:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.event-card-body{
+    padding:25px;
+}
+
+.event-type{
+    color:#ff5f8f;
+    font-size:15px;
+    font-weight:700;
+}
+
+.event-card-body h3{
+    margin-top:10px;
+    font-size:28px;
+    font-weight:700;
+    line-height:1.4;
+}
+
+.event-card-body p{
+    margin-top:15px;
+    color:#888;
+    font-size:15px;
+}
+
+.event-list{
+    border-top:2px solid #222;
+}
+
+.event-row{
+    display:flex;
+    align-items:center;
+    padding:20px;
+    border-bottom:1px solid #eee;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.event-row:hover{
+    background:#fafafa;
+}
+
+.event-row img{
+	
+    height:100px;
+    width: 420px;
+    border-radius:6px;
+}
+
+.event-info{
+    flex:1;
+    margin-left:20px;
+}
+
+.event-info span{
+    color:#ff5f8f;
+    font-weight:700;
+    margin-right:10px;
+}
+
+.event-info strong{
+    font-size:18px;
+}
+
+.event-date{
+    width:220px;
+    text-align:center;
+    color:#888;
+    font-size:14px;
+}
+
+.event-arrow{
+    width:50px;
+    text-align:center;
+    font-size:24px;
+    color:#999;
+}
+
+

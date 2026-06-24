@@ -15,6 +15,11 @@
 </head>
 <body>
 
+<jsp:include page="../fragment/header.jsp"/>
+<style>
+@import url("myPage.css");
+</style>
+
 <div class="mypage-wrap">
 
     <h1 class="page-title">마이페이지</h1>
@@ -305,6 +310,10 @@ $(function(){
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<jsp:include page="../fragment/footer.jsp"/>
+<style>
+@import url("myPage.css");
+</style>
 
 </body>
 </html>
