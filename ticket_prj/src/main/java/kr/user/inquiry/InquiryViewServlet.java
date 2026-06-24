@@ -319,6 +319,7 @@ public class InquiryViewServlet extends HttpServlet {
 	 * 
 	 * 현재 수정 기능에서만 임시로 사용한다.
 	 */
+	@SuppressWarnings("unused")
 	private void preparePreview(HttpServletRequest request, FormData form) {
 		InquiryDTO inquiry = new InquiryDTO();
 		inquiry.setInquiryCode(0);

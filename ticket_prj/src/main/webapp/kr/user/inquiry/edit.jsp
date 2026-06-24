@@ -1,9 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="javax.servlet.http.HttpServletRequest"%>
 <%@ page import="java.util.Map"%>
-<%
+<%!
 @SuppressWarnings("unchecked")
-Map<Integer, String> categories = (Map<Integer, String>) request.getAttribute("categories");
+private Map<Integer, String> getCategories(HttpServletRequest request) {
+	return (Map<Integer, String>) request.getAttribute("categories");
+}
+%>
+<%
+Map<Integer, String> categories = getCategories(request);
 Integer selectedCategoryCode = (Integer) request.getAttribute("selectedCategoryCode");
 String formTitle = request.getAttribute("formTitle") == null ? "" : (String) request.getAttribute("formTitle");
 String formContent = request.getAttribute("formContent") == null ? "" : (String) request.getAttribute("formContent");
@@ -70,7 +76,7 @@ String formContent = request.getAttribute("formContent") == null ? "" : (String)
 						<span>최대 255자</span><span id="contentCount">0/255</span>
 					</div>
 				</div>
-				<div class="inquiry-error" id="clientError" hidden></div>
+				<div class="inquiry-error" id="clientError" hidden="hidden"></div>
 				<div class="inquiry-actions">
 					<a class="inquiry-button inquiry-button-light"
 						href="<%=request.getContextPath()%>/user-inquiry/list">취소</a>

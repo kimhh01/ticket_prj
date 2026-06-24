@@ -1,6 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="kr.user.member.MemberDTO" %>
+<%!
+@SuppressWarnings("unchecked")
+private Map<Integer, String> getCategories(HttpServletRequest request) {
+	return (Map<Integer, String>) request.getAttribute("categories");
+}
+%>
 <%
 if (request.getAttribute("categories") == null) {
 	response.sendRedirect(request.getContextPath() + "/user-inquiry/write");
@@ -16,8 +23,7 @@ if (loginMember == null) {
 %>
 
 <%
-@SuppressWarnings("unchecked")
-Map<Integer, String> categories = (Map<Integer, String>) request.getAttribute("categories");
+Map<Integer, String> categories = getCategories(request);
 Integer selectedCategoryCode = (Integer) request.getAttribute("selectedCategoryCode");
 String formTitle = request.getAttribute("formTitle") == null ? "" : (String) request.getAttribute("formTitle");
 String formContent = request.getAttribute("formContent") == null ? "" : (String) request.getAttribute("formContent");
@@ -70,7 +76,7 @@ String formContent = request.getAttribute("formContent") == null ? "" : (String)
                           maxlength="2000" placeholder="문의 내용을 입력해 주세요."><%=formContent%></textarea>
                 <div class="inquiry-field-meta"><span>개인정보를 포함하지 않도록 주의해 주세요.</span><span id="contentCount">0/2000</span></div>
             </div>
-            <div class="inquiry-error" id="clientError" hidden></div>
+            <div class="inquiry-error" id="clientError" hidden="hidden"></div>
             <div class="inquiry-actions">
                 <a class="inquiry-button inquiry-button-light" href="<%=request.getContextPath()%>/user-inquiry">취소</a>
                 <button class="inquiry-button" type="submit">문의 등록</button>

@@ -68,7 +68,7 @@
                     <div class="faq-answer"><span class="faq-mark">A</span><p>일정 변경 사항은 메인 경기 정보와 관련 공지에서 확인할 수 있습니다.</p></div>
                 </article>
             </div>
-            <p class="faq-empty" id="faqEmpty" hidden>검색 결과가 없습니다.</p>
+            <p class="faq-empty" id="faqEmpty" hidden="hidden">검색 결과가 없습니다.</p>
         </section>
 
         <section class="inquiry-section" aria-labelledby="helpTitle">

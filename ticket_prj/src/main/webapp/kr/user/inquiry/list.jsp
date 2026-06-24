@@ -1,4 +1,5 @@
 <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="javax.servlet.http.HttpServletRequest"%>
 <%@page import="kr.user.inquiry.InquiryDTO"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -24,10 +25,15 @@ private String getCategoryName(int categoryCode) {
 
 	return categoryName;
 }
+
+@SuppressWarnings("unchecked")
+private List<InquiryDTO> getInquiryList(HttpServletRequest request) {
+	return (List<InquiryDTO>) request.getAttribute("inquiryList");
+}
 %>
 
 <%
-List<InquiryDTO> inquiryList = (List<InquiryDTO>) request.getAttribute("inquiryList");
+List<InquiryDTO> inquiryList = getInquiryList(request);
 SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 %>
 

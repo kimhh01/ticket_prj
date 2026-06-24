@@ -1,6 +1,6 @@
 package kr.user.main;
 
-import java.io.File;
+import java.io.File; 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +12,7 @@ import java.util.List;
 
 import common.DBConnection;
 
+@SuppressWarnings("unused")
 public class MainDAO {
 
 	/**

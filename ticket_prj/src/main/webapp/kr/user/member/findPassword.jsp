@@ -37,7 +37,7 @@
                 <input class="member-input" type="email" id="email" name="email"
                        maxlength="100" autocomplete="email" placeholder="example@ballpick.com">
             </div>
-            <div id="clientError" class="member-error" hidden></div>
+            <div id="clientError" class="member-error" hidden="hidden"></div>
             <div class="member-actions">
                 <a class="member-button member-button-light" href="<%=request.getContextPath()%>/member/login">취소</a>
                 <button class="member-button" type="submit">임시 비밀번호 전송</button>

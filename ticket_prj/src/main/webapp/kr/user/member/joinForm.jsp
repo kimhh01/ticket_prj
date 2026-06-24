@@ -1,6 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="javax.servlet.http.HttpServletRequest"%>
 <%@ page import="java.util.List"%>
+<%!
+@SuppressWarnings("unchecked")
+private List<String> getJoinErrorMessages(HttpServletRequest request) {
+	return (List<String>) request.getAttribute("joinErrorMessages");
+}
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -38,7 +45,7 @@
 			}
 			%>
 			<%
-			List<String> joinErrorMessages = (List<String>) request.getAttribute("joinErrorMessages");
+			List<String> joinErrorMessages = getJoinErrorMessages(request);
 			if (joinErrorMessages != null && !joinErrorMessages.isEmpty()) {
 			%>
 			<div class="member-error">
@@ -154,7 +161,7 @@
 					</tbody>
 				</table>
 
-				<div id="clientError" class="member-error" hidden></div>
+				<div id="clientError" class="member-error" hidden="hidden"></div>
 				<div class="member-actions">
 					<a class="member-button member-button-light"
 						href="<%=request.getContextPath()%>/member/join-agree">이전</a>

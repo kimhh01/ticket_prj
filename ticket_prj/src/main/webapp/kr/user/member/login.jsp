@@ -32,7 +32,7 @@
                 <input class="member-input" type="password" id="password" name="password"
                        maxlength="20" autocomplete="current-password" placeholder="비밀번호를 입력해 주세요.">
             </div>
-            <div id="clientError" class="member-error" hidden></div>
+            <div id="clientError" class="member-error" hidden="hidden"></div>
             <button class="member-button" type="submit">로그인</button>
         </form>
 

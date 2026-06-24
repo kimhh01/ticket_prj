@@ -31,7 +31,7 @@
                 <input class="member-input" type="email" id="email" name="email"
                        maxlength="100" autocomplete="email" placeholder="example@ballpick.com">
             </div>
-            <div id="clientError" class="member-error" hidden></div>
+            <div id="clientError" class="member-error" hidden="hidden"></div>
             <button class="member-button" type="submit">확인</button>
         </form>
 

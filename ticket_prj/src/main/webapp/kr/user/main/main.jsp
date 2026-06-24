@@ -1,4 +1,5 @@
 <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="javax.servlet.http.HttpServletRequest"%>
 <%@page import="kr.user.main.TeamRankDTO"%>
 <%@page import="kr.user.main.MainGameDTO"%>
 <%@page import="kr.user.main.MainBannerDTO"%>
@@ -8,6 +9,14 @@
 	pageEncoding="UTF-8"%>
 
 <%@ include file="/fragment/header.jsp"%>
+
+<%!
+@SuppressWarnings("unchecked")
+private <T> List<T> getListAttribute(HttpServletRequest request, String attributeName) {
+	Object value = request.getAttribute(attributeName);
+	return value == null ? null : (List<T>) value;
+}
+%>
 
 <%
 /*
@@ -19,9 +28,9 @@
 
     위처럼 Servlet에서 넣었기 때문에 JSP에서는 getAttribute로 꺼낸다.
 */
-List<MainBannerDTO> bannerList = (List<MainBannerDTO>) request.getAttribute("bannerList");
-List<MainGameDTO> gameList = (List<MainGameDTO>) request.getAttribute("gameList");
-List<TeamRankDTO> rankList = (List<TeamRankDTO>) request.getAttribute("rankList");
+List<MainBannerDTO> bannerList = getListAttribute(request, "bannerList");
+List<MainGameDTO> gameList = getListAttribute(request, "gameList");
+List<TeamRankDTO> rankList = getListAttribute(request, "rankList");
 
 // DB 연결 전에도 배너 UI를 확인할 수 있도록 정적 이미지를 기본값으로 사용한다.
 // 실제 배너 데이터가 조회되면 이 기본 목록은 사용하지 않는다.

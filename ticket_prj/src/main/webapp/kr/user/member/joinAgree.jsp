@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <div id="clientError" class="member-error" hidden></div>
+            <div id="clientError" class="member-error" hidden="hidden"></div>
             <div class="member-actions">
                 <a class="member-button member-button-light" href="<%=request.getContextPath()%>/main">취소</a>
                 <button class="member-button" type="submit">다음</button>
