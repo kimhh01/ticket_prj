@@ -15,49 +15,14 @@
 </head>
 <body>
 
-<div class="modal fade" id="pwModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content pw-modal">
+<jsp:include page="../fragment/header.jsp"/>
+<style>
+@import url("myPage.css");
+</style>
 
-            <div class="modal-body">
 
-                <h3 class="pw-title">
-                    비밀번호를 입력해 주세요
-                </h3>
+    <div class="mypage-wrap">
 
-                <p class="pw-desc">
-                    신규 비밀번호는 8~15자리의<br>
-                    영문, 숫자, 특수문자 조합으로 만들어 주세요.
-                </p>
-
-                <input type="password"
-                       id="currentPw"
-                       class="pw-input"
-                       placeholder="사용 중인 비밀번호">
-
-                <input type="password"
-                       id="newPw"
-                       class="pw-input"
-                       placeholder="신규 비밀번호">
-
-                <input type="password"
-                       id="newPwChk"
-                       class="pw-input"
-                       placeholder="신규 비밀번호 재입력">
-
-                <button type="button"
-                        class="pw-confirm-btn"
-                        id="pwConfirmBtn">
-                    확인
-                </button>
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div class="mypage-wrap">
 
     <h1 class="page-title">마이페이지</h1>
 
@@ -395,6 +360,11 @@
 </div>
 
 
+
+</main>
+
+</body>
+
 <script>
 
 $(function(){
@@ -421,17 +391,16 @@ $(function(){
 
     });
 
-	//행 클릭시 팝업 열기 
+	//행 클릭시 상세내역 창 열기 
 	$(".reservation-row").click(function(){
 
-	    let detailModal =
-	        new bootstrap.Modal(
-	            document.getElementById("reservationDetailModal")
-	        );
+    window.open(
+        "reservationDetail.jsp",
+        "reservationDetail",
+        "width=800,height=500,left=200,top=100"
+    );
 
-	    detailModal.show();
-
-	});
+});
 	
 	$(".status-btn").click(function(e){
 	    e.stopPropagation();
@@ -439,7 +408,13 @@ $(function(){
 
 });
 $(function(){
+	
+	let selectedRow = null;
 
+	$(".cancel-row .status-btn").click(function(){
+	    selectedRow = $(this).closest("tr");
+	});
+	
     $("#confirmCancel").click(function(){
 
         // 첫 번째 팝업 닫기
@@ -451,9 +426,21 @@ $(function(){
         }, 300);
 
     });
+    $("#completeModal .btn-dark").click(function(){
 
+        if(selectedRow){
+            selectedRow.remove();
+        }
+
+    });
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<jsp:include page="../fragment/footer.jsp"/>
+<style>
+@import url("myPage.css");
+</style>
+
 </body>
 </html>

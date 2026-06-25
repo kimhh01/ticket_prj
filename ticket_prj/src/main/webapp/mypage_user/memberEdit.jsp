@@ -28,6 +28,11 @@ $(function(){
 </head>
 
 <body>
+<jsp:include page="../fragment/header.jsp"/>
+<style>
+@import url("myPage.css");
+</style>
+
 <div class="mypage-wrap">
 <div class="edit-wrap">
 
@@ -111,5 +116,11 @@ $(function(){
 
 </div>
 </div>
+
+<jsp:include page="../fragment/footer.jsp"/>
+<style>
+@import url("myPage.css");
+</style>
+
 </body>
 </html>

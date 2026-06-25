@@ -169,6 +169,6 @@ response.setDateHeader("Expires", 0);
 			href="${pageContext.request.contextPath}/teamPage?teamCode=9">키움
 			히어로즈</a> <a
 			href="${pageContext.request.contextPath}/teamPage?teamCode=10">KT
-			WIZ</a> <a href="${pageContext.request.contextPath}/main#event">이벤트</a>
+			WIZ</a> <a href="${pageContext.request.contextPath}/user_event/eventMain.jsp">이벤트</a>
 	</nav>
 </header>
