@@ -121,7 +121,12 @@ $(function(){
        
     
     $(".reserve-btn").click(function(){
-    	location.href="${pageContext.request.contextPath}/reservationPage2";
+    	window.open(
+    		"<%=request.getContextPath()%>/reservationPage/reservationPage3.jsp",
+   	        "reservation",
+   	        "width=1200,height=800,top=100,left=200",
+   	     	"resizable=no"
+   	    );
     });
 });
 </script>
