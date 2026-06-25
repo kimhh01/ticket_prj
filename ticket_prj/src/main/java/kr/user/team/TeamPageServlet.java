@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class TeamPageServlet
  */
-@WebServlet("/TeamPageServlet")
+@WebServlet("/teamPage")
 	public class TeamPageServlet extends HttpServlet {
 
 	/**
@@ -38,12 +38,14 @@ import javax.servlet.http.HttpServletResponse;
 			List<TeamDTO> gameList=tpService.getGame(teamCode);
 			List<TeamDTO> noticeList=tpService.getNotice(teamCode);
 			String leagueImg=tpService.getLeagueGuide(teamCode);
+			TeamDTO tDTO = tpService.getTeamInfo(teamCode);
 			
+			request.setAttribute("tDTO", tDTO);
 			request.setAttribute("gameList", gameList);
 			request.setAttribute("noticeList", noticeList);
 			request.setAttribute("leagueImg", leagueImg);
 			
-			RequestDispatcher rd = request.getRequestDispatcher("/teamPage.jsp");
+			RequestDispatcher rd = request.getRequestDispatcher("/teamPage/teamPage.jsp");
 			rd.forward(request, response);
 			
 		} catch (SQLException e) {

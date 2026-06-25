@@ -1,0 +1,451 @@
+@charset "UTF-8";
+
+ /* 글로벌 UI 공통 스타일 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Malgun Gothic', '맑은 고딕', Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        .ticketlink-container {
+            width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+            user-select: none;
+        }
+
+        /* 1. 상단 타이틀 영역 */
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 2px solid #4a4a4a;
+        }
+
+        .logo-area {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .logo-bold {
+            font-weight: 900;
+        }
+
+        .timer-area {
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .timer-time {
+            color: #1d70e2; /* 이미지 속 파란색 타이머 색 반영 */
+            font-size: 15px;
+        }
+
+        .question-badge {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background-color: #e1e1e1;
+            color: #666;
+            text-align: center;
+            line-height: 15px;
+            font-size: 11px;
+            border-radius: 2px;
+        }
+
+        /* 2. 단계(Step) 표시 진행바 */
+        .step-progress-bar {
+            display: flex;
+            width: 100%;
+            height: 36px;
+            background-color: #cfd2d6;
+            margin-bottom: 15px;
+        }
+
+        .step-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffffff;
+            position: relative;
+            background-color: #8c939d;
+            clip-path: polygon(0% 0%, 93% 0%, 100% 50%, 93% 100%, 0% 100%, 7% 50%);
+            margin-right: -10px;
+        }
+
+        .step-item:first-child {
+            clip-path: polygon(0% 0%, 93% 0%, 100% 50%, 93% 100%, 0% 100%);
+        }
+
+        .step-item:last-child {
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 7% 50%);
+            margin-right: 0;
+        }
+
+        .step-item.active {
+            background-color: #22252a;
+        }
+
+        /* 공통 작업대 뷰 구조 */
+        .main-workspace {
+            display: flex;
+            gap: 20px;
+            height: 520px;
+        }
+
+        .view-section {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ======================================================= */
+        /* [공통] 사이드 바 패널 기본 */
+        /* ======================================================= */
+        .side-panel {
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-left: 1px solid #f0f0f0;
+            padding-left: 15px;
+        }
+
+        /* 등급 및 팀 기본 정보 영역 */
+        .match-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid #e1e1e1;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #fafafa;
+            margin-bottom: 12px;
+        }
+
+        .team-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .team-logo-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .bg-landers { background-color: #e02c1d; }
+        .bg-twins { background-color: #c50a50; }
+        .bg-lotte { background-color: #002c5f; }
+        .bg-kia { background-color: #c40a35; }
+
+        .vs-text { font-size: 10px; font-weight: bold; color: #999999; }
+        .team-name-label { font-size: 11px; font-weight: bold; color: #333; }
+
+        /* ======================================================= */
+        /* [2단계 구역전용 디자인] */
+        /* ======================================================= */
+        .stadium-border-box {
+            flex: 1;
+            border: 2px solid #b4a2f7;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stadium-legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .color-chip { width: 24px; height: 12px; border-radius: 2px; }
+        .chip-blue { background-color: #1d70e2; }
+        .chip-red { background-color: #be2a2b; }
+        .chip-yellow { background-color: #f0c20c; }
+        .chip-green { background-color: #16a34a; }
+
+        /* 우측 리스트 디자인 */
+        .seats-scroll-box {
+            border: 1px solid #ddd;
+            height: 180px;
+            overflow-y: scroll;
+            border-radius: 4px;
+            background-color: #ffffff;
+        }
+
+        .seats-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .seats-list-item.selected {
+            background-color: #ebf5ff;
+            border-color: #3b82f6;
+        }
+
+        .seats-list-item:first-child {
+            background-color: #f7f9fa;
+            font-weight: bold;
+        }
+
+        /* ======================================================= */
+        /* [3단계 구역전용 디자인 (업로드 파일 기준)] */
+        /* ======================================================= */
+        .ticket-selection-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e1e1e1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .selection-title {
+            background-color: #ffffff;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .selection-alert-bar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e1e1e1;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333333;
+            text-align: center;
+        }
+
+        /* 티켓 권종 테이블 */
+        .ticket-table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .ticket-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .ticket-table th {
+            display: none; /* 헤더는 제거하고 깔끔한 병합 레이아웃 유지 */
+        }
+
+        .ticket-table td {
+            border: 1px solid #e9e9e9;
+            padding: 8px 12px;
+            vertical-align: middle;
+        }
+
+        .category-cell {
+            background-color: #fcfcfc;
+            font-weight: bold;
+            text-align: center;
+            width: 90px;
+            color: #444;
+        }
+
+        .ticket-name-cell {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .help-icon {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            background-color: #e1e1e1;
+            color: #666;
+            border-radius: 2px;
+            text-align: center;
+            line-height: 13px;
+            font-size: 10px;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+
+        .ticket-price-cell {
+            text-align: right;
+            font-weight: bold;
+            width: 80px;
+            padding-right: 15px;
+        }
+
+        .ticket-select-cell {
+            width: 60px;
+            text-align: center;
+        }
+
+        .dropdown-select {
+            width: 100%;
+            padding: 3px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        /* 하단 안내사항 박스 */
+        .notice-container {
+            padding: 15px;
+            background-color: #fafafa;
+            border-top: 1px solid #e1e1e1;
+            font-size: 11px;
+            color: #555555;
+            line-height: 1.6;
+        }
+
+        .notice-container h5 {
+            font-size: 12px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+            color: #222;
+        }
+
+        /* 3단계 우측 예매정보 디스플레이 박스 */
+        .booking-summary-box {
+            border: 1px solid #e1e1e1;
+            border-radius: 4px;
+            padding: 12px;
+            background-color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .summary-box-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .summary-box-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-grade {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .summary-detail {
+            font-size: 14px;
+            font-weight: bold;
+            color: #e51a24; /* 붉은색 좌석번호 */
+        }
+
+        /* 정산 항목 정렬 */
+        .invoice-table {
+            width: 100%;
+            font-size: 11px;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+
+        .invoice-table td {
+            padding: 5px 0;
+            color: #555;
+        }
+
+        .invoice-table tr:last-child td {
+            border-top: 1px solid #e1e1e1;
+            padding-top: 8px;
+            font-weight: bold;
+        }
+
+        .invoice-val {
+            text-align: right;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .invoice-val.total-red {
+            color: #e51a24;
+            font-size: 13px;
+        }
+
+        /* 취소 수수료 조항 텍스트 */
+        .cancel-guide-txt {
+            font-size: 10px;
+            color: #666666;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        /* 버튼 그룹화 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-action {
+            flex: 1;
+            height: 40px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        .btn-prev {
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            color: #333;
+        }
+
+        .btn-prev:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn-next {
+            background-color: #22252a;
+            border: 1px solid #22252a;
+            color: #ffffff;
+        }
+
+        .btn-next:hover {
+            background-color: #111;
+        }
