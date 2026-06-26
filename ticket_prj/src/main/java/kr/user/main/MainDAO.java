@@ -24,7 +24,6 @@ public class MainDAO {
 	/**
 	 * 메인화면 상단 배너 목록 조회
 	 * 
-	 * 아직 DB 연결 전이면 null 유지.
 	 */
 	public List<MainBannerDTO> selectMainBannerList() {
 		return null;
@@ -36,8 +35,6 @@ public class MainDAO {
 	 * GAME_SCHEDULE을 기준으로 TEAM을 홈팀/원정팀으로 각각 조인하고,
 	 * STADIUM을 조인해서 메인 화면에 보여줄 경기 정보를 조회한다.
 	 * 
-	 * 현재 DB 가데이터 날짜가 과거일 수 있으므로 날짜 조건은 넣지 않고,
-	 * 등록된 경기 중 날짜/시간 순으로 최대 5개만 조회한다.
 	 */
 	public List<MainGameDTO> selectRecentGameList() {
 		List<MainGameDTO> gameList = new ArrayList<MainGameDTO>();
@@ -64,9 +61,10 @@ public class MainDAO {
 				+ "    ON gs.team_other = away.team_id "
 				+ "    JOIN stadium s "
 				+ "    ON gs.stadium_id = s.stadium_id "
-				+ "    ORDER BY gs.game_date ASC, gs.game_start_time ASC "
+				+ "    WHERE TO_DATE(TO_CHAR(gs.game_date, 'YYYY-MM-DD') || ' ' || gs.game_start_time, 'YYYY-MM-DD HH24:MI') >= SYSDATE "
+				+ "    ORDER BY TO_DATE(TO_CHAR(gs.game_date, 'YYYY-MM-DD') || ' ' || gs.game_start_time, 'YYYY-MM-DD HH24:MI') ASC "
 				+ ") "
-				+ "WHERE ROWNUM <= 5";
+				+ "WHERE ROWNUM <= 4";
 
 		try (Connection con = getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);
