@@ -1,4 +1,4 @@
-package user_event;
+package userEvent;
 
 public class EventPageView {
 

@@ -1,12 +1,16 @@
-package user_mypage;
+package userMypage;
 
 import java.sql.Date;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-import user_mypage.MemberDTO;
-import user_mypage.MyPageReservationDTO;
-import user_mypage.ReservationCancelDTO;
-import user_mypage.ReservationDetailDTO;
+import kr.user.common.UserDBConnection;
+import userMypage.MemberDTO;
+import userMypage.MyPageReservationDTO;
+import userMypage.ReservationCancelDTO;
+import userMypage.ReservationDetailDTO;
 
 public class MyPageDAO {
 
@@ -51,7 +55,42 @@ public class MyPageDAO {
 
         int result = 0;
 
+        if(!newPass.equals(newPassCheck)) {
+            return result;
+        }
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        UserDBConnection db = UserDBConnection.getInstance();
+
+        try {
+
+            con = db.getConnection();
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.append("UPDATE MEMBER ");
+            sql.append("SET PASS=? ");
+            sql.append("WHERE MEMBER_ID=? ");
+            sql.append("AND PASS=?");
+
+            pstmt = con.prepareStatement(sql.toString());
+
+            pstmt.setString(1, newPass);
+            pstmt.setString(2, memberId);
+            pstmt.setString(3, oldPass);
+
+            result = pstmt.executeUpdate();
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+            
+        } finally {
+            db.close(pstmt, con);
+        }
         return result;
+
     }
 
     // 예매/취소 내역 조회

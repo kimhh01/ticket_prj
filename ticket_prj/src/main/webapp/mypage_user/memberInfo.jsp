@@ -85,7 +85,13 @@
         <div class="modal-content pw-modal">
 
             <div class="modal-body">
+				
+				 <form id="passwordFrm"
+          action="changePasswordProcess.jsp"
+          method="post">
 
+        <h3 class="pw-title">
+        
                 <h3 class="pw-title">
                     비밀번호를 입력해 주세요
                 </h3>
@@ -97,16 +103,19 @@
 
                 <input type="password"
                        id="currentPw"
+                        name="oldPass"
                        class="pw-input"
                        placeholder="사용 중인 비밀번호">
 
                 <input type="password"
                        id="newPw"
+                           name="newPass"
                        class="pw-input"
                        placeholder="신규 비밀번호">
 
                 <input type="password"
                        id="newPwChk"
+                          name="newPassCheck"
                        class="pw-input"
                        placeholder="신규 비밀번호 재입력">
 
@@ -115,7 +124,8 @@
                         id="pwConfirmBtn">
                     확인
                 </button>
-
+			</form>
+			
             </div>
 
         </div>
