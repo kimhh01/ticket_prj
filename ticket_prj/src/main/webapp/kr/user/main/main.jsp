@@ -1,3 +1,4 @@
+<%@page import="java.util.Locale"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="javax.servlet.http.HttpServletRequest"%>
 <%@page import="kr.user.main.TeamRankDTO"%>
@@ -15,6 +16,35 @@
 private <T> List<T> getListAttribute(HttpServletRequest request, String attributeName) {
 	Object value = request.getAttribute(attributeName);
 	return value == null ? null : (List<T>) value;
+}
+
+private String getTeamLogoFile(int teamCode, String logoFile, String teamName) {
+	String name = teamName == null ? "" : teamName.toLowerCase(Locale.KOREAN).replace(" ", "");
+
+	if (name.contains("lg")) return "lg.png";
+	if (name.contains("두산") || name.contains("doosan")) return "doosan.png";
+	if (name.contains("한화") || name.contains("hanwha") || name.contains("hanhwa")) return "hanwha.png";
+	if (name.contains("롯데") || name.contains("lotte")) return "lotte.png";
+	if (name.contains("kia") || name.contains("기아")) return "kia.png";
+	if (name.contains("nc")) return "nc.png";
+	if (name.contains("ssg")) return "ssg.png";
+	if (name.contains("삼성") || name.contains("samsung")) return "samsung.png";
+	if (name.contains("키움") || name.contains("kiwoom") || name.contains("kium")) return "kium.png";
+	if (name.contains("kt")) return "kt.png";
+
+	switch (teamCode) {
+	case 1: return "lg.png";
+	case 2: return "doosan.png";
+	case 3: return "hanwha.png";
+	case 4: return "lotte.png";
+	case 5: return "kia.png";
+	case 6: return "nc.png";
+	case 7: return "ssg.png";
+	case 8: return "samsung.png";
+	case 9: return "kium.png";
+	case 10: return "kt.png";
+	default: return logoFile == null ? "" : logoFile;
+	}
 }
 %>
 
@@ -49,7 +79,7 @@ if (bannerList == null || bannerList.isEmpty()) {
 }
 
 // 경기 날짜를 보기 좋게 출력하기 위한 날짜 포맷
-SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 %>
 
 <style>
@@ -192,13 +222,15 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 
 .game-card {
 	flex: 1;
-	min-height: 210px;
-	padding: 24px;
+	min-height: 240px;
+	padding: 24px 24px 22px;
 	border: 1px solid #e5e5e5;
-	border-radius: 18px;
+	border-radius: 8px;
 	background: #fff;
 	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
 	transition: 0.2s;
+	display: flex;
+	flex-direction: column;
 }
 
 .game-card:hover {
@@ -206,19 +238,14 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.09);
 }
 
-.game-date {
-	font-size: 14px;
-	font-weight: 700;
-	color: #d71920;
-	margin-bottom: 18px;
-}
-
 .team-match {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: space-between;
 	gap: 12px;
-	margin-bottom: 20px;
+	padding-bottom: 18px;
+	border-bottom: 1px solid #eeeeee;
+	margin-bottom: 14px;
 }
 
 .team-box {
@@ -227,8 +254,8 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 }
 
 .team-logo {
-	width: 58px;
-	height: 58px;
+	width: 76px;
+	height: 76px;
 	object-fit: contain;
 	margin-bottom: 8px;
 }
@@ -236,31 +263,55 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 .team-name {
 	font-size: 15px;
 	font-weight: 800;
+	line-height: 1.35;
+	word-break: keep-all;
 }
 
 .vs-text {
-	font-size: 18px;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: #f5f5f5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
 	font-weight: 900;
 	color: #999;
+	margin-top: 36px;
 }
 
 .game-info {
-	font-size: 14px;
-	color: #555;
-	line-height: 1.8;
-	margin-bottom: 18px;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.game-date {
+	font-size: 15px;
+	font-weight: 800;
+	color: #222;
+	margin-bottom: 8px;
+}
+
+.game-stadium {
+	font-size: 13px;
+	font-weight: 600;
+	color: #666;
+	line-height: 1.45;
+	word-break: keep-all;
 }
 
 .reserve-btn {
 	display: block;
-	padding: 11px 0;
-	border-radius: 10px;
+	padding: 12px 0;
+	border-radius: 6px;
 	text-align: center;
 	text-decoration: none;
 	background: #d71920;
 	color: white;
 	font-weight: 800;
 	font-size: 14px;
+	margin-top: auto;
 }
 
 .reserve-btn.wait {
@@ -442,15 +493,10 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 				MainGameDTO game = gameList.get(i);
 			%>
 			<article class="game-card">
-				<div class="game-date">
-					<%=game.getGameDate() != null ? sdf.format(game.getGameDate()) : "경기일 미정"%>
-					<%=game.getGameStartTime() != null ? " " + game.getGameStartTime() : ""%>
-				</div>
-
 				<div class="team-match">
 					<div class="team-box">
 						<img class="team-logo"
-							src="<%=request.getContextPath()%>/images/team/<%=game.getHomeTeamLogo()%>"
+							src="<%=request.getContextPath()%>/images/team_logo/<%=getTeamLogoFile(game.getHomeTeamCode(), game.getHomeTeamLogo(), game.getHomeTeamName())%>"
 							alt="<%=game.getHomeTeamName()%>"
 							onerror="this.style.display='none';">
 						<div class="team-name"><%=game.getHomeTeamName()%></div>
@@ -460,7 +506,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 
 					<div class="team-box">
 						<img class="team-logo"
-							src="<%=request.getContextPath()%>/images/team/<%=game.getAwayTeamLogo()%>"
+							src="<%=request.getContextPath()%>/images/team_logo/<%=getTeamLogoFile(game.getAwayTeamCode(), game.getAwayTeamLogo(), game.getAwayTeamName())%>"
 							alt="<%=game.getAwayTeamName()%>"
 							onerror="this.style.display='none';">
 						<div class="team-name"><%=game.getAwayTeamName()%></div>
@@ -468,9 +514,11 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 				</div>
 
 				<div class="game-info">
-					구장 :
-					<%=game.getStadiumName()%><br> 상태 :
-					<%=game.getSaleStatus() == null ? "예매상태 미정" : game.getSaleStatus()%>
+					<div class="game-date">
+						<%=game.getGameDate() != null ? sdf.format(game.getGameDate()) : "경기일 미정"%>
+						<%=game.getGameStartTime() != null ? " " + game.getGameStartTime() : ""%>
+					</div>
+					<div class="game-stadium"><%=game.getStadiumName()%></div>
 				</div>
 
 				<%
@@ -544,9 +592,9 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 
 			<!-- 이벤트 1 : 신규 회원 이벤트 -->
 			<div class="event-banner">
-				<a href="<%=request.getContextPath()%>/event/detail?eventCode=1">
+				<a href="<%=request.getContextPath()%>/user_event/eventDetail_1.jsp">
 					<img
-					src="<%=request.getContextPath()%>/images/event/event_new_member.png"
+					src="<%=request.getContextPath()%>/images/event/event1_banner.png"
 					alt="신규 회원 이벤트"
 					onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
 					<div class="event-empty" style="display: none;">신규 회원 이벤트 이미지</div>
@@ -555,9 +603,9 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 
 			<!-- 이벤트 2 : 구단 할인 이벤트 -->
 			<div class="event-banner">
-				<a href="<%=request.getContextPath()%>/event/detail?eventCode=2">
+				<a href="<%=request.getContextPath()%>/user_event/eventDetail_2.jsp">
 					<img
-					src="<%=request.getContextPath()%>/images/event/event_team_discount.png"
+					src="<%=request.getContextPath()%>/images/event/event2_banner.png"
 					alt="구단 할인 이벤트"
 					onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
 					<div class="event-empty" style="display: none;">구단 할인 이벤트 이미지</div>

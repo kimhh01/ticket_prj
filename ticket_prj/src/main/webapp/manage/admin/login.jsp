@@ -17,15 +17,15 @@
 			msg="비밀번호를 입력해주세요.";
 		}else{
 			AdminLoginService service = new AdminLoginService();
-			AdminDTO dto = new AdminDTO();
-			dto.setId(id);
-			dto.setPassword(password);
+			AdminDTO aDTO = new AdminDTO();
+			aDTO.setId(id);
+			aDTO.setPassword(password);
 			AdminInfoDTO admin =
-			service.loginAdmin(dto);
+			service.loginAdmin(aDTO);
 			
 			if(admin != null){
 				session.setAttribute("admin",admin);
-				response.sendRedirect("adminMain.jsp");
+				response.sendRedirect("../dashboard/main.jsp");
 				return;
 			}else{
 				msg = "아이디 또는 비밀번호가 일치하지 않습니다.";
@@ -148,7 +148,7 @@ $(function(){
 	<button type="submit">로그인</button>
 	</form>
 	<div class="notice">
-		ⓘ 인증되지 않은 접근은 법적 처벌을 받을 수 있습니다.<br>
+		인증되지 않은 접근은 법적 처벌을 받을 수 있습니다.<br>
 		공용 PC 사용 시 보안에 유의하시기 바랍니다.
 	</div>
 	</div>
