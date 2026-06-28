@@ -1,13 +1,15 @@
 package userMypage;
 
 import java.sql.Date;
+
 import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import kr.user.common.UserDBConnection;
-import userMypage.MemberDTO;
+import kr.user.member.MemberDTO;
 import userMypage.MyPageReservationDTO;
 import userMypage.ReservationCancelDTO;
 import userMypage.ReservationDetailDTO;
@@ -27,21 +29,150 @@ public class MyPageDAO {
 
         MemberDTO memberDTO = null;
 
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        UserDBConnection db = UserDBConnection.getInstance();
+
+        try {
+
+            con = db.getConnection();
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.append("SELECT MEMBER_ID, NAME, EMAIL, PHONE, ");
+            sql.append("ZIPCODE, ADDRESS, ADDRESS2, ");
+            sql.append("SNS_RECEIVE_YN, EMAIL_RECEIVE_YN ");
+            sql.append("FROM MEMBER ");
+            sql.append("WHERE MEMBER_ID=?");
+
+            stmt = con.prepareStatement(sql.toString());
+
+            stmt.setString(1, memberId);
+
+            rs = stmt.executeQuery();
+
+            if(rs.next()){
+
+                memberDTO = new MemberDTO();
+
+                memberDTO.setMemberCode(rs.getString("MEMBER_ID"));
+                memberDTO.setName(rs.getString("NAME"));
+                memberDTO.setEmail(rs.getString("EMAIL"));
+                memberDTO.setPhone(rs.getString("PHONE"));
+                memberDTO.setZipcode(rs.getInt("ZIPCODE"));
+                memberDTO.setAddress(rs.getString("ADDRESS"));
+                memberDTO.setAddress2(rs.getString("ADDRESS2"));
+                memberDTO.setSmsReceiveYN(rs.getString("SNS_RECEIVE_YN").charAt(0));
+                memberDTO.setEmailReceiveYN(rs.getString("EMAIL_RECEIVE_YN").charAt(0));
+
+            }
+
+        } catch(SQLException e) {
+
+            e.printStackTrace();
+
+        } finally {
+            try {
+                db.close(rs, stmt, con);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         return memberDTO;
     }
 
-    // 비밀번호 조회
+ // 비밀번호 조회
     public String selectPassword(String memberId) {
 
         String password = null;
 
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        UserDBConnection db = UserDBConnection.getInstance();
+
+        try {
+
+            con = db.getConnection();
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.append("SELECT PASS ");
+            sql.append("FROM MEMBER ");
+            sql.append("WHERE MEMBER_ID=?");
+
+            stmt = con.prepareStatement(sql.toString());
+
+            stmt.setString(1, memberId);
+
+            rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                password = rs.getString("PASS");
+            }
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                db.close(rs, stmt, con);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
         return password;
     }
-
     // 회원 정보 수정
     public int updateMyInfo(MemberDTO memberDTO) {
 
         int result = 0;
+
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        UserDBConnection db = UserDBConnection.getInstance();
+
+        try {
+
+            con = db.getConnection();
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.append("UPDATE MEMBER ");
+            sql.append("SET EMAIL=?, ");
+            sql.append("PHONE=?, ");
+            sql.append("ZIPCODE=?, ");
+            sql.append("ADDRESS=?, ");
+            sql.append("ADDRESS2=?, ");
+            sql.append("SNS_RECEIVE_YN=?, ");
+            sql.append("EMAIL_RECEIVE_YN=? ");
+            sql.append("WHERE MEMBER_ID=?");
+
+            stmt = con.prepareStatement(sql.toString());
+
+            stmt.setString(1, memberDTO.getEmail());
+            stmt.setString(2, memberDTO.getPhone());
+            stmt.setInt(3, memberDTO.getZipcode());
+            stmt.setString(4, memberDTO.getAddress());
+            stmt.setString(5, memberDTO.getAddress2());
+            stmt.setString(6, String.valueOf(memberDTO.getSmsReceiveYN()));
+            stmt.setString(7, String.valueOf(memberDTO.getEmailReceiveYN()));
+            stmt.setString(8, memberDTO.getMemberCode());
+
+            result = stmt.executeUpdate();
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            db.close(stmt, con);
+        }
 
         return result;
     }
@@ -60,7 +191,7 @@ public class MyPageDAO {
         }
 
         Connection con = null;
-        PreparedStatement pstmt = null;
+        PreparedStatement stmt = null;
 
         UserDBConnection db = UserDBConnection.getInstance();
 
@@ -75,19 +206,19 @@ public class MyPageDAO {
             sql.append("WHERE MEMBER_ID=? ");
             sql.append("AND PASS=?");
 
-            pstmt = con.prepareStatement(sql.toString());
+            stmt = con.prepareStatement(sql.toString());
 
-            pstmt.setString(1, newPass);
-            pstmt.setString(2, memberId);
-            pstmt.setString(3, oldPass);
+            stmt.setString(1, newPass);
+            stmt.setString(2, memberId);
+            stmt.setString(3, oldPass);
 
-            result = pstmt.executeUpdate();
+            result = stmt.executeUpdate();
 
         } catch(SQLException e) {
             e.printStackTrace();
             
         } finally {
-            db.close(pstmt, con);
+            db.close(stmt, con);
         }
         return result;
 

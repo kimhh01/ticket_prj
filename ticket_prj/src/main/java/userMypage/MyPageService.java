@@ -1,6 +1,7 @@
 package userMypage;
 
 import java.sql.Date;
+
 import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import kr.user.common.UserDBConnection;
-import userMypage.MemberDTO;
+import kr.user.member.MemberDTO;
 import userMypage.MyPageDAO;
 import userMypage.MyPageReservationDTO;
 import userMypage.ReservationDetailDTO;
@@ -43,11 +44,10 @@ public class MyPageService {
     }
 
     // 회원 정보 수정
-    public boolean updateMyInfo(MemberDTO memberDTO) {
+    public int updateMyInfo(MemberDTO memberDTO) {
 
-        int result = mpDAO.updateMyInfo(memberDTO);
+        return mpDAO.updateMyInfo(memberDTO);
 
-        return result > 0;
     }
 
     // 비밀번호 변경
