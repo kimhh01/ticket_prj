@@ -79,13 +79,17 @@
 </div>
 
 
-<%-- 비밀번호 변경/임시 비번 1234 --%>
+<%-- 비밀번호 변경--%>
 <div class="modal fade" id="changePwModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content pw-modal">
 
             <div class="modal-body">
-
+				
+				 <form id="passwordFrm"
+          action="changePassword.jsp"
+          method="post">
+        
                 <h3 class="pw-title">
                     비밀번호를 입력해 주세요
                 </h3>
@@ -97,16 +101,19 @@
 
                 <input type="password"
                        id="currentPw"
+                        name="oldPass"
                        class="pw-input"
                        placeholder="사용 중인 비밀번호">
 
                 <input type="password"
                        id="newPw"
+                           name="newPass"
                        class="pw-input"
                        placeholder="신규 비밀번호">
 
                 <input type="password"
                        id="newPwChk"
+                          name="newPassCheck"
                        class="pw-input"
                        placeholder="신규 비밀번호 재입력">
 
@@ -115,7 +122,8 @@
                         id="pwConfirmBtn">
                     확인
                 </button>
-
+			</form>
+			
             </div>
 
         </div>
@@ -211,12 +219,13 @@
 
                 <p>회원정보 수정을 위해 비밀번호를 입력해주세요.</p>
 
-                <input type="password"
-                       id="checkCurrentPw"
-                       class="form-control"
-                       placeholder="현재 비밀번호">
-
-            </div>
+               <form id="checkPwFrm" action="checkPassword.jsp" method="post">
+    <input type="password"
+           id="checkCurrentPw"
+           name="pass"
+           class="form-control"
+           placeholder="현재 비밀번호">
+</form>
 
             <div class="modal-footer">
 
@@ -240,73 +249,54 @@
 
 <script>
 $(function(){
+	$("#pwConfirmBtn").click(function(){
 
-    $("#pwConfirmBtn").click(function(){
+	    let currentPw=$("#currentPw").val().trim();
+	    let newPw=$("#newPw").val().trim();
+	    let newPwChk=$("#newPwChk").val().trim();
 
-        let currentPw=$("#currentPw").val();
-        let newPw=$("#newPw").val();
-        let newPwChk=$("#newPwChk").val();
+	    if(currentPw==""){
+	        alert("현재 비밀번호를 입력하세요.");
+	        $("#currentPw").focus();
+	        return;
+	    }
 
-        if(currentPw!="1234"){
-            new bootstrap.Modal(
-                document.getElementById("pwFailModal")
-            ).show();
-            return;
-        }
+	    if(newPw==""){
+	        alert("새 비밀번호를 입력하세요.");
+	        $("#newPw").focus();
+	        return;
+	    }
 
-        if(newPw!=newPwChk){
-            new bootstrap.Modal(
-                document.getElementById("pwMismatchModal")
-            ).show();
-            return;
-        }
+	    if(newPw!=newPwChk){
+	        new bootstrap.Modal(
+	            document.getElementById("pwMismatchModal")
+	        ).show();
+	        return;
+	    }
 
-        bootstrap.Modal.getInstance(
-            document.getElementById("changePwdal")
-        ).hide();
+	    $("#passwordFrm").submit();
 
-        new bootstrap.Modal(
-            document.getElementById("pwSuccessModal")
-        ).show();
-
-    });
-    
-    //닫으면 비밀번호 입력값 초기화 
-    $("#changePwModal").on("hidden.bs.modal", function(){
-
-        $("#currentPw").val("");
-        $("#newPw").val("");
-        $("#newPwChk").val("");
-
-    });
-
-    
-    
+	});
 });
 
 $(function(){
 
-    $("#pwCheckBtn").click(function(){
+	$("#pwCheckBtn").click(function(){
 
-        var pw=$("#checkCurrentPw").val();
+	    let pw=$("#checkCurrentPw").val().trim();
 
-        // 임시 비밀번호
-        if(pw=="1234"){
+	    if(pw==""){
+	        alert("비밀번호를 입력하세요.");
+	        $("#checkCurrentPw").focus();
+	        return;
+	    }
 
-            location.href="memberEdit.jsp";
+	    $("#checkPwFrm").submit();
 
-        }else{
-
-            alert("비밀번호가 일치하지 않습니다.");
-
-            $("#currentPw").val("");
-            $("#currentPw").focus();
-
-        }
-
-    });
+	});
 
 });
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

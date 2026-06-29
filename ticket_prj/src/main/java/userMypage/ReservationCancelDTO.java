@@ -1,4 +1,4 @@
-package user_mypage;
+package userMypage;
 
 import java.sql.Date;
 

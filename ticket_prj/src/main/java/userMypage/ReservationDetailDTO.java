@@ -1,4 +1,4 @@
-package user_mypage;
+package userMypage;
 
 public class ReservationDetailDTO {
 

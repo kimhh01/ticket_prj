@@ -1,10 +1,10 @@
-package user_event;
+package userEvent;
 
 import java.sql.Date;
 import java.util.List;
 
-import user_event.EventPageDAO;
-import user_event.EventDTO;
+import userEvent.EventDTO;
+import userEvent.EventPageDAO;
 
 public class EventPageService {
 

@@ -1,12 +1,19 @@
-package user_mypage;
+package userMypage;
 
 import java.sql.Date;
-import java.util.List;
 
-import user_mypage.MyPageDAO;
-import user_mypage.MemberDTO;
-import user_mypage.MyPageReservationDTO;
-import user_mypage.ReservationDetailDTO;
+import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import kr.user.common.UserDBConnection;
+import kr.user.member.MemberDTO;
+import userMypage.MyPageDAO;
+import userMypage.MyPageReservationDTO;
+import userMypage.ReservationDetailDTO;
+
 
 public class MyPageService {
 
@@ -37,11 +44,10 @@ public class MyPageService {
     }
 
     // 회원 정보 수정
-    public boolean updateMyInfo(MemberDTO memberDTO) {
+    public int updateMyInfo(MemberDTO memberDTO) {
 
-        int result = mpDAO.updateMyInfo(memberDTO);
+        return mpDAO.updateMyInfo(memberDTO);
 
-        return result > 0;
     }
 
     // 비밀번호 변경
@@ -51,6 +57,11 @@ public class MyPageService {
             String newPass,
             String newPassCheck) {
 
+        // 새 비밀번호와 확인 비밀번호가 다르면 실패
+        if(!newPass.equals(newPassCheck)) {
+            return false;
+        }
+
         int result = mpDAO.updatePassword(
                 memberId,
                 oldPass,
@@ -59,7 +70,7 @@ public class MyPageService {
 
         return result > 0;
     }
-
+    
     // 예매 / 취소 내역 조회
     public List<MyPageReservationDTO> getReservationList(
             String memberId,
