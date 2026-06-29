@@ -128,18 +128,16 @@ public class TeamPageDAO {
 		try {
 			StringBuilder selectTeamImg=new StringBuilder();
 			selectTeamImg
-			.append("	select gs.game_date,	")
-			.append("	ht.team_name AS home_team_name, ht.team_logo_img AS home_team_logo,	")
-			.append("	ot.team_name AS other_team_name, ot.team_logo_img AS other_team_logo,	")
-			.append(" 	s.stadium_name ")
-			.append("	from game_schedule gs	")
-			.append("	JOIN team ht	")
-			.append("	ON gs.team_home = ht.team_id	")
-			.append("	JOIN team ot	")
-			.append("	ON gs.team_other = ot.team_id	")
-			.append("	JOIN stadium s	")
-			.append("	ON gs.stadium_id = s.stadium_id	")
-			.append("	WHERE ht.team_id = ? or ot.team_id = ?	");
+		    .append(" select gs.game_schedule_id, ")
+		    .append(" gs.game_date, ")
+		    .append(" ht.team_name AS home_team_name, ht.team_logo_img AS home_team_logo, ")
+		    .append(" ot.team_name AS other_team_name, ot.team_logo_img AS other_team_logo, ")
+		    .append(" s.stadium_name ")
+		    .append(" from game_schedule gs ")
+		    .append(" join team ht on gs.team_home = ht.team_id ")
+		    .append(" join team ot on gs.team_other = ot.team_id ")
+		    .append(" join stadium s on gs.stadium_id = s.stadium_id ")
+		    .append(" where ht.team_id = ? or ot.team_id = ? ");
 			
 			pstmt=con.prepareStatement(selectTeamImg.toString());
 				pstmt.setInt(1, teamCode);
@@ -148,6 +146,8 @@ public class TeamPageDAO {
 				
 			while(rs.next()) {
 				TeamDTO tDTO = new TeamDTO();
+				
+				tDTO.setGameScheduleCode(rs.getInt("game_schedule_id")); // 추가
 				tDTO.setGameDate(rs.getDate("game_date"));
 			    tDTO.setTeamHomeName(rs.getString("home_team_name"));
 			    tDTO.setTeamHomeImg(rs.getString("home_team_logo"));

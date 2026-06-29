@@ -67,7 +67,7 @@ $(function(){
 
     // 구단 소개 및 가이드 외부 이동 (JSTL 변수 사용)
     $(".introduceBtn, .guideBtn").click(function(){
-        window.open("${teamUrl}");
+        window.open("");
     });
 
     // 클린예매 팝업 토글
@@ -119,27 +119,28 @@ $(function(){
         }
     });
        
-    
+    //예매하기 버튼 클릭시 예매창으로 이동
     $(".reserve-btn").click(function(){
-    	window.open(
-    		"<%=request.getContextPath()%>/reservationPage/reservationPage3.jsp",
-   	        "reservation",
-   	        "width=1200,height=800,top=100,left=200",
-   	     	"resizable=no"
-   	    );
+        var gameScheduleCode = $(this).data("game");
+        alert(gameScheduleCode);   // 추가
+        window.open(
+            "<%=request.getContextPath()%>/reservationPageServlet?gameScheduleCode=" + gameScheduleCode,
+            "reservation",
+            "width=1200,height=800,top=100,left=200,resizable=no"
+        );
     });
 });
 </script>
 </head>
 <body>
-<jsp:include page="../include/header.jsp"/>
+<jsp:include page="../fragment/header.jsp"/>
 
 <c:if test="${not empty tDTO}">
 <section class="team-info">
     <div class="team-inner">
         <div class="team-logo">
             <%-- DB에서 읽어온 구단 로고 이미지 (경로가 DB에 담겨있어야 정상 작동) --%>
-            <img src="${pageContext.request.contextPath}/${tDTO.teamHomeImg}" onerror="this.src='${pageContext.request.contextPath}/images/team_logo/${tDTO.teamHomeImg}'"/>
+            <img src="${pageContext.request.contextPath}/images/team_logo/${tDTO.teamHomeImg}">
         </div>
         <div class="team-name">
             <h1>${tDTO.teamHomeName}</h1>
@@ -252,9 +253,9 @@ $(function(){
                         </div>
 
                         <div class="game-team-img">
-                            <img src="${pageContext.request.contextPath}/${game.teamHomeImg}" onerror="this.src='${pageContext.request.contextPath}/images/team_logo/${game.teamHomeImg}'"/>
+                            <img src="${pageContext.request.contextPath}/images/team_logo/${game.teamHomeImg}">
                             vs 
-                            <img src="${pageContext.request.contextPath}/${game.teamOtherImg}" onerror="this.src='${pageContext.request.contextPath}/images/team_logo/${game.teamOtherImg}'"/>
+                            <img src="${pageContext.request.contextPath}/images/team_logo/${game.teamOtherImg}">
                         </div>
                         
                         <div class="game-team-name">
@@ -271,7 +272,7 @@ $(function(){
                         <div class="game-btn">
                             <c:choose>
                                 <c:when test="${not isUpcoming}">
-                                    <button class="reserve-btn">예매하기</button>
+                                    <button class="reserve-btn" data-game="${game.gameScheduleCode}">예매하기</button>
                                 </c:when>
                                 <c:otherwise>
                                     <button class="coming-btn" disabled>예매오픈 예정</button>
@@ -350,89 +351,12 @@ $(function(){
      ========================================================================== --%>
 <div id="tab-league" class="tab-content">
     <section class="league-guide-wrap">
-        <!-- 입장 요금 섹션 -->
-        <div class="guide-section">
-            <h3>🎟️ 홈경기 입장 요금 안내</h3>
-            <p class="guide-subtitle">관람 요금은 구장 구역과 주중/주말 구분에 따라 차등 적용됩니다.</p>
-            
-            <table class="info-table">
-                <thead>
-                    <tr>
-                        <th>좌석 등급</th>
-                        <th>주중 요금 (화 ~ 목)</th>
-                        <th>주말 및 공휴일 요금 (금 ~ 일)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="seat-vip">VIP석</td>
-                        <td>60,000 원</td>
-                        <td>70,000 원</td>
-                    </tr>
-                    <tr>
-                        <td class="seat-table">테이블석 (2인 기준)</td>
-                        <td>80,000 원</td>
-                        <td>90,000 원</td>
-                    </tr>
-                    <tr>
-                        <td class="seat-exc">익사이팅존</td>
-                        <td>25,000 원</td>
-                        <td>30,000 원</td>
-                    </tr>
-                    <tr>
-                        <td class="seat-blue">블루석 (지정석)</td>
-                        <td>17,000 원</td>
-                        <td>20,000 원</td>
-                    </tr>
-                    <tr>
-                        <td class="seat-red">레드석 (응원 지정석)</td>
-                        <td>14,000 원</td>
-                        <td>16,000 원</td>
-                    </tr>
-                    <tr>
-                        <td class="seat-navy">네이비석 (일반지정석)</td>
-                        <td>12,000 원</td>
-                        <td>14,000 원</td>
-                    </tr>
-                    <tr>
-                        <td class="seat-out">외야 자유석</td>
-                        <td>8,000 원</td>
-                        <td>10,000 원</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 취소 환불 정책 섹션 -->
-        <div class="guide-section">
-            <h3>⚠️ 티켓 취소 및 환불 규정</h3>
-            <p class="guide-subtitle">예매하신 티켓의 취소 수수료와 환불 기본 규정입니다.</p>
-            
-            <div class="policy-box">
-                <ul>
-                    <li><strong>예매 취소 마감 시한:</strong> 해당 경기 시작 4시간 전까지 취소 및 환불이 가능합니다. 이후에는 온라인 취소가 절대 불가능합니다.</li>
-                    <li><strong>취소 수수료 안내:</strong>
-                        <ul>
-                            <li><strong>예매 당일 취소 시:</strong> 별도의 취소 수수료가 부과되지 않습니다.</li>
-                            <li><strong>예매 다음 날 ~ 경기 전날 취소 시:</strong> 티켓 금액의 10%가 수수료로 공제됩니다.</li>
-                            <li><strong>경기 당일 취소 시 (경기 시작 4시간 전까지):</strong> 티켓 금액의 10%가 수수료로 공제됩니다.</li>
-                        </ul>
-                    </li>
-                    <li><strong>우천 취소 규정:</strong>
-                        <ul>
-                            <li>경기 시작 전 우천 취소가 확정될 경우, 승인은 자동으로 카드사 영업일 기준 3~5일 이내 일괄 취소됩니다.</li>
-                            <li>페이코 등 간편결제수단 역시 등록된 수단으로 자동 환불됩니다.</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
+       
     </section>
-</div>
-<%-- 
+</div> 
 <footer class="footer-wrap">
-   <jsp:include page="../include/footer.jsp"/>
-</footer> --%>
+   <jsp:include page="../fragment/footer.jsp"/>
+</footer> 
 
 </body>
 </html>

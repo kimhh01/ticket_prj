@@ -50,6 +50,8 @@ public class ReservationPageDAO {
 			pstmt.setInt(2, rpDTO.getTotalPrice());
 			pstmt.setInt(3, rpDTO.getDiscountPrice());
 			pstmt.setInt(4, rpDTO.getPayPrice());
+			
+			rowCnt = pstmt.executeUpdate();
 		}finally {
 			udbc.close(null, pstmt, con);
 		}
@@ -58,6 +60,7 @@ public class ReservationPageDAO {
 		return rowCnt;
 	}//insertReservation
 	
+	//예매 추가 디테일
 	public int insertReservationDetail(ReservationPageDTO rpDTO) throws SQLException {
 		int rowCnt=0;
 		
@@ -117,7 +120,8 @@ public class ReservationPageDAO {
 			.append("	select s.stadium_seat_img as stadium_Img,	")
 			.append("	h.team_name as home_name, o.team_name as other_name,	")
 			.append("	h.team_logo_img as home_img, o.team_logo_img as other_img,	")
-			.append("	gs.game_date as game_date, gs.game_start_time as game_start_time	")
+			.append("	gs.game_date as game_date, gs.game_start_time as game_start_time,	")
+			.append("	s.stadium_id as stadium_code	")
 			.append("	from game_schedule gs	")
 			.append("	join stadium s ")
 			.append("	on gs.stadium_id = s.stadium_id ")
@@ -140,6 +144,7 @@ public class ReservationPageDAO {
 				rpDTO.setTeamOtherImg(rs.getString("other_img"));
 				rpDTO.setGameDate(rs.getDate("game_date"));
 				rpDTO.setGameStartTime(rs.getString("game_start_time"));
+				rpDTO.setStadiumCode(rs.getInt("stadium_code"));
 			} else {
 				System.out.println("경기 정보 없음 " + gameScheduleCode);
 			}
@@ -165,7 +170,7 @@ public class ReservationPageDAO {
 			con=udbc.getConnection();
 			StringBuilder selectTeamImg=new StringBuilder();
 			selectTeamImg
-			.append("	selset ss.stadium_id,	")
+			.append("	select ss.stadium_id,	")
 			.append("	sum(ss.stadium_seat_count)	")
 			.append("	-nvl(sum(rd.reservation_quantity),0) as remain_seat	")
 			.append("	from stadium_seat ss	")
@@ -207,7 +212,7 @@ public class ReservationPageDAO {
 			con=udbc.getConnection();
 			StringBuilder selectTeamImg=new StringBuilder();
 			selectTeamImg
-			.append("	selset seat_name, adult_seat_price, youth_seat_price,child_seat_price	")
+			.append("	select seat_name, adult_seat_price, youth_seat_price,child_seat_price	")
 			.append("	from stadium_seat	")
 			.append("	where stadium_id = ?	");
 
@@ -221,9 +226,10 @@ public class ReservationPageDAO {
 				rpDTO=new ReservationPageDTO();
 				rpDTO.setSeatName(rs.getString("seat_name"));
 				rpDTO.setAdultSeatPrice(rs.getInt("adult_seat_price"));
-				rpDTO.setAdultSeatPrice(rs.getInt("youth_seat_price"));
-				rpDTO.setAdultSeatPrice(rs.getInt("child_seat_price"));
+				rpDTO.setYouthSeatPrice(rs.getInt("youth_seat_price"));
+				rpDTO.setChildSeatPrice(rs.getInt("child_seat_price"));
 				
+				list.add(rpDTO);
 				
 			}
 		} finally {

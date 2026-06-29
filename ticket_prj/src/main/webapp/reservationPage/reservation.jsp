@@ -38,7 +38,8 @@
 <head>
 <meta charset="UTF-8">
 <title>bigBall예매</title>
-<link rel="stylesheet" href="reservation4.css">
+<link rel="stylesheet"
+      href="<%=request.getContextPath()%>/reservationPage/reservation4.css">
 <!-- 토스 페이먼츠 SDK -->
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>

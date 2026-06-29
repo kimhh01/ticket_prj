@@ -48,8 +48,8 @@ import javax.servlet.http.HttpServletResponse;
 			RequestDispatcher rd = request.getRequestDispatcher("/teamPage/teamPage.jsp");
 			rd.forward(request, response);
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch(SQLException e) {
+		    throw new ServletException(e);
 		}
 	}
 

@@ -42,7 +42,7 @@ public class ReservationPageDTO {
 	private int reservationQuantity;//예매 수량
 	private int remainSeatNum;//잔여좌석수
 	private int adultSeatPrice;//성인좌석가격
-	private int youthSeatNum;//청소년좌석가격
+	private int youthSeatPrice;//청소년좌석가격
 	private int childSeatPrice;//어린이좌석가격
 	
 	
