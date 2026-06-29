@@ -936,6 +936,7 @@ table{
 .btn-confirm-captcha{
     background:#333;
     color:#fff;
+    cursor: pointer;
 }
 
 /*************************************************

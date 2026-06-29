@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <%-- 구단 코드별 공식 홈페이지 URL 설정 (선택된 tDTO 기준) --%>
@@ -40,7 +39,7 @@
         <c:set var="teamUrl" value="https://www.ktwiz.co.kr/ktwiz/about" />
     </c:when>
     <c:otherwise>
-        <c:set var="teamUrl" value="http://localhost/ticket_prj/main" />
+        <c:set var="teamUrl" value="${pageContext.request.contextPath}/main" />
     </c:otherwise>
 </c:choose>
 
@@ -52,7 +51,7 @@
 <head>
 <meta charset="UTF-8">
 <title>티켓링크 - 야구 예매</title>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/teamPage/teamPage.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/teamPage/teamPage.css">
 <script type="text/javascript">
 $(function(){
     // 1. JS 기반 무중단 탭 전환 이벤트 구현
@@ -65,9 +64,10 @@ $(function(){
         $("#" + targetId).addClass("active");
     });
 
-    // 구단 소개 및 가이드 외부 이동 (JSTL 변수 사용)
+    // 🌟 구단 소개 및 가이드 버튼 클릭 시 상단에서 계산된 JSTL teamUrl 주소로 새 창 띄우기 연동 완료
     $(".introduceBtn, .guideBtn").click(function(){
-        window.open("");
+        var targetUrl = "${teamUrl}";
+        window.open(targetUrl, "_blank");
     });
 
     // 클린예매 팝업 토글
@@ -119,12 +119,13 @@ $(function(){
         }
     });
        
-    //예매하기 버튼 클릭시 예매창으로 이동
+    // 예매하기 버튼 클릭시 예매창으로 이동 (맵핑 주소 정합 완료)
     $(".reserve-btn").click(function(){
         var gameScheduleCode = $(this).data("game");
-        alert(gameScheduleCode);   // 추가
+        var contextPath = "${pageContext.request.contextPath}";
+        
         window.open(
-            "<%=request.getContextPath()%>/reservationPageServlet?gameScheduleCode=" + gameScheduleCode,
+            contextPath + "/reservation?gameScheduleCode=" + gameScheduleCode,
             "reservation",
             "width=1200,height=800,top=100,left=200,resizable=no"
         );
@@ -139,18 +140,16 @@ $(function(){
 <section class="team-info">
     <div class="team-inner">
         <div class="team-logo">
-            <%-- DB에서 읽어온 구단 로고 이미지 (경로가 DB에 담겨있어야 정상 작동) --%>
-            <img src="${pageContext.request.contextPath}/images/team_logo/${tDTO.teamHomeImg}">
+            <img src="${pageContext.request.contextPath}/images/team_logo/${tDTO.teamHomeImg}" alt="구단로고">
         </div>
         <div class="team-name">
             <h1>${tDTO.teamHomeName}</h1>
             <div class="team-btns">
-                <button class="cleanBtn">클린예매</button>
-                <button class="cancelBtn">취소표대기</button>
-                <button class="guideBtn">예매가이드</button>
-                <button class="introduceBtn">구단소개</button>
+                <button type="button" class="cleanBtn">클린예매</button>
+                <button type="button" class="cancelBtn">취소표대기</button>
+                <button type="button" class="guideBtn">예매가이드</button>
+                <button type="button" class="introduceBtn">구단소개</button>
                 
-                <!-- 클린예매 팝업 -->                
                 <div class="common_popup_wrap">
                     <div class="common_popup">
                         <div class="common_popup_header">
@@ -172,7 +171,6 @@ $(function(){
                      </div>
                 </div>
                 
-                <!-- 취소표대기 팝업 -->
                 <div class="cancel_popup_wrap">
                     <div class="common_popup">
                         <div class="common_popup_header">
@@ -211,7 +209,6 @@ $(function(){
     </div>
 </section>
 
-<!-- 탭 메뉴 -->
 <div class="tabs-wrap">
     <div class="tabs">
         <div class="tab active" data-target="tab-reservation">예매하기</div>
@@ -220,9 +217,7 @@ $(function(){
     </div>
 </div>
 
-<%-- ==========================================================================
-     [탭 1] 예매하기 컨텐츠 영역 (EL / JSTL 루프 적용)
-     ========================================================================== --%>
+<%-- [탭 1] 예매하기 컨텐츠 영역 --%>
 <div id="tab-reservation" class="tab-content active">
     <div class="filter-list">
         <label class="filter-checkbox">
@@ -236,10 +231,7 @@ $(function(){
         <c:choose>
             <c:when test="${not empty gameList}">
                 <c:forEach var="game" items="${gameList}">
-                    <%-- 1. 홈경기 여부 판별 (배너 구단명과 경기의 홈팀명 일치 여부 비교) --%>
                     <c:set var="isHome" value="${not empty tDTO and game.teamHomeName eq tDTO.teamHomeName}" />
-                    
-                    <%-- 2. 경기 시간이 오늘보다 이후인지 비교 (예매예정 vs 예매하기) --%>
                     <c:set var="isUpcoming" value="${game.gameDate.time > now.time}" />
                     
                     <div class="game-row ${isHome ? 'home-game' : 'away-game'}">
@@ -253,9 +245,9 @@ $(function(){
                         </div>
 
                         <div class="game-team-img">
-                            <img src="${pageContext.request.contextPath}/images/team_logo/${game.teamHomeImg}">
+                            <img src="${pageContext.request.contextPath}/images/team_logo/${game.teamHomeImg}" alt="홈팀">
                             vs 
-                            <img src="${pageContext.request.contextPath}/images/team_logo/${game.teamOtherImg}">
+                            <img src="${pageContext.request.contextPath}/images/team_logo/${game.teamOtherImg}" alt="원정팀">
                         </div>
                         
                         <div class="game-team-name">
@@ -272,10 +264,10 @@ $(function(){
                         <div class="game-btn">
                             <c:choose>
                                 <c:when test="${not isUpcoming}">
-                                    <button class="reserve-btn" data-game="${game.gameScheduleCode}">예매하기</button>
+                                    <button type="button" class="reserve-btn" data-game="${game.gameScheduleCode}">예매하기</button>
                                 </c:when>
                                 <c:otherwise>
-                                    <button class="coming-btn" disabled>예매오픈 예정</button>
+                                    <button type="button" class="coming-btn" disabled>예매오픈 예정</button>
                                 </c:otherwise>
                             </c:choose>
                         </div>
@@ -289,19 +281,15 @@ $(function(){
     </section>
 </div>
 
-<%-- ==========================================================================
-     [탭 2] 공지사항 컨텐츠 영역
-     ========================================================================== --%>
+<%-- [탭 2] 공지사항 컨텐츠 영역 --%>
 <div id="tab-notice" class="tab-content">
     <section class="notice-detail-wrap">
-    
     <c:forEach var="notice" items="${noticeList}">
         <div class="notice-detail-header">
             <span class="notice-badge">공지</span>
-            
             <article class="notice-item" data-category="reservation">
             <div class="notice-meta">
-                <span>${notice.noticeTitle }</span> | <span>${notice.noticeWriteDate} </span><span class="notice-btn">ㅇ</span>
+                <span>${notice.noticeTitle}</span> | <span>${notice.noticeWriteDate} </span><span class="notice-btn">▼</span>
             </div>
             </article>
         </div>
@@ -346,17 +334,13 @@ $(function(){
     </section>
 </div>
 
-<%-- ==========================================================================
-     [탭 3] 리그안내 컨텐츠 영역
-     ========================================================================== --%>
+<%-- [탭 3] 리그안내 컨텐츠 영역 --%>
 <div id="tab-league" class="tab-content">
-    <section class="league-guide-wrap">
-       
-    </section>
+    <section class="league-guide-wrap"></section>
 </div> 
+
 <footer class="footer-wrap">
    <jsp:include page="../fragment/footer.jsp"/>
 </footer> 
-
 </body>
 </html>

@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import kr.user.common.UserDBConnection;
 
 public class ReservationPageDAO {
@@ -28,15 +25,12 @@ public class ReservationPageDAO {
 	
 	
 	//예매 추가
-	public int insertReservation(ReservationPageDTO rpDTO) throws SQLException {
+	public int insertReservation(Connection con, ReservationPageDTO rpDTO) throws SQLException {
 		int rowCnt=0;
-		
-		Connection con=null;
 		PreparedStatement pstmt=null;
+		ResultSet rs = null;
 		
 		try {
-			con=udbc.getConnection();
-			
 			String sql =
 					"insert into reservation(" +
 					"reservation_id, member_id, admin_id, reservation_date," +
@@ -44,7 +38,7 @@ public class ReservationPageDAO {
 					"reservation_status, pay_state) " +
 					"values(reservation_seq.nextval, ?, 1, SYSDATE, ?, ?, ?, 0, '구매', '구매')";
 			
-			pstmt=con.prepareStatement(sql.toString());
+			pstmt=con.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
 			
 			pstmt.setString(1, rpDTO.getMemberCode());
 			pstmt.setInt(2, rpDTO.getTotalPrice());
@@ -52,8 +46,16 @@ public class ReservationPageDAO {
 			pstmt.setInt(4, rpDTO.getPayPrice());
 			
 			rowCnt = pstmt.executeUpdate();
+			
+			if(rowCnt > 0) {
+				rs=pstmt.getGeneratedKeys();
+				if(rs.next()) {
+					int generatedId=rs.getInt(1);
+					rpDTO.setReservationCode(generatedId);
+				}
+			}
 		}finally {
-			udbc.close(null, pstmt, con);
+			udbc.close(rs, pstmt, null);
 		}
 		
 		
@@ -61,15 +63,12 @@ public class ReservationPageDAO {
 	}//insertReservation
 	
 	//예매 추가 디테일
-	public int insertReservationDetail(ReservationPageDTO rpDTO) throws SQLException {
+	public int insertReservationDetail(Connection con,ReservationPageDTO rpDTO) throws SQLException {
 		int rowCnt=0;
 		
-		Connection con=null;
 		PreparedStatement pstmt=null;
 		
 		try {
-			con=udbc.getConnection();
-			
 			StringBuilder sql=new StringBuilder();
 			 sql
 			 .append(" insert into reservation_detail ")
@@ -94,7 +93,7 @@ public class ReservationPageDAO {
 
 			
 		}finally {
-			udbc.close(null, pstmt, con);
+			udbc.close(null, pstmt, null);
 			
 		}
 		
@@ -155,51 +154,61 @@ public class ReservationPageDAO {
 		return rpDTO;
 	}
 	
-	//잔여좌석보여주기
-	public List<ReservationPageDTO> selectRemainingSeat(int stadiumCode) throws SQLException {
-		List<ReservationPageDTO> remainingSeatList = new ArrayList<ReservationPageDTO>();
-		ReservationPageDTO rpDTO=null;
+	// 잔여 좌석 보여주기
+	public ReservationPageDTO selectRemainingSeat(int stadiumCode) throws SQLException {
+	    ReservationPageDTO rpDTO = null;
 
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-		
-		
-		try {
-			con=udbc.getConnection();
-			StringBuilder selectTeamImg=new StringBuilder();
-			selectTeamImg
-			.append("	select ss.stadium_id,	")
-			.append("	sum(ss.stadium_seat_count)	")
-			.append("	-nvl(sum(rd.reservation_quantity),0) as remain_seat	")
-			.append("	from stadium_seat ss	")
-			.append("	left join reservation_detail rd	")
-			.append("	on ss.stadium_seat_id=rd.stadium_seat_id	")
-			.append("	where ss.stadium_id = ?	")
-			.append("	group by ss.stadium_id	");
-			
-			
-			pstmt=con.prepareStatement(selectTeamImg.toString());
-				pstmt.setInt(1, stadiumCode);
-				rs=pstmt.executeQuery();
-				
-			while(rs.next()) {
-				rpDTO=new ReservationPageDTO();
-				rpDTO.setRemainSeatNum(rs.getInt("remain_seat"));
-				
-				remainingSeatList.add(rpDTO);
-			}
-		} finally {
-			udbc.close(rs, pstmt, con);
-		}    
+	    try {
+	        con = udbc.getConnection();
+	        StringBuilder sql = new StringBuilder();
+	        
+	        // 예약 테이블을 먼저 서브쿼리로 축약한 후 JOIN하여 뻥튀기 방지
+	        sql.append(" SELECT total.total_seat - NVL(reserved.booked_seat, 0) AS remain_seat ")
+	           .append(" FROM ( ")
+	           .append("     SELECT stadium_id, SUM(stadium_seat_count) AS total_seat ")
+	           .append("     FROM stadium_seat ")
+	           .append("     WHERE stadium_id = ? ")
+	           .append("     GROUP BY stadium_id ")
+	           .append(" ) total ")
+	           .append(" LEFT JOIN ( ")
+	           .append("     SELECT ss.stadium_id, SUM(rd.reservation_quantity) AS booked_seat ")
+	           .append("     FROM reservation_detail rd ")
+	           .append("     JOIN stadium_seat ss ON rd.stadium_seat_id = ss.stadium_seat_id ")
+	           .append("     WHERE ss.stadium_id = ? ")
+	           .append("     GROUP BY ss.stadium_id ")
+	           .append(" ) reserved ON total.stadium_id = reserved.stadium_id ");
 
-	    return remainingSeatList;
+	        pstmt = con.prepareStatement(sql.toString());
+	        // 서브쿼리 때문에 ?(파라미터)가 2개 필요합니다.
+	        pstmt.setInt(1, stadiumCode);
+	        pstmt.setInt(2, stadiumCode);
+	        
+	        rs = pstmt.executeQuery();
+	            
+	        // 결과가 1건 이하이므로 if문 처리
+	        if (rs.next()) {
+	        	rpDTO = new ReservationPageDTO();
+	            int totalRemain = rs.getInt("remain_seat");
+	            rpDTO.setRemainSeatNum(totalRemain);
+	            // JSP에서 쓰는 변수들에 임시로 값을 배분 (실제로는 좌석 등급별 쿼리가 따로 있어야 정확합니다)
+	            rpDTO.setFirstBaseSeat(totalRemain / 4); 
+	            rpDTO.setThirdBaseSeat(totalRemain / 4);
+	            rpDTO.setHomeBaseSeat(totalRemain / 4);
+	            rpDTO.setOutFieldSeat(totalRemain / 4);
+	        }
+	    } finally {
+	        udbc.close(rs, pstmt, con);
+	    }    
+
+	    return rpDTO;
 	}
 	
 	//구장별 좌석 가격
-	public List<ReservationPageDTO> selectSeatPrice(int stadiumCode) throws SQLException {
-		List<ReservationPageDTO> list=new ArrayList<ReservationPageDTO>();
+	public ReservationPageDTO selectSeatPrice(int stadiumCode) throws SQLException {
 		ReservationPageDTO rpDTO=null;
 
 	    Connection con = null;
@@ -229,14 +238,13 @@ public class ReservationPageDAO {
 				rpDTO.setYouthSeatPrice(rs.getInt("youth_seat_price"));
 				rpDTO.setChildSeatPrice(rs.getInt("child_seat_price"));
 				
-				list.add(rpDTO);
 				
 			}
 		} finally {
 			udbc.close(rs, pstmt, con);
 		}    
 
-		return list;
+		return rpDTO;
 	}
 	
 	//주문자정보
@@ -254,7 +262,7 @@ public class ReservationPageDAO {
 	        String sql =
 	            "SELECT member_name, member_tel, member_email " +
 	            "FROM member " +
-	            "WHERE member_code = ?";
+	            "WHERE member_id = ?";
 
 	        pstmt = con.prepareStatement(sql);
 	        pstmt.setString(1, memberCode);
@@ -309,4 +317,31 @@ public class ReservationPageDAO {
 		}
 		return rowCnt;
 	}
+	
+	// 좌석 코드(ID)로 좌석 이름(예: 1루 자유석) 조회
+	public String selectSeatName(int stadiumSeatCode) throws SQLException {
+	    String seatName = "";
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        con = udbc.getConnection();
+	        // stadium_seat 테이블에서 ID로 좌석 이름을 가져오는 쿼리
+	        String sql = "SELECT seat_name FROM stadium_seat WHERE stadium_seat_id = ?";
+	        
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, stadiumSeatCode);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            seatName = rs.getString("seat_name");
+	        }
+	    } finally {
+	        udbc.close(rs, pstmt, con);
+	    }
+	    return seatName;
+	}
+	
+	
 }

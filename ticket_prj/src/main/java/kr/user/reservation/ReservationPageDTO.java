@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -40,6 +41,11 @@ public class ReservationPageDTO {
 	private int stadiumSeatCode;//좌석코드
 	private String reservationType;//좌석 유형
 	private int reservationQuantity;//예매 수량
+	private int totalSeatNum;//전체좌석수
+	private int firstBaseSeat; //1루 잔여좌석수
+	private int thirdBaseSeat; //3루 잔여좌석수
+	private int homeBaseSeat; //홈루 잔여좌석수
+	private int outFieldSeat; //홈루 잔여좌석수
 	private int remainSeatNum;//잔여좌석수
 	private int adultSeatPrice;//성인좌석가격
 	private int youthSeatPrice;//청소년좌석가격
