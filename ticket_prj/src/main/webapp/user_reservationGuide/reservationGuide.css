@@ -1,0 +1,146 @@
+/* 기본 초기화 */
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+	color: #222;
+	line-height: 1.6;
+	margin: 0;
+	padding: 0;
+	background-color: #fff;
+}
+
+.guide-container {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 50px 20px;
+}
+
+/* 타이틀 영역 */
+.page-title {
+	font-size: 32px;
+	font-weight: 700;
+	margin-bottom: 30px;
+}
+
+/* 섹션 스타일 */
+.step-section {
+	margin-bottom: 80px;
+}
+
+.step-header {
+	border-bottom: 2px solid #333;
+	padding-bottom: 10px;
+	margin-bottom: 25px;
+	display: flex;
+	align-items: center;
+}
+
+.step-num {
+	color: #e31b23;
+	font-size: 24px;
+	font-weight: 700;
+	margin-right: 12px;
+}
+
+.step-title {
+	font-size: 24px;
+	font-weight: 700;
+}
+
+.guide-text {
+	font-size: 16px;
+	margin-bottom: 20px;
+	color: #444;
+}
+
+.guide-text span.bullet {
+	color: #e31b23;
+	margin-right: 8px;
+	font-size: 12px;
+	vertical-align: middle;
+}
+
+/* 이미지 플레이스홀더 (이 자리에 실제 이미지를 넣으세요) */
+.img-placeholder {
+	width: 100%;
+	background-color: #f2f2f2;
+	border: 1px solid #ddd;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #999;
+	font-size: 14px;
+	margin: 20px 0;
+	min-height: 300px; /* 이미지 높이에 맞게 조절 가능 */
+}
+
+.img-placeholder img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* TIP 박스 */
+.tip-box {
+	background: #f8f9ff;
+	border: 1px solid #e0e4f7;
+	padding: 25px;
+	border-radius: 8px;
+	margin-bottom: 30px;
+}
+
+.tip-badge {
+	background: #5d56f3;
+	color: #fff;
+	font-size: 11px;
+	padding: 3px 8px;
+	border-radius: 3px;
+	font-weight: bold;
+	margin-bottom: 12px;
+	display: inline-block;
+}
+
+.tip-content {
+	font-size: 15px;
+	color: #555;
+}
+
+.tip-content strong {
+	color: #e31b23;
+}
+
+/* 팝업 공지 */
+.notice-box {
+	background: #f4f4f4;
+	padding: 20px;
+	border-radius: 5px;
+	font-size: 14px;
+	color: #666;
+	margin-top: 20px;
+}
+
+.notice-box strong {
+	color: #333;
+	display: block;
+	margin-bottom: 5px;
+}
+
+/* 소단계 타이틀 (2-1, 2-2 등) */
+.sub-step-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #e31b23;
+	margin: 30px 0 15px 0;
+}
+
+.circle {
+	background: #e31b23;
+	color: #fff;
+	width: 22px;
+	height: 22px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	font-size: 13px;
+	margin-right: 8px;
+	vertical-align: middle;
+}
