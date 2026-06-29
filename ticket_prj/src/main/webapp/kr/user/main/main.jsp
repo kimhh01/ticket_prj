@@ -324,34 +324,126 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 }
 
 .rank-box {
-	border: 1px solid #e5e5e5;
-	border-radius: 18px;
-	background: #fff;
-	padding: 24px;
-	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+	position: relative;
+	height: 190px;
+	border-radius: 8px;
+	background: radial-gradient(circle at 42% 50%, #333 0%, #1d1d1d 38%, #141414 100%);
+	color: #fff;
+	overflow: hidden;
+	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
-.rank-table {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 14px;
+.rank-slider {
+	height: 100%;
+	overflow: hidden;
 }
 
-.rank-table th {
-	padding: 12px 8px;
-	border-bottom: 2px solid #222;
-	background: #fafafa;
+.rank-slider-track {
+	height: 100%;
+	transition: transform 0.55s ease;
 }
 
-.rank-table td {
-	padding: 13px 8px;
-	border-bottom: 1px solid #eee;
-	text-align: center;
+.rank-slide {
+	height: 190px;
+	display: grid;
+	grid-template-columns: 44% 56%;
+	align-items: center;
+	padding: 28px 42px;
+	box-sizing: border-box;
 }
 
-.rank-team {
-	text-align: left !important;
+.rank-team-panel {
+	display: flex;
+	align-items: center;
+	gap: 28px;
+	min-width: 0;
+}
+
+.rank-logo-wrap {
+	width: 116px;
+	height: 116px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.08);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+}
+
+.rank-logo-wrap img {
+	width: 82px;
+	height: 82px;
+	object-fit: contain;
+}
+
+.rank-team-copy {
+	min-width: 0;
+}
+
+.rank-label {
+	font-size: 13px;
+	color: #d7d7d7;
+	margin-bottom: 12px;
+}
+
+.rank-team-name {
+	font-size: 34px;
+	font-weight: 900;
+	line-height: 1.1;
+	word-break: keep-all;
+}
+
+.rank-season-panel {
+	padding-left: 34px;
+	border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.rank-season-title {
+	font-size: 18px;
+	font-weight: 900;
+	color: #ffd400;
+	margin-bottom: 18px;
+}
+
+.rank-stat-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 18px;
+}
+
+.rank-stat-label {
+	font-size: 12px;
+	color: #a9a9a9;
+	margin-bottom: 8px;
+}
+
+.rank-stat-value {
+	font-size: 23px;
 	font-weight: 800;
+	line-height: 1;
+}
+
+.rank-dots {
+	position: absolute;
+	left: 50%;
+	bottom: 14px;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 7px;
+}
+
+.rank-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.28);
+	transition: 0.2s;
+}
+
+.rank-dot.active {
+	width: 18px;
+	border-radius: 999px;
+	background: #ffd400;
 }
 
 /* ===================== 이벤트 이미지 배너 ===================== */
@@ -369,7 +461,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 	height: 180px;
 	border-radius: 18px;
 	overflow: hidden;
-	background: #f3f3f3;
+	background: #fff;
 	border: 1px solid #e5e5e5;
 	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
 }
@@ -384,8 +476,9 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 .event-banner img {
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
+	object-fit: contain;
 	display: block;
+	background: #fff;
 }
 
 .event-empty {
@@ -537,12 +630,9 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 		}
 		%>
 	</section>
-
 	<!-- ===================== 팀 순위 ===================== -->
 	<section class="rank-section">
-		<div class="rank-box">
-			<h2 class="section-title">팀 순위</h2>
-
+		<div class="rank-box" id="rankSlider">
 			<%
 			if (rankList == null || rankList.isEmpty()) {
 			%>
@@ -550,34 +640,66 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 			<%
 			} else {
 			%>
-			<table class="rank-table">
-				<thead>
-					<tr>
-						<th>순위</th>
-						<th>팀명</th>
-						<th>승</th>
-						<th>패</th>
-						<th>무</th>
-						<th>승률</th>
-					</tr>
-				</thead>
-				<tbody>
+			<div class="rank-slider">
+				<div class="rank-slider-track" id="rankSliderTrack">
 					<%
 					for (TeamRankDTO rank : rankList) {
+						String rankLogo = getTeamLogoFile(rank.getTeamCode(), rank.getTeamLogo(), rank.getTeamName());
+						String winRateText = String.format("%.3f", rank.getWinRate());
 					%>
-					<tr>
-						<td><%=rank.getRankNo()%></td>
-						<td class="rank-team"><%=rank.getTeamName()%></td>
-						<td><%=rank.getWin()%></td>
-						<td><%=rank.getLose()%></td>
-						<td><%=rank.getDraw()%></td>
-						<td><%=rank.getWinRate()%></td>
-					</tr>
+					<div class="rank-slide">
+						<div class="rank-team-panel">
+							<div class="rank-logo-wrap">
+								<img src="<%=request.getContextPath()%>/images/team_logo/<%=rankLogo%>"
+									alt="<%=rank.getTeamName()%>"
+									onerror="this.onerror=null; this.style.display='none';">
+							</div>
+							<div class="rank-team-copy">
+								<div class="rank-label">팀 순위</div>
+								<div class="rank-team-name"><%=rank.getTeamName()%></div>
+							</div>
+						</div>
+
+						<div class="rank-season-panel">
+							<div class="rank-season-title">2026 시즌</div>
+							<div class="rank-stat-grid">
+								<div>
+									<div class="rank-stat-label">순위</div>
+									<div class="rank-stat-value"><%=rank.getRankNo()%></div>
+								</div>
+								<div>
+									<div class="rank-stat-label">승</div>
+									<div class="rank-stat-value"><%=rank.getWin()%></div>
+								</div>
+								<div>
+									<div class="rank-stat-label">무</div>
+									<div class="rank-stat-value"><%=rank.getDraw()%></div>
+								</div>
+								<div>
+									<div class="rank-stat-label">패</div>
+									<div class="rank-stat-value"><%=rank.getLose()%></div>
+								</div>
+								<div>
+									<div class="rank-stat-label">승률</div>
+									<div class="rank-stat-value"><%=winRateText%></div>
+								</div>
+							</div>
+						</div>
+					</div>
 					<%
 					}
 					%>
-				</tbody>
-			</table>
+				</div>
+			</div>
+			<div class="rank-dots" id="rankDots">
+				<%
+				for (int i = 0; i < rankList.size(); i++) {
+				%>
+				<span class="rank-dot <%=i == 0 ? "active" : ""%>"></span>
+				<%
+				}
+				%>
+			</div>
 			<%
 			}
 			%>
@@ -615,6 +737,32 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 		</div>
 	</section>
 
+
+<script>
+(function() {
+	var slider = document.getElementById('rankSlider');
+	var track = document.getElementById('rankSliderTrack');
+	var dotsWrap = document.getElementById('rankDots');
+	if (!slider || !track || !dotsWrap) {
+		return;
+	}
+
+	var slides = track.querySelectorAll('.rank-slide');
+	var dots = dotsWrap.querySelectorAll('.rank-dot');
+	if (slides.length <= 1) {
+		return;
+	}
+
+	var current = 0;
+	setInterval(function() {
+		current = (current + 1) % slides.length;
+		track.style.transform = 'translateY(-' + (current * 190) + 'px)';
+		for (var i = 0; i < dots.length; i++) {
+			dots[i].classList.toggle('active', i === current);
+		}
+	}, 3200);
+})();
+</script>
 </main>
 
 <script>
