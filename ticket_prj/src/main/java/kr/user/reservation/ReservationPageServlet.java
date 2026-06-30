@@ -1,6 +1,7 @@
 package kr.user.reservation;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,12 +46,12 @@ public class ReservationPageServlet extends HttpServlet {
             ReservationPageDTO gameInfo = rpService.searchGame(gameScheduleCode);
             
             // 잔여좌석 및 가격 (가장 대중적인 1번 좌석 기준 혹은 전체 리스트 처리 필요)
-            ReservationPageDTO remainingSeat = rpService.searchRemainingSeat(gameInfo.getStadiumCode()); 
+            List<ReservationPageDTO> seatList = rpService.searchRemainingSeat(gameInfo.getStadiumCode()); 
             ReservationPageDTO seatPrice = rpService.searchSeatPrice(gameInfo.getStadiumCode());
 
             request.setAttribute("memberInfo", memberInfo); 
             request.setAttribute("gameInfo", gameInfo);
-            request.setAttribute("remainingSeat", remainingSeat);
+            request.setAttribute("seatList", seatList);
             request.setAttribute("seatPrice", seatPrice);
 
             request.getRequestDispatcher("/reservationPage/reservation.jsp").forward(request, response);
@@ -64,8 +65,21 @@ public class ReservationPageServlet extends HttpServlet {
     private void handlePaymentSuccess(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         try {
-            HttpSession session = request.getSession();
-            MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+        	HttpSession session = request.getSession(false);
+
+        	MemberDTO loginMember = null;
+
+        	if(session != null) {
+        	    loginMember = (MemberDTO)session.getAttribute("loginMember");
+        	}
+
+        	if(loginMember == null) {
+        	    System.out.println("로그인 세션 없음");
+        	    response.sendRedirect(
+        	        request.getContextPath()+"/login.jsp"
+        	    );
+        	    return;
+        	}
             
             // 파라미터 추출
             int totalPrice = Integer.parseInt(request.getParameter("totalPrice"));
@@ -73,7 +87,7 @@ public class ReservationPageServlet extends HttpServlet {
             int stadiumSeatCode = Integer.parseInt(request.getParameter("stadiumSeatCode"));
             String reservationType = request.getParameter("reservationType");
             int reservationQuantity = Integer.parseInt(request.getParameter("reservationQuantity"));
-            String orderId = request.getParameter("orderId");
+            int gameScheduleCode = Integer.parseInt(request.getParameter("gameScheduleCode"));
 
             ReservationPageDTO rpDTO = new ReservationPageDTO();
             rpDTO.setMemberCode(loginMember.getMemberCode());
@@ -82,13 +96,14 @@ public class ReservationPageServlet extends HttpServlet {
             rpDTO.setStadiumSeatCode(stadiumSeatCode);
             rpDTO.setReservationType(reservationType);
             rpDTO.setReservationQuantity(reservationQuantity);
+            rpDTO.setGameScheduleCode(gameScheduleCode);
 
-            boolean isSuccess = rpService.insertTotalReservation(rpDTO);
+            int reservationCode  = rpService.insertTotalReservation(rpDTO);
 
-            if (isSuccess) {
+            if (reservationCode > 0) {
                 // 성공 페이지에 보여줄 데이터 추가 조회
                 String seatName = rpService.getSeatName(stadiumSeatCode);
-                request.setAttribute("orderId", orderId);
+                request.setAttribute("reservationCode", reservationCode);
                 request.setAttribute("payPrice", payPrice);
                 request.setAttribute("reservationQuantity", reservationQuantity);
                 request.setAttribute("selectedSeatName", seatName);
@@ -99,6 +114,7 @@ public class ReservationPageServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            
             response.sendRedirect(request.getContextPath() + "/reservationPage/reservationFail.jsp?code=SYSTEM_ERR&message=" + e.getMessage());
         }
     }
@@ -106,7 +122,11 @@ public class ReservationPageServlet extends HttpServlet {
     private void handleUnauthenticated(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html; charset=UTF-8");
         java.io.PrintWriter out = response.getWriter();
-        out.println("<script>alert('로그인이 필요합니다.'); window.close();</script>");
+        out.println("<script>");
+        out.println("alert('로그인이 필요합니다.');");
+        out.println("opener.location.href='" + request.getContextPath() + "/kr/user/member/login.jsp';");
+        out.println("window.close();");
+        out.println("</script>");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

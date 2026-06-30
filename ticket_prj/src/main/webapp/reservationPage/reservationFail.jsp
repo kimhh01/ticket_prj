@@ -136,13 +136,28 @@
 				</div>
 
 				<div class="final-btn-group">
-					<button type="button" class="btn-home" onclick="location.href='${pageContext.request.contextPath}/index.jsp'">홈으로 이동</button>
+					<button type="button" class="btn-home">홈으로 이동</button>
 					<!-- 다시 예매를 시도할 수 있도록 일정 선택 페이지로 유도 -->
-					<button type="button" class="btn-retry" onclick="location.href='${pageContext.request.contextPath}/gameScheduleList'">다시 예매하기</button>
+					<button type="button" class="btn-retry">다시 예매하기</button>
 				</div>
 			</div>
 		</main>
 	</div>
 
 </body>
+<script type="text/javascript">
+$(function(){
+	$(".btn-home").click(function(){
+		opener.location.href='location.href='+${pageContext.request.contextPath}+'/index.jsp'
+		window.close()
+	});
+	
+	$(".btn-retry").click(function(){
+		opener.location.href='location.href='+${pageContext.request.contextPath}+'/teamPage/teamPage.jsp'
+		window.close()
+	});
+	
+	
+});//ready
+</script>
 </html>

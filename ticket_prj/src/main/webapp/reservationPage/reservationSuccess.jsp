@@ -113,7 +113,7 @@
 					<table class="info-table">
 						<tr>
 							<th>예매번호</th>
-							<td class="order-number">${orderId}</td>
+							<td class="order-number">${reservationCode}</td>
 						</tr>
 						<tr>
 							<th>경기정보</th>
@@ -142,12 +142,28 @@
 				</div>
 
 				<div class="final-btn-group">
-					<button type="button" class="btn-home" onclick="location.href='${pageContext.request.contextPath}/index.jsp'">홈으로 이동</button>
-					<button type="button" class="btn-mypage" onclick="location.href='${pageContext.request.contextPath}/mypage_user/reservation.jsp'">예매확인/취소</button>
+					<button type="button" class="btn-home">홈으로 이동</button>
+					<button type="button" class="btn-mypage">예매확인/취소</button>
 				</div>
 			</div>
 		</main>
 	</div>
 
 </body>
+<script type="text/javascript">
+$(function(){
+	$(".btn-home").click(function(){
+		opener.location.href='location.href='+${pageContext.request.contextPath}+'/index.jsp'
+		window.close()
+	});
+	
+	$(".btn-mypage").click(function(){
+		opener.location.href=${pageContext.request.contextPath}+'/mypage_user/reservation.jsp'
+		window.close()
+	});
+	
+	
+});//ready
+
+</script>
 </html>

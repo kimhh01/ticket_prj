@@ -55,6 +55,7 @@
 			<input type="hidden" name="totalPrice" id="hiddenTotalPrice" value="0">
 			<input type="hidden" name="discountPrice" id="hiddenDiscountPrice" value="0">
 			<input type="hidden" name="payPrice" id="hiddenPayPrice" value="0">
+			<input type="hidden" name="gameScheduleCode" id="hiddenGameScheduleCode" value="${gameInfo.gameScheduleCode}">
 
 			<main class="main-workspace">
 	
@@ -88,30 +89,37 @@
 							<div class="seats-list-item-img" style="background: #f7f7f7; font-weight: bold;">
 								<span>전체</span>
 							</div>
-							<div class="seats-list-item-img" id="item-1" onclick="mockSeatSelect('1루 자유석', 'item-1', 1)">
-								<div class="grade-name-group">
-									<span class="color-square sq-blue"></span> <span>1루 자유석</span>
-								</div>
-								<span class="seat-count-text">${remainingSeat.firstBaseSeat }</span>
-							</div>
-							<div class="seats-list-item-img" id="item-2" onclick="mockSeatSelect('3루 자유석', 'item-2', 2)">
-								<div class="grade-name-group">
-									<span class="color-square sq-red"></span> <span>3루 자유석</span>
-								</div>
-								<span class="seat-count-text">${remainingSeat.thirdBaseSeat }</span>
-							</div>
-							<div class="seats-list-item-img" id="item-3" onclick="mockSeatSelect('홈 자유석', 'item-3', 3)">
-								<div class="grade-name-group">
-									<span class="color-square sq-yellow"></span> <span>홈 자유석</span>
-								</div>
-								<span class="seat-count-text">${remainingSeat.homeBaseSeat }</span>
-							</div>
-							<div class="seats-list-item-img" id="item-4" onclick="mockSeatSelect('자유 외야석', 'item-4', 4)">
-								<div class="grade-name-group">
-									<span class="color-square sq-green"></span> <span>자유 외야석</span>
-								</div>
-								<span class="seat-count-text">${remainingSeat.outFieldSeat }</span>
-							</div>
+							
+							<c:forEach var="seat" items="${seatList }" varStatus="status">
+								<div class="seats-list-item-img" id="item-${status.index+1}" onclick="mockSeatSelect('${seat.seatName}','item-${status.index+1}',${seat.stadiumSeatCode})">
+						
+						            <div class="grade-name-group">
+						                <c:choose>
+										    <c:when test="${seat.seatName == '자유석- 내야 A구역'}">
+										        <span class="color-square sq-blue"></span>
+										    </c:when>
+										
+										    <c:when test="${seat.seatName == '자유석- 내야 B구역'}">
+										        <span class="color-square sq-red"></span>
+										    </c:when>
+										
+										    <c:when test="${seat.seatName == '자유석- 외야 C구역'}">
+										        <span class="color-square sq-yellow"></span>
+										    </c:when>
+										
+										    <c:otherwise>
+										        <span class="color-square sq-green"></span>
+										    </c:otherwise>
+										</c:choose>
+						                <span>${seat.seatName}</span>
+						            </div>
+						
+						            <span class="seat-count-text">
+						                ${seat.remainSeatNum}
+						            </span>
+						
+						        </div>
+							</c:forEach>
 						</div>
 	
 						<a href="#" class="info-guide-link"> <span class="info-icon-circle">i</span> 좌석선점 및 자동배정 안내</a>
@@ -125,7 +133,7 @@
 	
 						<div class="selection-alert-wrapper">
 							<div class="selection-alert-bar">
-								<span id="selected-seat-alert"><strong id="dynamic-seat-name">1루 자유석</strong>을 <strong id="dynamic-seat-qty">0매</strong> 선택하셨습니다.</span>
+								<span id="selected-seat-alert"><strong id="dynamic-seat-name">${seat.seatName }</strong>을 <strong id="dynamic-seat-qty">0매</strong> 선택하셨습니다.</span>
 							</div>
 						</div>
 	
@@ -164,7 +172,7 @@
 										</td>
 									</tr>
 									<tr>
-										<td class="name-cell">어린이 <span class="q-icon">?</span></td>
+										<td class="name-cell">어린이</td>
 										<td class="price-cell">${seatPrice.childSeatPrice }원</td>
 										<td class="select-cell">
 											<select class="qty-select ticket-qty" data-type="어린이" data-price="${seatPrice.childSeatPrice }" onchange="calculateInvoice()">
@@ -174,6 +182,10 @@
 												<option value="3">3</option>
 											</select>
 										</td>
+									</tr>
+									<tr>
+										<td class="name-cell">할인금액</td>
+										<td colspan="3"><input type="text" class="discount-code"></td>
 									</tr>
 								</tbody>
 							</table>
@@ -214,12 +226,12 @@
 								<td class="price-val" id="invoice-ticket">0원</td>
 							</tr>
 							<tr>
-								<td>예매수수료</td>
-								<td class="price-val" id="invoice-fee">0원</td>
+								<td>할인금액</td>
+								<td class="price-val" id="invoice-discount">0원</td>
 							</tr>
 							<tr>
-								<td>배송료</td>
-								<td class="price-val">0원</td>
+								<td>예매수수료</td>
+								<td class="price-val" id="invoice-fee">0원</td>
 							</tr>
 							<tr class="total-row">
 								<td>총결제</td>
@@ -251,13 +263,13 @@
 							<tbody>
 								<tr>
 									<td class="step4-label-cell">이름 *</td>
-									<td><input type="text" value="${sessionScope.loginMember.name}" class="step4-input" style="font-weight: bold;" readonly></td>
+									<td><input type="text" value="${sessionScope.loginMember.name}" class="step4-input" style="font-weight: bold;"></td>
 									<td class="step4-label-cell">휴대폰 번호 *</td>
-									<td><input type="text" value="${sessionScope.loginMember.phone}" class="step4-input" style="font-weight: bold;" readonly></td>
+									<td><input type="text" value="${sessionScope.loginMember.phone}" class="step4-input" style="font-weight: bold;"></td>
 								</tr>
 								<tr>
 									<td class="step4-label-cell">이메일</td>
-									<td colspan="3"><input type="text" value="${sessionScope.loginMember.email}" class="step4-input-full" readonly></td>
+									<td colspan="3"><input type="text" value="${sessionScope.loginMember.email}" class="step4-input-full"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -422,6 +434,10 @@
 	        document.getElementById('view-step-3').classList.add('hidden');
 	        document.getElementById('view-step-2').classList.remove('hidden');
 	    }
+	    
+	    function discountEvent(){
+	    	
+	    }
 	
 	    let calculatedTicketPrice = 0;
 	    let calculatedFee = 0;
@@ -465,6 +481,10 @@
 	            alert("티켓 매수를 1개 이상 선택해주세요.");
 	            return;
 	        }
+	        
+	        if(calculatedTotal > 4){
+	        	alert("티켓은 3매 이상 구매 불가입니다.")
+	        }
 	        document.getElementById('step-nav-3').classList.remove('active');
 	        document.getElementById('step-nav-4').classList.add('active');
 	        document.getElementById('invoice-ticket-step4').innerText = calculatedTicketPrice.toLocaleString() + "원";
@@ -494,24 +514,26 @@
 	        
 	        const successUrl = window.location.origin + "${pageContext.request.contextPath}/reservation"
 	        + "?mode=success"
+	        + "&memberCode=${sessionScope.loginMember.memberCode}"
 	        + "&stadiumSeatCode=" + document.getElementById('hiddenStadiumSeatCode').value
 	        + "&reservationType=" + encodeURIComponent(document.getElementById('hiddenReservationType').value)
 	        + "&reservationQuantity=" + document.getElementById('hiddenReservationQuantity').value
 	        + "&totalPrice=" + document.getElementById('hiddenTotalPrice').value
-	        + "&discountPrice=" + document.getElementById('hiddenDiscountPrice').value // 이 줄 추가!
-	        + "&payPrice=" + document.getElementById('hiddenPayPrice').value;
+	        + "&discountPrice=" + document.getElementById('hiddenDiscountPrice').value 
+	        + "&payPrice=" + document.getElementById('hiddenPayPrice').value
+	        + "&gameScheduleCode=" + document.getElementById("hiddenGameScheduleCode").value;
+	        
 
 	        tossPayments.requestPayment('카드', {
 	            amount: calculatedTotal,
 	            orderId: "ORDER-" + new Date().getTime(),
 	            orderName: "야구 경기 티켓 예매",
 	            customerName: "${sessionScope.loginMember.name}", 
-	            successUrl: successUrl, // 위에서 만든 긴 URL
+	            successUrl: successUrl,
 	            failUrl: window.location.origin + "${pageContext.request.contextPath}/reservationPage/reservationFail.jsp",
 	        });
 	    }
 	
-	    // 🌟 [상세보기] 팝업 약관 텍스트 데이터 기입 완료
 	    const consentData = {
 	        1: {
 	            title: "(필수) 개인정보 수집/이용 안내",
@@ -576,17 +598,31 @@
 	    }
 	
 	    window.addEventListener("load", () => {
-	        // 페이지가 완전히 켜진 후 보안문자 강제 생성!
+	        // 페이지가 완전히 켜진 후 보안문자 생성
 	        generateCaptchaValue();
-	        
-	        let totalSeconds = 600; 
+
+	        let totalSeconds = 600; // 10분
 	        const timerDisplay = document.getElementById("countdown");
-	        if(timerDisplay) {
-	            setInterval(() => {
+
+	        if (timerDisplay) {
+	            const timer = setInterval(() => {
+
 	                let minutes = Math.floor(totalSeconds / 60);
 	                let seconds = totalSeconds % 60;
-	                timerDisplay.textContent = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-	                if (totalSeconds > 0) totalSeconds--;
+
+	                timerDisplay.textContent =
+	                    (minutes < 10 ? "0" : "") + minutes + ":" +
+	                    (seconds < 10 ? "0" : "") + seconds;
+
+	                if (totalSeconds <= 0) {
+	                    clearInterval(timer);
+	                    alert("예매 시간이 종료되었습니다.");
+	                    window.close();
+	                    return;
+	                }
+
+	                totalSeconds--;
+
 	            }, 1000);
 	        }
 	    });									

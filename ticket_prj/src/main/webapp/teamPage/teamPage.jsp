@@ -54,6 +54,8 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/teamPage/teamPage.css">
 <script type="text/javascript">
 $(function(){
+	
+	var contextPath = "${pageContext.request.contextPath}";
     // 1. JS 기반 무중단 탭 전환 이벤트 구현
     $(".tab").click(function(){
         $(".tab").removeClass("active");
@@ -65,11 +67,18 @@ $(function(){
     });
 
     // 🌟 구단 소개 및 가이드 버튼 클릭 시 상단에서 계산된 JSTL teamUrl 주소로 새 창 띄우기 연동 완료
-    $(".introduceBtn, .guideBtn").click(function(){
-        var targetUrl = "${teamUrl}";
-        window.open(targetUrl, "_blank");
+    $(".guideBtn").click(function(){
+	    location.href =
+        contextPath + "/user_reservationGuide/reservationGuide.jsp";
+	});
+    
+    $(".introduceBtn").click(function(){
+        window.open(
+            "${teamUrl}",
+            "teamHome"
+        );
     });
-
+    
     // 클린예매 팝업 토글
     $(".cleanBtn").click(function(e){
         e.stopPropagation();
@@ -122,7 +131,7 @@ $(function(){
     // 예매하기 버튼 클릭시 예매창으로 이동 (맵핑 주소 정합 완료)
     $(".reserve-btn").click(function(){
         var gameScheduleCode = $(this).data("game");
-        var contextPath = "${pageContext.request.contextPath}";
+        
         
         window.open(
             contextPath + "/reservation?gameScheduleCode=" + gameScheduleCode,
@@ -240,7 +249,7 @@ $(function(){
                                <fmt:formatDate value="${game.gameDate}" pattern="MM.dd"/>
                            </span>
                            <div class="time">
-                               <fmt:formatDate value="${game.gameDate}" pattern="(E) HH:mm"/>
+                               ${game.gameStartTime }
                            </div>
                         </div>
 
@@ -251,7 +260,7 @@ $(function(){
                         </div>
                         
                         <div class="game-team-name">
-                             <div class="game-flag">
+                             <div class="game-flag">	
                                 <span class="flag-clean">클린예매</span>
                              </div>
                              <span>${game.teamHomeName} VS ${game.teamOtherName}</span>
@@ -336,7 +345,11 @@ $(function(){
 
 <%-- [탭 3] 리그안내 컨텐츠 영역 --%>
 <div id="tab-league" class="tab-content">
-    <section class="league-guide-wrap"></section>
+    <section class="league-guide-wrap">
+    	<div>
+    		${leagueImg}
+    	</div>
+    </section>
 </div> 
 
 <footer class="footer-wrap">

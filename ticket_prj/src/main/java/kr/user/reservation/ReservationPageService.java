@@ -2,6 +2,8 @@ package kr.user.reservation;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+
 import kr.user.common.UserDBConnection; // 커넥션 클래스 임포트
 
 public class ReservationPageService {
@@ -14,52 +16,61 @@ public class ReservationPageService {
         rpDAO = ReservationPageDAO.getInstance();
     }
 
-    /**
-     * 전체 예매 프로세스 (트랜잭션 처리 완료)
-     */
-    public boolean insertTotalReservation(ReservationPageDTO rpDTO) {
+    public int insertTotalReservation(ReservationPageDTO rpDTO) {
+
         Connection conn = null;
-        boolean isSuccess = false;
-        
+        int reservationCode=0;
         try {
-            // [수정] 프로젝트 공통 커넥션 획득 메서드로 연결
-            conn = udbc.getConnection(); 
-            
+
+            conn = udbc.getConnection();
+
             if (conn != null) {
-                conn.setAutoCommit(false); // 1. 자동 커밋 끄기 (트랜잭션 시작)
-                
-                // 2. 예매 메인 추가 (이제 생성된 시퀀스 ID가 rpDTO 내부에 자동으로 세팅됩니다)
-                int mainResult = rpDAO.insertReservation(conn, rpDTO); 
-                
-                // 3. 예매 상세 추가 (위에서 채워진 코드를 들고 들어갑니다)
+
+                conn.setAutoCommit(false);
+
+                // ① 시퀀스 조회
+                int reservationId = rpDAO.getReservationSeq(conn);
+                rpDTO.setReservationCode(reservationId);
+
+                // ② reservation 저장
+                int mainResult = rpDAO.insertReservation(conn, rpDTO);
+
+                // ③ reservation_detail 저장
                 int detailResult = rpDAO.insertReservationDetail(conn, rpDTO);
-                
-                // 4. 둘 다 성공해야만 커밋
-                if (mainResult > 0 && detailResult > 0) {
+
+                if(mainResult > 0 && detailResult > 0){
                     conn.commit();
-                    isSuccess = true;
-                } else {
-                	//하나라도 실패시 롤백
-                    conn.rollback(); 
+                    reservationCode=rpDTO.getReservationCode();
+                }else{
+                    conn.rollback();
                 }
             }
-        } catch (SQLException e) {
+
+        } catch(SQLException e){
             e.printStackTrace();
-            if (conn != null) {
-                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+
+            if(conn != null){
+                try{
+                    conn.rollback();
+                }catch(SQLException ex){
+                    ex.printStackTrace();
+                }
             }
-        } finally {
-            // 5. 커넥션 반납 및 오토커밋 원상복구
-            if (conn != null) {
-                try {
+
+        } finally{
+
+            if(conn != null){
+                try{
                     conn.setAutoCommit(true);
-                    conn.close(); 
-                } catch (SQLException e) {
+                    conn.close();
+                }catch(SQLException e){
                     e.printStackTrace();
                 }
             }
+
         }
-        return isSuccess;
+
+        return reservationCode;
     }
 
     // 경기 정보 조회
@@ -68,7 +79,7 @@ public class ReservationPageService {
     }
 
     // 잔여 좌석 조회
-    public ReservationPageDTO searchRemainingSeat(int stadiumCode) throws SQLException {
+    public List<ReservationPageDTO> searchRemainingSeat(int stadiumCode) throws SQLException {
         return rpDAO.selectRemainingSeat(stadiumCode);
     }
 

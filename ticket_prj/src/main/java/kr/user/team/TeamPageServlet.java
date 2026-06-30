@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 		String teamCodeParam = request.getParameter("teamCode");
 		//팀코드의 파라메터가 null일 겨우 메인페이지로 이동
 		if(teamCodeParam == null){
-		    response.sendRedirect("main.jsp");
+		    response.sendRedirect("/index.jsp");
 		    return;
 		}
 		//팀코드 int형으로 변환

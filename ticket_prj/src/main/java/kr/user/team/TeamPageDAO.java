@@ -6,7 +6,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import common.DBConnection;
@@ -129,7 +132,7 @@ public class TeamPageDAO {
 			StringBuilder selectTeamImg=new StringBuilder();
 			selectTeamImg
 		    .append(" select gs.game_schedule_id, ")
-		    .append(" gs.game_date, ")
+		    .append(" gs.game_date, gs.game_start_time, ")
 		    .append(" ht.team_name AS home_team_name, ht.team_logo_img AS home_team_logo, ")
 		    .append(" ot.team_name AS other_team_name, ot.team_logo_img AS other_team_logo, ")
 		    .append(" s.stadium_name ")
@@ -147,8 +150,10 @@ public class TeamPageDAO {
 			while(rs.next()) {
 				TeamDTO tDTO = new TeamDTO();
 				
-				tDTO.setGameScheduleCode(rs.getInt("game_schedule_id")); // 추가
+				
+				tDTO.setGameScheduleCode(rs.getInt("game_schedule_id"));
 				tDTO.setGameDate(rs.getDate("game_date"));
+				tDTO.setGameStartTime(rs.getString("game_start_time"));
 			    tDTO.setTeamHomeName(rs.getString("home_team_name"));
 			    tDTO.setTeamHomeImg(rs.getString("home_team_logo"));
 			    tDTO.setTeamOtherName(rs.getString("other_team_name"));
@@ -247,4 +252,8 @@ public class TeamPageDAO {
 		}
 		return leagueGuide;
 	}
+	
+	//이벤트 할인 조회
+	
+	
 }
