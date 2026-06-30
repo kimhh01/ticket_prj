@@ -8,6 +8,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
+<%
+// View인 main.jsp를 직접 실행하면 DB 조회를 담당하는 MainServlet으로 이동한다.
+String mainRequestPath = request.getRequestURI().substring(request.getContextPath().length());
+boolean forwardedByServlet = request.getAttribute("javax.servlet.forward.request_uri") != null;
+if (!forwardedByServlet && "/kr/user/main/main.jsp".equals(mainRequestPath)) {
+	response.sendRedirect(request.getContextPath() + "/main");
+	return;
+}
+%>
+
 <%@ include file="/fragment/header.jsp"%>
 
 <%!

@@ -15,6 +15,9 @@ String queryString = request.getQueryString();
 // 로그인 화면 자체를 제외하고 현재 GET 화면으로 돌아올 경로를 로그인 링크에 보존한다.
 if ("GET".equalsIgnoreCase(request.getMethod()) && !currentPath.startsWith("/member/")) {
 	String returnPath = currentPath;
+	if ("/kr/user/main/main.jsp".equals(returnPath)) {
+		returnPath = "/main";
+	}
 	if (queryString != null && !queryString.isEmpty()) {
 		returnPath += "?" + queryString;
 	}
