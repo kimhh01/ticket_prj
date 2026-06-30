@@ -9,10 +9,12 @@ public class TeamRankDTO {
 	private String teamName;
 	private String teamLogo;
 	private String stadiumName;
+	private int gameCount;
 	private int win;
 	private int lose;
 	private int draw;
 	private double winRate;
+	private double scoreGap;
 	private String season;
 	private Date rankUpdateDate;
 
@@ -56,6 +58,14 @@ public class TeamRankDTO {
 		this.stadiumName = stadiumName;
 	}
 
+	public int getGameCount() {
+		return gameCount;
+	}
+
+	public void setGameCount(int gameCount) {
+		this.gameCount = gameCount;
+	}
+
 	public int getWin() {
 		return win;
 	}
@@ -88,6 +98,14 @@ public class TeamRankDTO {
 		this.winRate = winRate;
 	}
 
+	public double getScoreGap() {
+		return scoreGap;
+	}
+
+	public void setScoreGap(double scoreGap) {
+		this.scoreGap = scoreGap;
+	}
+
 	public String getSeason() {
 		return season;
 	}
@@ -107,26 +125,29 @@ public class TeamRankDTO {
 	@Override
 	public String toString() {
 		return "TeamRankDTO [rankNo=" + rankNo + ", teamCode=" + teamCode + ", teamName=" + teamName + ", teamLogo="
-				+ teamLogo + ", stadiumName=" + stadiumName + ", win=" + win + ", lose=" + lose + ", draw=" + draw
-				+ ", winRate=" + winRate + ", season=" + season + ", rankUpdateDate=" + rankUpdateDate + "]";
+				+ teamLogo + ", stadiumName=" + stadiumName + ", gameCount=" + gameCount + ", win=" + win
+				+ ", lose=" + lose + ", draw=" + draw + ", winRate=" + winRate + ", scoreGap=" + scoreGap
+				+ ", season=" + season + ", rankUpdateDate=" + rankUpdateDate + "]";
 	}
 	
 	public TeamRankDTO() {
 		
 	}
 	
-	public TeamRankDTO(int rankNo, int teamCode, String teamName, String teamLogo, String stadiumName, int win,
-			int lose, int draw, double winRate, String season, Date rankUpdateDate) {
+	public TeamRankDTO(int rankNo, int teamCode, String teamName, String teamLogo, String stadiumName, int gameCount,
+			int win, int lose, int draw, double winRate, double scoreGap, String season, Date rankUpdateDate) {
 		super();
 		this.rankNo = rankNo;
 		this.teamCode = teamCode;
 		this.teamName = teamName;
 		this.teamLogo = teamLogo;
 		this.stadiumName = stadiumName;
+		this.gameCount = gameCount;
 		this.win = win;
 		this.lose = lose;
 		this.draw = draw;
 		this.winRate = winRate;
+		this.scoreGap = scoreGap;
 		this.season = season;
 		this.rankUpdateDate = rankUpdateDate;
 	}

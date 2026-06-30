@@ -143,10 +143,6 @@ response.setDateHeader("Expires", 0);
 		<div class="logo">
 			<a href="${pageContext.request.contextPath}/main">BallPick⚾</a>
 		</div>
-		<div class="search-box">
-			<input type="text" placeholder="검색어를 입력해 주세요.">
-			<button type="button">🔍</button>
-		</div>
 	</div>
 	<nav class="header-nav">
 		<a

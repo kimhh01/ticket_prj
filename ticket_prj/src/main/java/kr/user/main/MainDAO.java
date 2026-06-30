@@ -5,12 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import kr.user.common.UserDBConnection;
 
-@SuppressWarnings("unused")
 public class MainDAO {
 
 	/**
@@ -20,14 +18,6 @@ public class MainDAO {
 	private Connection getConnection() throws SQLException {
 		return UserDBConnection.getInstance().getConnection();
 	}// getConnection
-
-	/**
-	 * 메인화면 상단 배너 목록 조회
-	 * 
-	 */
-	public List<MainBannerDTO> selectMainBannerList() {
-		return null;
-	}// selectMainBannerList
 
 	/**
 	 * 메인화면 최근 경기 목록 조회
@@ -110,7 +100,19 @@ public class MainDAO {
 		List<TeamRankDTO> rankList = new ArrayList<TeamRankDTO>();
 
 		String sql =
-				"SELECT ROW_NUMBER() OVER (ORDER BY gr.win_rate DESC, gr.win_cnt DESC) AS rank_no, "
+				"WITH latest_record AS ( "
+				+ "    SELECT gr.*, "
+				+ "           ROW_NUMBER() OVER ( "
+				+ "               PARTITION BY gr.team_id "
+				+ "               ORDER BY gr.record_date DESC, gr.game_record_id DESC "
+				+ "           ) AS latest_no "
+				+ "    FROM game_record gr "
+				+ "), current_record AS ( "
+				+ "    SELECT * "
+				+ "    FROM latest_record "
+				+ "    WHERE latest_no = 1 "
+				+ ") "
+				+ "SELECT ROW_NUMBER() OVER (ORDER BY gr.win_rate DESC, gr.win_cnt DESC, gr.team_id) AS rank_no, "
 				+ "       gr.team_id, "
 				+ "       t.team_name, "
 				+ "       t.team_logo_img, "
@@ -121,10 +123,10 @@ public class MainDAO {
 				+ "       gr.win_rate, "
 				+ "       gr.score_gap, "
 				+ "       gr.record_date "
-				+ "FROM game_record gr "
+				+ "FROM current_record gr "
 				+ "JOIN team t "
 				+ "ON gr.team_id = t.team_id "
-				+ "ORDER BY gr.win_rate DESC, gr.win_cnt DESC";
+				+ "ORDER BY gr.win_rate DESC, gr.win_cnt DESC, gr.team_id";
 
 		try (Connection con = getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);
@@ -138,10 +140,12 @@ public class MainDAO {
 				dto.setTeamName(rs.getString("team_name"));
 				dto.setTeamLogo(rs.getString("team_logo_img"));
 
+				dto.setGameCount(rs.getInt("game_cnt"));
 				dto.setWin(rs.getInt("win_cnt"));
 				dto.setLose(rs.getInt("lose_cnt"));
 				dto.setDraw(rs.getInt("draw_cnt"));
 				dto.setWinRate(rs.getDouble("win_rate"));
+				dto.setScoreGap(rs.getDouble("score_gap"));
 				dto.setRankUpdateDate(rs.getDate("record_date"));
 
 				rankList.add(dto);
