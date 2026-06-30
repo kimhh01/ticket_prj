@@ -1,7 +1,7 @@
 package userMypage;
 
 import java.sql.Date;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import kr.user.common.UserDBConnection;
 import kr.user.member.MemberDTO;
 import userMypage.MyPageReservationDTO;
-import userMypage.ReservationCancelDTO;
 import userMypage.ReservationDetailDTO;
 
 public class MyPageDAO {
@@ -231,11 +230,110 @@ public class MyPageDAO {
             Date endDate,
             String flag) {
 
-        List<MyPageReservationDTO> list = null;
+        List<MyPageReservationDTO> list = new ArrayList<>();
+
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        UserDBConnection db = UserDBConnection.getInstance();
+
+        try {
+
+            con = db.getConnection();
+            StringBuilder sql = new StringBuilder();
+            
+            
+            
+            //SQL
+            sql.append("SELECT ");
+            sql.append("R.RESERVATION_ID, ");
+            sql.append("TH.TEAM_SHORT_NAME || ' VS ' || TA.TEAM_SHORT_NAME AS GAME_NAME, ");
+            sql.append("GS.GAME_DATE, ");
+            sql.append("GS.GAME_START_TIME, ");
+            sql.append("GS.GAME_DATE - 7 AS CANCEL_AVAILABLE_DATE, ");
+            sql.append("RD.RESERVATION_QUANTITY, ");
+            sql.append("R.RESERVATION_STATUS ");
+
+            sql.append("FROM RESERVATION R ");
+
+            sql.append("JOIN GAME_SCHEDULE GS ");
+            sql.append("ON R.GAME_SCHEDULE_ID = GS.GAME_SCHEDULE_ID ");
+
+            sql.append("JOIN TEAM TH ");
+            sql.append("ON GS.TEAM_HOME = TH.TEAM_ID ");
+
+            sql.append("JOIN TEAM TA ");
+            sql.append("ON GS.TEAM_OTHER = TO.TEAM_ID ");
+
+            sql.append("JOIN RESERVATION_DETAIL RD ");
+            sql.append("ON R.RESERVATION_ID = RD.RESERVATION_ID ");
+
+            sql.append("WHERE R.MEMBER_ID=? ");
+            
+            //취소탭 보이는 행
+            if("cancel".equals(flag)) {
+                sql.append("AND R.RESERVATION_STATUS='구매' ");
+            }
+            //기간 검색
+            if(startDate != null && endDate != null) {
+                sql.append("AND R.RESERVATION_DATE BETWEEN ? AND ? ");
+            }
+
+            sql.append("ORDER BY R.RESERVATION_DATE DESC ");
+            
+            System.out.println(sql.toString());
+            System.out.println("memberId = " + memberId);
+            
+            stmt = con.prepareStatement(sql.toString());
+
+            int idx = 1;
+
+            stmt.setString(idx++, memberId);
+
+            if(startDate != null && endDate != null) {
+
+                stmt.setDate(idx++, startDate);
+                stmt.setDate(idx++, endDate);
+
+            }
+
+            rs = stmt.executeQuery();
+            
+            while(rs.next()) {
+            	 System.out.println("조회됨");
+
+                MyPageReservationDTO dto = new MyPageReservationDTO();
+
+                dto.setReservationCode(rs.getInt("RESERVATION_ID"));
+                dto.setGameName(rs.getString("GAME_NAME"));
+                dto.setGameDate(rs.getDate("GAME_DATE"));
+                dto.setGameStartTime(rs.getString("GAME_START_TIME"));
+                dto.setCancelAvailableDate(rs.getDate("CANCEL_AVAILABLE_DATE"));
+                dto.setReservationQuantity(rs.getInt("RESERVATION_QUANTITY"));
+                dto.setReservationStatus(rs.getString("RESERVATION_STATUS"));
+
+                list.add(dto);
+
+            }
+            
+        } catch(SQLException e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            try {
+                db.close(rs, stmt, con);
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
 
         return list;
     }
-
+    
     // 경기 정보 조회
     public MyPageReservationDTO selectReservationGameInfo(
             int reservationCode,
@@ -276,21 +374,41 @@ public class MyPageDAO {
         return mpDTO;
     }
 
-    // 취소 내역 조회
-    public List<ReservationCancelDTO> selectCancelList(
-            String memberId) {
-
-        List<ReservationCancelDTO> list = null;
-
-        return list;
-    }
-
+  
     // 예매 취소
-    public int cancelReservation(
-            int reservationCode,
-            String memberId) {
+    public int cancelReservation(int reservationId, String memberId) {
 
         int result = 0;
+
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        UserDBConnection db = UserDBConnection.getInstance();
+
+        try {
+
+            con = db.getConnection();
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.append("UPDATE RESERVATION ");
+            sql.append("SET RESERVATION_STATUS=? ");
+            sql.append("WHERE RESERVATION_ID=? ");
+            sql.append("AND MEMBER_ID=? ");
+
+            stmt = con.prepareStatement(sql.toString());
+
+            stmt.setString(1, "취소완료");
+            stmt.setInt(2, reservationId);
+            stmt.setString(3, memberId);
+
+            result = stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+        	 db.close(stmt, con);
+        }
 
         return result;
     }

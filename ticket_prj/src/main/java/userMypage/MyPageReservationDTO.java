@@ -13,6 +13,8 @@ public class MyPageReservationDTO {
     private String homeTeamName;
     private String awayTeamName;
     private Date gameDate;
+    private String gameStartTime;
+    private Date cancelAvailableDate;
 
     // 경기장 / 좌석 정보
     private String stadiumName;
@@ -54,7 +56,7 @@ public class MyPageReservationDTO {
 			String awayTeamName, Date gameDate, String stadiumName, String seatName, String seatInfo, String ticketName,
 			int reservationQuantity, Date reservationDate, String reservationStatus, int paymentAmount,
 			Date paymentDate, String paymentStatus, int totalPrice, int currentPage, int pageSize, int startNum,
-			int endNum, int totalCount, int totalPage, Date startDate, Date endDate, int selectedYear,
+			int endNum, int totalCount, int totalPage, Date startDate,String gameStartTime, Date endDate, int selectedYear,
 			int selectedMonth, String periodType, String tabType) {
 		super();
 		this.reservationCode = reservationCode;
@@ -63,6 +65,9 @@ public class MyPageReservationDTO {
 		this.homeTeamName = homeTeamName;
 		this.awayTeamName = awayTeamName;
 		this.gameDate = gameDate;
+		//시작 시간 추가
+		this.gameStartTime = gameStartTime;
+		
 		this.stadiumName = stadiumName;
 		this.seatName = seatName;
 		this.seatInfo = seatInfo;
@@ -136,7 +141,26 @@ public class MyPageReservationDTO {
 	public void setGameDate(Date gameDate) {
 		this.gameDate = gameDate;
 	}
+	
+	
+	//경기 시간 추가
+	public String getgameStartTime() {
+		return gameStartTime;
+	}
 
+	public void setGameStartTime(String gameStartTime) {
+		this.gameStartTime = gameStartTime;
+	}
+
+	//취소가능일 추가: 경기날짜-7
+	public Date getCancelAvailableDate() {
+	    return cancelAvailableDate;
+	}
+
+	public void setCancelAvailableDate(Date cancelAvailableDate) {
+	    this.cancelAvailableDate = cancelAvailableDate;
+	}
+	
 	public String getStadiumName() {
 		return stadiumName;
 	}

@@ -1,6 +1,48 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%@page import="java.sql.Date"%>
+<%@page import="java.util.List"%>
+<%@page import="userMypage.MyPageReservationDTO"%>
+<%@page import="userMypage.MyPageService"%>
+<%@page import="kr.user.member.MemberDTO"%> 
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
+<%
+MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+
+if(loginMember == null){
+    response.sendRedirect("../login/login.jsp");
+    return;
+}
+
+MyPageService service = new MyPageService();
+
+Date startDate = null;
+Date endDate = null;
+
+List<MyPageReservationDTO> reservationList =
+        service.getReservationList(
+                loginMember.getMemberCode(),
+                startDate,
+                endDate,
+                "reservation");
+
+List<MyPageReservationDTO> cancelList =
+        service.getReservationList(
+                loginMember.getMemberCode(),
+                startDate,
+                endDate,
+                "cancel");
+%>
+
+<%
+pageContext.setAttribute("reservationList", reservationList);
+pageContext.setAttribute("cancelList", cancelList);
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,9 +80,11 @@
         예매확인
     </button>
 
-    <button type="button" id="btnCancel">
-        예매취소
-    </button>
+   <button type="button"
+        id="btnCancelTab">
+    예매취소
+</button>
+
     </div>
 
     <div class="search-area">
@@ -72,7 +116,6 @@
     
 <!-- 예매확인 영역 -->
 <div id="reservationArea">
-
     <table class="reservation-table">
         <thead>
             <tr>
@@ -84,32 +127,28 @@
                 <th>상태</th>
             </tr>
         </thead>
+	
+	<tbody>
 
-        <tbody>
-			
-            <tr class="reservation-row">
-                <td>111111</td>
-                <td>LG VS 삼성</td>
-                <td>2026.06.05 14:00</td>
-                <td>3</td>
-                <td>06.04</td>
-                <td>
-                    <button class="status-btn">예매완료</button>
-                </td>
-            </tr>
+<c:forEach var="dto" items="${reservationList}">
 
-            <tr class="reservation-row">
-                <td>222222</td>
-                <td>두산 VS 한화</td>
-                <td>2026.06.05 14:00</td>
-                <td>3</td>
-                <td>06.04</td>
-                <td>
-                    <button class="status-btn cancel">취소완료</button>
-                </td>
-            </tr>
+<tr class="reservation-row">
 
-        </tbody>
+    <td>${dto.reservationCode}</td>
+    <td>${dto.gameName}</td>
+    <td>${dto.gameDate} ${dto.gameStartTime}</td>
+    <td>${dto.reservationQuantity}</td>
+    <td>${dto.cancelAvailableDate}</td>
+    <td>
+        <button class="status-btn" type="button" disabled>
+            ${dto.reservationStatus}
+        </button>
+    </td>
+</tr>
+</c:forEach>
+
+</tbody>
+
     </table>
     </div>
     
@@ -271,7 +310,6 @@
             <th>매수</th>
               <th>취소가능일</th>
                 <th>예매취소</th>
-            <th></th>
         </tr>
         </thead>
 
@@ -284,12 +322,20 @@
             <td>3</td>
             <td>06.04</td>
             <td>
-                <button class="status-btn" data-bs-toggle="modal"
-        data-bs-target="#cancelModal">예매취소</button>
-            </td>
             
-            
+            <button class="status-btn btnCancel"
+        data-bs-toggle="modal"
+        data-bs-target="#cancelModal">
+    예매취소
+</button>
+</td>
         </tr>
+        
+
+
+        </tbody>
+
+    </table>
 <div class="modal fade" id="cancelModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered custom-dialog">
         <div class="modal-content custom-modal">
@@ -318,10 +364,6 @@
         </div>
     </div>
 </div>
-
-        </tbody>
-
-    </table>
 
 </div>
 
@@ -369,21 +411,21 @@
 
 $(function(){
 
-    // 예매확인 클릭
+    //예매확인 탭 클릭
     $("#btnReservation").click(function(){
 
         $("#btnReservation").addClass("active-btn");
-        $("#btnCancel").removeClass("active-btn");
+        $("#btnCancelTab").removeClass("active-btn");
 
         $("#reservationArea").show();
         $("#cancelArea").hide();
 
     });
 
-    // 예매취소 클릭
-    $("#btnCancel").click(function(){
+    // 예매취소 탭 클릭
+    $("#btnCancelTab").click(function(){
 
-        $("#btnCancel").addClass("active-btn");
+        $("#btnCancelTab").addClass("active-btn");
         $("#btnReservation").removeClass("active-btn");
 
         $("#reservationArea").hide();
