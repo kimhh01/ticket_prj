@@ -100,4 +100,12 @@ public class ReservationPageService {
     public String getSeatName(int stadiumSeatCode) throws SQLException { 
     	return rpDAO.selectSeatName(stadiumSeatCode); 
     }
+    //이벤트 쿠폰 할인
+    public int getDiscountRate(String eventCode) throws SQLException {
+    	return rpDAO.selectDiscountRate(eventCode);
+    }
+    //가격조회 메서드
+    public int getSeatPrice(int stadiumSeatCode, String reservationType) throws SQLException{
+        return rpDAO.selectSeatPrice(stadiumSeatCode, reservationType);
+    }
 }

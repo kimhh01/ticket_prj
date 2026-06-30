@@ -183,9 +183,17 @@
 											</select>
 										</td>
 									</tr>
-									<tr>
-										<td class="name-cell">할인금액</td>
-										<td colspan="3"><input type="text" class="discount-code"></td>
+									<tr class="discount-row">
+									    <td class="cat-cell">할인</td>
+									
+									    <td colspan="3" class="discount-cell">
+									        <div class="discount-wrap">
+									            <input type="text" class="discount-code" placeholder="할인쿠폰 코드를 입력하세요">
+												<input type="hidden" name="eventCode" id="hiddenEventCode">
+									            <button type="button" class="btn-discount" onclick="discountEvent()">적용</button>
+									            <span class="discount-msg"></span>
+									        </div>
+									    </td>
 									</tr>
 								</tbody>
 							</table>
@@ -435,14 +443,13 @@
 	        document.getElementById('view-step-2').classList.remove('hidden');
 	    }
 	    
-	    function discountEvent(){
-	    	
-	    }
 	
 	    let calculatedTicketPrice = 0;
 	    let calculatedFee = 0;
 	    let calculatedTotal = 0;
-	
+	    let discountRate = 0;
+	    let discountAmount = 0;
+	    
 	    function calculateInvoice() {
 	        const qtyDropdowns = document.querySelectorAll('.ticket-qty');
 	        let sumTicketPrice = 0;
@@ -461,10 +468,15 @@
 	        });
 	
 	        calculatedTicketPrice = sumTicketPrice;
+	        discountAmount = calculatedTicketPrice * discountRate / 100;
 	        calculatedFee = sumQty > 0 ? (sumQty * 1000) : 0;
-	        calculatedTotal = calculatedTicketPrice + calculatedFee;
+	        calculatedTotal =
+	            calculatedTicketPrice
+	            - discountAmount
+	            + calculatedFee;
 	
 	        document.getElementById('dynamic-seat-qty').innerText = sumQty + "매";
+	        document.getElementById('invoice-discount').innerText = discountAmount.toLocaleString() + "원";
 	        document.getElementById('invoice-ticket').innerText = calculatedTicketPrice.toLocaleString() + "원";
 	        document.getElementById('invoice-fee').innerText = calculatedFee.toLocaleString() + "원";
 	        document.getElementById('invoice-total').innerText = calculatedTotal.toLocaleString() + "원";
@@ -472,8 +484,44 @@
 	        document.getElementById('hiddenReservationQuantity').value = sumQty;
 	        document.getElementById('hiddenReservationType').value = lastSelectedType;
 	        document.getElementById('hiddenTotalPrice').value = calculatedTicketPrice;
-	        document.getElementById('hiddenDiscountPrice').value = 0;
+	        document.getElementById('hiddenDiscountPrice').value = discountAmount;
 	        document.getElementById('hiddenPayPrice').value = calculatedTotal;
+	        document.getElementById("hiddenEventCode").value = document.querySelector(".discount-code").value.trim();
+	    }
+	    
+	    //할인 함수
+	    function discountEvent() {
+
+	        const eventCode = document.querySelector(".discount-code").value.trim();
+
+	        if(eventCode===""){
+	            alert("쿠폰 코드를 입력해주세요.");
+	            return;
+	        }
+
+	        fetch("${pageContext.request.contextPath}/reservation?mode=coupon&eventCode=" + encodeURIComponent(eventCode))
+	        .then(response => response.text())
+	        .then(data => {
+
+	            const rate = parseInt(data);
+
+	            if(rate < 0){
+	                alert("존재하지 않는 쿠폰입니다.");
+	                return;
+	            }
+
+	            discountRate = rate;
+
+	            alert(rate + "% 할인쿠폰이 적용되었습니다.");
+
+	            calculateInvoice();
+
+	        })
+	        .catch(error=>{
+	            console.log(error);
+	            alert("쿠폰 조회 중 오류가 발생했습니다.");
+	        });
+
 	    }
 	
 	    function transitionToStep4() {
@@ -482,8 +530,9 @@
 	            return;
 	        }
 	        
-	        if(calculatedTotal > 4){
-	        	alert("티켓은 3매 이상 구매 불가입니다.")
+	        if (parseInt(document.getElementById("hiddenReservationQuantity").value) > 3) {
+	            alert("티켓은 3매 이상 구매 불가입니다.");
+	            return;
 	        }
 	        document.getElementById('step-nav-3').classList.remove('active');
 	        document.getElementById('step-nav-4').classList.add('active');
@@ -512,17 +561,19 @@
 	        const clientKey = 'test_ck_ma60RZblrq5wx4j5Pa9ZrwzYWBn1'; 
 	        const tossPayments = TossPayments(clientKey);
 	        
-	        const successUrl = window.location.origin + "${pageContext.request.contextPath}/reservation"
-	        + "?mode=success"
-	        + "&memberCode=${sessionScope.loginMember.memberCode}"
-	        + "&stadiumSeatCode=" + document.getElementById('hiddenStadiumSeatCode').value
-	        + "&reservationType=" + encodeURIComponent(document.getElementById('hiddenReservationType').value)
-	        + "&reservationQuantity=" + document.getElementById('hiddenReservationQuantity').value
-	        + "&totalPrice=" + document.getElementById('hiddenTotalPrice').value
-	        + "&discountPrice=" + document.getElementById('hiddenDiscountPrice').value 
-	        + "&payPrice=" + document.getElementById('hiddenPayPrice').value
-	        + "&gameScheduleCode=" + document.getElementById("hiddenGameScheduleCode").value;
-	        
+	        const successUrl =
+	            window.location.origin +
+	            "${pageContext.request.contextPath}/reservation"
+	            + "?mode=success"
+	            + "&memberCode=${sessionScope.loginMember.memberCode}"
+	            + "&stadiumSeatCode=" + document.getElementById("hiddenStadiumSeatCode").value
+	            + "&reservationType=" + encodeURIComponent(document.getElementById("hiddenReservationType").value)
+	            + "&reservationQuantity=" + document.getElementById("hiddenReservationQuantity").value
+	            + "&totalPrice=" + document.getElementById("hiddenTotalPrice").value
+	            + "&discountPrice=" + document.getElementById("hiddenDiscountPrice").value
+	            + "&payPrice=" + document.getElementById("hiddenPayPrice").value
+	            + "&gameScheduleCode=" + document.getElementById("hiddenGameScheduleCode").value
+	            + "&eventCode=" + encodeURIComponent(document.getElementById("hiddenEventCode").value);
 
 	        tossPayments.requestPayment('카드', {
 	            amount: calculatedTotal,

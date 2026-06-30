@@ -416,6 +416,64 @@ table{
 }
 
 /*************************************************
+    할인쿠폰
+*************************************************/
+
+.discount-row .cat-cell{
+    background:#f8f8f8;
+    font-weight:bold;
+    color:#666;
+    text-align:center;
+}
+
+.discount-cell{
+    padding:12px 15px !important;
+}
+
+.discount-wrap{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.discount-code{
+    flex:1;
+    height:34px;
+    padding:0 10px;
+    border:1px solid #ccc;
+    border-radius:4px;
+    font-size:13px;
+    transition:.2s;
+}
+
+.discount-code:focus{
+    outline:none;
+    border-color:#1d70e2;
+    box-shadow:0 0 0 2px rgba(29,112,226,.15);
+}
+
+.btn-discount{
+    width:80px;
+    height:34px;
+    border:1px solid #2b2e33;
+    border-radius:4px;
+    background:#2b2e33;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.btn-discount:hover{
+    background:#1d1f23;
+}
+
+.discount-msg{
+    color:#1d70e2;
+    font-size:12px;
+}
+/*************************************************
     수량 선택
 *************************************************/
 

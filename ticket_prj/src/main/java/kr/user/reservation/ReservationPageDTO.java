@@ -46,6 +46,8 @@ public class ReservationPageDTO {
 	private int adultSeatPrice;//성인좌석가격
 	private int youthSeatPrice;//청소년좌석가격
 	private int childSeatPrice;//어린이좌석가격
+	private String eventCode;//이벤트코드
+	private int discount;//할인율
 	
 	
 }

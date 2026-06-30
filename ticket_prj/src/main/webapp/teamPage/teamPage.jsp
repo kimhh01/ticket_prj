@@ -66,12 +66,13 @@ $(function(){
         $("#" + targetId).addClass("active");
     });
 
-    // 🌟 구단 소개 및 가이드 버튼 클릭 시 상단에서 계산된 JSTL teamUrl 주소로 새 창 띄우기 연동 완료
+    //예매가이드 클릭시 이동
     $(".guideBtn").click(function(){
 	    location.href =
         contextPath + "/user_reservationGuide/reservationGuide.jsp";
 	});
     
+    //구단 소개 클릭시 이동
     $(".introduceBtn").click(function(){
         window.open(
             "${teamUrl}",
@@ -343,7 +344,6 @@ $(function(){
     </section>
 </div>
 
-<%-- [탭 3] 리그안내 컨텐츠 영역 --%>
 <div id="tab-league" class="tab-content">
     <section class="league-guide-wrap">
     	<div>

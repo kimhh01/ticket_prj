@@ -355,5 +355,70 @@ public class ReservationPageDAO {
 	    return seatName;
 	}
 	
+	//이벤트 할인율 조회
+	public int selectDiscountRate(String eventCode) throws SQLException{
+		int discount=0;
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		try {
+	        con = udbc.getConnection();
+	        // stadium_seat 테이블에서 ID로 좌석 이름을 가져오는 쿼리
+	        String sql = "SELECT discount FROM event WHERE event_code = ?";;
+	        
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, eventCode);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            discount = rs.getInt("discount");
+	        }
+	    } finally {
+	        udbc.close(rs, pstmt, con);
+	    }
+	    return discount;
+		
+	}
+	//좌석 가격 조회 메서드
+	public int selectSeatPrice(int stadiumSeatCode, String reservationType) throws SQLException {
+
+	    int price = 0;
+
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+
+	        con = udbc.getConnection();
+
+	        String sql =
+	            "SELECT adult_seat_price, youth_seat_price, child_seat_price " +
+	            "FROM stadium_seat " +
+	            "WHERE stadium_seat_id=?";
+
+	        pstmt = con.prepareStatement(sql);
+
+	        pstmt.setInt(1, stadiumSeatCode);
+
+	        rs = pstmt.executeQuery();
+
+	        if(rs.next()){
+	            if("성인".equals(reservationType)){
+	                price = rs.getInt("adult_seat_price");
+	            }else if("청소년".equals(reservationType)){
+	                price = rs.getInt("youth_seat_price");
+	            }else{
+	                price = rs.getInt("child_seat_price");
+	            }
+	        }
+
+	    } finally {
+	        udbc.close(rs, pstmt, con);
+	    }
+
+	    return price;
+	}
 	
 }
