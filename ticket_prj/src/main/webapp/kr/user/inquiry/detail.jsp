@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="kr.user.inquiry.InquiryDTO" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
 InquiryDTO inquiry = (InquiryDTO) request.getAttribute("inquiry");
@@ -45,12 +46,12 @@ boolean isAnswered = inquiry != null && inquiry.getReplyContent() != null && !""
             <dl class="inquiry-detail">
                 <div class="inquiry-detail-row">
                     <dt>처리 상태</dt>
-                    <dd><span class="inquiry-status"><%=inquiry.getInquiryStatus()%></span></dd>
+                    <dd><span class="inquiry-status"><c:out value="<%=inquiry.getInquiryStatus()%>" /></span></dd>
                 </div>
 
                 <div class="inquiry-detail-row">
                     <dt>문의 유형</dt>
-                    <dd><%=categoryName%></dd>
+                    <dd><c:out value="<%=categoryName%>" /></dd>
                 </div>
 
                 <div class="inquiry-detail-row">
@@ -60,12 +61,12 @@ boolean isAnswered = inquiry != null && inquiry.getReplyContent() != null && !""
 
                 <div class="inquiry-detail-row">
                     <dt>제목</dt>
-                    <dd><%=inquiry.getInquiryTitle()%></dd>
+                    <dd><c:out value="<%=inquiry.getInquiryTitle()%>" /></dd>
                 </div>
 
                 <div class="inquiry-detail-row inquiry-detail-row-content">
                     <dt>문의 내용</dt>
-                    <dd><%=inquiry.getInquiryContent()%></dd>
+                    <dd><c:out value="<%=inquiry.getInquiryContent()%>" /></dd>
                 </div>
 
                 <% if (isAnswered) { %>
@@ -76,7 +77,7 @@ boolean isAnswered = inquiry != null && inquiry.getReplyContent() != null && !""
 
                     <div class="inquiry-detail-row inquiry-detail-row-content">
                         <dt>답변 내용</dt>
-                        <dd><%=inquiry.getReplyContent()%></dd>
+                        <dd><c:out value="<%=inquiry.getReplyContent()%>" /></dd>
                     </div>
                 <% } else { %>
                     <div class="inquiry-detail-row inquiry-detail-row-content">
@@ -93,9 +94,6 @@ boolean isAnswered = inquiry != null && inquiry.getReplyContent() != null && !""
                     <form method="post" action="<%=request.getContextPath()%>/user-inquiry/edit">
                         <input type="hidden" name="stage" value="form">
                         <input type="hidden" name="inquiryCode" value="<%=inquiry.getInquiryCode()%>">
-                        <input type="hidden" name="inquiryCategoryCode" value="<%=inquiry.getInquiryCategoryCode()%>">
-                        <input type="hidden" name="inquiryTitle" value="<%=inquiry.getInquiryTitle()%>">
-                        <input type="hidden" name="inquiryContent" value="<%=inquiry.getInquiryContent()%>">
                         <button class="inquiry-button" type="submit">문의 수정</button>
                     </form>
                 <% } else { %>

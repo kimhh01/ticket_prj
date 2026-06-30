@@ -1,5 +1,6 @@
 package kr.user.inquiry;
 
+// 사용하지 않는 DTO 클래스, 필요시 삭제 예정
 public class InquiryCategoryDTO {
 
 	private int inquiryCategoryCode;		// 문의 유형 코드

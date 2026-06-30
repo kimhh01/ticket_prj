@@ -1,8 +1,8 @@
 package kr.user.inquiry;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,15 +23,8 @@ public class InquiryViewServlet extends HttpServlet {
 	// 문의 관련 비즈니스 로직을 처리할 Service
 	private InquiryService inquiryService;
 
-	// 문의 유형 목록
-	private static final Map<Integer, String> CATEGORIES = new LinkedHashMap<Integer, String>();
-
-	static {
-		CATEGORIES.put(1, "예매문의");
-		CATEGORIES.put(2, "결제문의");
-		CATEGORIES.put(3, "회원문의");
-		CATEGORIES.put(4, "기타문의");
-	}
+	// JSP가 사용하던 Map 형식은 유지하고 실제 값은 InquiryType에서 가져온다.
+	private static final Map<Integer, String> CATEGORIES = InquiryType.toDisplayMap();
 
 	public InquiryViewServlet() {
 		inquiryService = new InquiryService();
@@ -53,7 +46,7 @@ public class InquiryViewServlet extends HttpServlet {
 		case "/write":
 			// 로그인하지 않은 사용자는 문의 작성 페이지에 접근할 수 없다.
 			if (getLoginMember(request) == null) {
-				response.sendRedirect(request.getContextPath() + "/member/login?redirect=/user-inquiry/write");
+				redirectToLogin(request, response);
 				return;
 			}
 
@@ -118,7 +111,7 @@ public class InquiryViewServlet extends HttpServlet {
 		MemberDTO loginMember = getLoginMember(request);
 
 		if (loginMember == null) {
-			response.sendRedirect(request.getContextPath() + "/member/login");
+			redirectToLogin(request, response);
 			return;
 		}
 
@@ -163,7 +156,7 @@ public class InquiryViewServlet extends HttpServlet {
 		MemberDTO loginMember = getLoginMember(request);
 
 		if (loginMember == null) {
-			response.sendRedirect(request.getContextPath() + "/member/login");
+			redirectToLogin(request, response);
 			return;
 		}
 		
@@ -191,7 +184,7 @@ public class InquiryViewServlet extends HttpServlet {
 		MemberDTO loginMember = getLoginMember(request);
 
 		if (loginMember == null) {
-			response.sendRedirect(request.getContextPath() + "/member/login");
+			redirectToLogin(request, response);
 			return;
 		}
 
@@ -227,7 +220,7 @@ public class InquiryViewServlet extends HttpServlet {
 		MemberDTO loginMember = getLoginMember(request);
 
 		if (loginMember == null) {
-			response.sendRedirect(request.getContextPath() + "/member/login");
+			redirectToLogin(request, response);
 			return;
 		}
 
@@ -310,8 +303,21 @@ public class InquiryViewServlet extends HttpServlet {
 	 * 형태로 저장했기 때문에 같은 이름으로 꺼낸다.
 	 */
 	private MemberDTO getLoginMember(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		return (MemberDTO) session.getAttribute("loginMember");
+		HttpSession session = request.getSession(false);
+		return session == null ? null : (MemberDTO) session.getAttribute("loginMember");
+	}
+
+	/**
+	 * 로그인 후 현재 사용자 문의 주소로 돌아올 수 있도록 내부 경로를 전달한다.
+	 */
+	private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String target = request.getRequestURI().substring(request.getContextPath().length());
+		if ("GET".equalsIgnoreCase(request.getMethod()) && request.getQueryString() != null) {
+			target += "?" + request.getQueryString();
+		}
+
+		response.sendRedirect(request.getContextPath() + "/member/login?redirect="
+				+ URLEncoder.encode(target, "UTF-8"));
 	}
 
 	/**
@@ -370,7 +376,7 @@ public class InquiryViewServlet extends HttpServlet {
 	 * inquiry_content는 VARCHAR2(255)이므로 길이를 DB 컬럼에 맞춘다.
 	 */
 	private String validate(FormData form) {
-		if (!CATEGORIES.containsKey(form.categoryCode)) {
+		if (InquiryType.fromCode(form.categoryCode) == null) {
 			return "문의 유형을 선택해 주세요.";
 		}
 

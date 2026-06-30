@@ -97,16 +97,39 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 }
 
 .hero-slide {
-	display: none;
+	display: block;
 	position: absolute;
 	width: 100%;
 	height: 100%;
 	left: 0;
 	top: 0;
+	transform: translateX(100%);
+	visibility: hidden;
+	pointer-events: none;
+	z-index: 1;
+	transition: transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+		visibility 0s linear 0.75s;
 }
 
 .hero-slide.active {
-	display: block;
+	transform: translateX(0);
+	visibility: visible;
+	pointer-events: auto;
+	z-index: 2;
+	transition-delay: 0s;
+}
+
+.hero-slide.leaving {
+	transform: translateX(-100%);
+	visibility: visible;
+	pointer-events: none;
+	z-index: 1;
+	transition-delay: 0s;
+}
+
+.hero-slide.resetting {
+	visibility: hidden;
+	transition: none;
 }
 
 .hero-slide a {
@@ -604,7 +627,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 			%>
 			<div class="hero-slide <%=i == 0 ? "active" : ""%>">
 				<a
-					href="<%=request.getContextPath()%>/reservation/list?teamCode=<%=banner.getTeamCode()%>">
+					href="<%=request.getContextPath()%>/teamPage?teamCode=<%=banner.getTeamCode()%>">
 
 					<img
 					src="<%=request.getContextPath()%>/images/banner/<%=banner.getBannerImg()%>"
@@ -884,29 +907,43 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 
 		const slides = document.querySelectorAll(".hero-slider > .hero-slide");
 		const dots = document.querySelectorAll(".hero-dot");
+		const slider = document.getElementById("heroSlider");
 
 		let currentSlide = 0;
+		let slideTimer = null;
+		let isSliding = false;
 
 		function showSlide(index) {
-			if (slides.length === 0) {
+			if (slides.length === 0 || isSliding || index === currentSlide) {
 				return;
 			}
 
-			for (let i = 0; i < slides.length; i++) {
-				slides[i].classList.remove("active");
+			isSliding = true;
+			const previousSlide = slides[currentSlide];
+			const nextSlide = slides[index];
 
-				if (dots[i]) {
-					dots[i].classList.remove("active");
-				}
+			previousSlide.classList.remove("active");
+			previousSlide.classList.add("leaving");
+			nextSlide.classList.remove("leaving");
+			nextSlide.classList.add("active");
+
+			if (dots[currentSlide]) {
+				dots[currentSlide].classList.remove("active");
 			}
-
-			slides[index].classList.add("active");
 
 			if (dots[index]) {
 				dots[index].classList.add("active");
 			}
 
 			currentSlide = index;
+
+			window.setTimeout(function() {
+				previousSlide.classList.add("resetting");
+				previousSlide.classList.remove("leaving");
+				void previousSlide.offsetWidth;
+				previousSlide.classList.remove("resetting");
+				isSliding = false;
+			}, 760);
 		}
 
 		function nextSlide() {
@@ -926,10 +963,34 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 		for (let i = 0; i < dots.length; i++) {
 			dots[i].addEventListener("click", function() {
 				showSlide(i);
+				restartAutoSlide();
 			});
 		}
 
-		setInterval(nextSlide, 5000);
+		function stopAutoSlide() {
+			if (slideTimer !== null) {
+				clearInterval(slideTimer);
+				slideTimer = null;
+			}
+		}
+
+		function startAutoSlide() {
+			stopAutoSlide();
+			if (slides.length > 1) {
+				slideTimer = setInterval(nextSlide, 5000);
+			}
+		}
+
+		function restartAutoSlide() {
+			startAutoSlide();
+		}
+
+		if (slider) {
+			slider.addEventListener("mouseenter", stopAutoSlide);
+			slider.addEventListener("mouseleave", startAutoSlide);
+		}
+
+		startAutoSlide();
 	});
 </script>
 

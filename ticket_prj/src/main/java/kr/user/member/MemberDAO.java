@@ -24,7 +24,7 @@ public class MemberDAO {
 		ResultSet rs = null;
 
 		String sql =
-			" SELECT MEMBER_ID, NAME, GRADE_NAME, EMAIL, PASS, PHONE, ZIPCODE, " +
+			" SELECT MEMBER_ID, NAME, GRADE_NAME, EMAIL, PHONE, ZIPCODE, " +
 			"        ADDRESS, ADDRESS2, STATE, JOIN_DATE, SNS_RECEIVE_YN, EMAIL_RECEIVE_YN " +
 			" FROM MEMBER " +
 			" WHERE MEMBER_ID = ? " +
@@ -45,8 +45,8 @@ public class MemberDAO {
 
 				resultDTO.setMemberCode(rs.getString("MEMBER_ID"));
 				resultDTO.setName(rs.getString("NAME"));
+				resultDTO.setGradeName(rs.getString("GRADE_NAME"));
 				resultDTO.setEmail(rs.getString("EMAIL"));
-				resultDTO.setPassword(rs.getString("PASS"));
 				resultDTO.setPhone(rs.getString("PHONE"));
 				resultDTO.setZipcode(rs.getInt("ZIPCODE"));
 				resultDTO.setAddress(rs.getString("ADDRESS"));
@@ -359,8 +359,5 @@ public class MemberDAO {
 		return cnt;
 	}
 
-	public void updateMember(MemberDTO memberDTO) {
-		
-	}
 
 }

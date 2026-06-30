@@ -1,29 +1,15 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="javax.servlet.http.HttpServletRequest"%>
 <%@page import="kr.user.inquiry.InquiryDTO"%>
+<%@page import="kr.user.inquiry.InquiryType"%>
 <%@page import="java.util.List"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%!
 private String getCategoryName(int categoryCode) {
-	String categoryName = "기타문의";
-
-	switch (categoryCode) {
-	case 1:
-		categoryName = "예매문의";
-		break;
-	case 2:
-		categoryName = "결제문의";
-		break;
-	case 3:
-		categoryName = "회원문의";
-		break;
-	case 4:
-		categoryName = "기타문의";
-		break;
-	}
-
-	return categoryName;
+	InquiryType type = InquiryType.fromCode(categoryCode);
+	return type == null ? InquiryType.ETC.getDisplayName() : type.getDisplayName();
 }
 
 @SuppressWarnings("unchecked")
@@ -92,7 +78,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 								<td><%= getCategoryName(inquiry.getInquiryCategoryCode()) %></td>
 								<td class="inquiry-list-title">
 									<a href="<%=request.getContextPath()%>/user-inquiry/detail?inquiryCode=<%= inquiry.getInquiryCode() %>">
-										<%= inquiry.getInquiryTitle() %>
+										<c:out value="<%=inquiry.getInquiryTitle()%>" />
 									</a>
 								</td>
 								<td><%= inquiry.getInquiryDate() == null ? "-" : sdf.format(inquiry.getInquiryDate()) %></td>

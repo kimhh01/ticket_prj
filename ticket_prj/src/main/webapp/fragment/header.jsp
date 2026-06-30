@@ -1,10 +1,25 @@
 <%@ page import="kr.user.member.MemberDTO"%>
+<%@ page import="java.net.URLEncoder"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 response.setHeader("Pragma", "no-cache");
 response.setDateHeader("Expires", 0);
+
+String loginUrl = request.getContextPath() + "/member/login";
+String currentPath = request.getRequestURI().substring(request.getContextPath().length());
+String queryString = request.getQueryString();
+
+// 로그인 화면 자체를 제외하고 현재 GET 화면으로 돌아올 경로를 로그인 링크에 보존한다.
+if ("GET".equalsIgnoreCase(request.getMethod()) && !currentPath.startsWith("/member/")) {
+	String returnPath = currentPath;
+	if (queryString != null && !queryString.isEmpty()) {
+		returnPath += "?" + queryString;
+	}
+	loginUrl += "?redirect=" + URLEncoder.encode(returnPath, "UTF-8");
+}
 %><!-- 로그아웃 후 뒤로가기 버튼 눌렀을 때 로그인 상태로 돌아가서 캐시 방지 코드 -->
 
 <style>
@@ -124,13 +139,13 @@ response.setDateHeader("Expires", 0);
 			<%
 			if (loginMember == null) {
 			%>
-			<a href="<%=request.getContextPath()%>/member/login">로그인</a> <a
+			<a href="<%=loginUrl%>">로그인</a> <a
 				href="<%=request.getContextPath()%>/member/join-agree">회원가입</a> <a
 				href="<%=request.getContextPath()%>/user-inquiry">고객센터</a>
 			<%
 			} else {
 			%>
-			<span><%=loginMember.getName()%>님</span> <a
+			<span><c:out value="${sessionScope.loginMember.name}" />님</span> <a
 				href="<%=request.getContextPath()%>/mypage_user/reservation.jsp">마이페이지</a>
 			<a href="<%=request.getContextPath()%>/member/logout">로그아웃</a> <a
 				href="<%=request.getContextPath()%>/user-inquiry">고객센터</a>

@@ -73,8 +73,8 @@ String formContent = request.getAttribute("formContent") == null ? "" : (String)
             <div class="inquiry-field">
                 <label for="inquiryContent">문의 내용 <span class="inquiry-required">*</span></label>
                 <textarea class="inquiry-textarea" id="inquiryContent" name="inquiryContent"
-                          maxlength="2000" placeholder="문의 내용을 입력해 주세요."><%=formContent%></textarea>
-                <div class="inquiry-field-meta"><span>개인정보를 포함하지 않도록 주의해 주세요.</span><span id="contentCount">0/2000</span></div>
+                          maxlength="255" placeholder="문의 내용을 입력해 주세요."><%=formContent%></textarea>
+                <div class="inquiry-field-meta"><span>개인정보를 포함하지 않도록 주의해 주세요.</span><span id="contentCount">0/255</span></div>
             </div>
             <div class="inquiry-error" id="clientError" hidden="hidden"></div>
             <div class="inquiry-actions">
@@ -98,7 +98,7 @@ String formContent = request.getAttribute("formContent") == null ? "" : (String)
 
     function updateCount() {
         titleCount.textContent = title.value.length + "/100";
-        contentCount.textContent = content.value.length + "/2000";
+        contentCount.textContent = content.value.length + "/255";
     }
 
     title.addEventListener("input", updateCount);
@@ -109,7 +109,7 @@ String formContent = request.getAttribute("formContent") == null ? "" : (String)
         let message = "";
         if (category.value === "") message = "문의 유형을 선택해 주세요.";
         else if (title.value.trim().length < 1 || title.value.trim().length > 100) message = "제목은 1자 이상 100자 이하로 입력해 주세요.";
-        else if (content.value.trim().length < 1 || content.value.trim().length > 2000) message = "문의 내용은 1자 이상 2,000자 이하로 입력해 주세요.";
+        else if (content.value.trim().length < 1 || content.value.trim().length > 255) message = "문의 내용은 1자 이상 255자 이하로 입력해 주세요.";
 
         if (message !== "") {
             event.preventDefault();

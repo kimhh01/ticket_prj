@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/member/*")
 public class MemberViewServlet extends HttpServlet {
@@ -130,8 +131,13 @@ public class MemberViewServlet extends HttpServlet {
 			return;
 		}
 
-		request.getSession().setAttribute("loginMember", loginMember);
-		response.sendRedirect(request.getContextPath() + "/main");
+		HttpSession session = request.getSession();
+		request.changeSessionId();
+		session.setAttribute("loginMember", loginMember);
+
+		String redirectPath = getSafeRedirectPath(request.getParameter("redirect"));
+		response.sendRedirect(request.getContextPath()
+				+ (redirectPath.isEmpty() ? "/main" : redirectPath));
 	}
 
 	/**
@@ -364,15 +370,15 @@ public class MemberViewServlet extends HttpServlet {
 	 * 회원가입 실패 시 비밀번호를 제외한 입력값을 다시 화면에 보여주기 위해 request에 저장한다.
 	 */
 	private void keepJoinFormValue(HttpServletRequest request) {
-		request.setAttribute("memberCode", trim(request.getParameter("memberCode")));
-		request.setAttribute("name", trim(request.getParameter("name")));
-		request.setAttribute("email", trim(request.getParameter("email")));
-		request.setAttribute("phone1", trim(request.getParameter("phone1")));
-		request.setAttribute("phone2", trim(request.getParameter("phone2")));
-		request.setAttribute("phone3", trim(request.getParameter("phone3")));
-		request.setAttribute("zipcode", trim(request.getParameter("zipcode")));
-		request.setAttribute("address", trim(request.getParameter("address")));
-		request.setAttribute("address2", trim(request.getParameter("address2")));
+		request.setAttribute("memberCode", escapeHtml(trim(request.getParameter("memberCode"))));
+		request.setAttribute("name", escapeHtml(trim(request.getParameter("name"))));
+		request.setAttribute("email", escapeHtml(trim(request.getParameter("email"))));
+		request.setAttribute("phone1", escapeHtml(trim(request.getParameter("phone1"))));
+		request.setAttribute("phone2", escapeHtml(trim(request.getParameter("phone2"))));
+		request.setAttribute("phone3", escapeHtml(trim(request.getParameter("phone3"))));
+		request.setAttribute("zipcode", escapeHtml(trim(request.getParameter("zipcode"))));
+		request.setAttribute("address", escapeHtml(trim(request.getParameter("address"))));
+		request.setAttribute("address2", escapeHtml(trim(request.getParameter("address2"))));
 		request.setAttribute("smsReceiveYN", defaultConsent(request.getParameter("smsReceiveYN")));
 		request.setAttribute("emailReceiveYN", defaultConsent(request.getParameter("emailReceiveYN")));
 	}
@@ -383,6 +389,18 @@ public class MemberViewServlet extends HttpServlet {
 				.replace(">", "&gt;")
 				.replace("\"", "&quot;")
 				.replace("'", "&#39;");
+	}
+
+	/**
+	 * 로그인 후 이동 경로는 현재 애플리케이션 내부의 절대 경로만 허용한다.
+	 */
+	private String getSafeRedirectPath(String value) {
+		String redirectPath = trim(value);
+		if (!redirectPath.startsWith("/") || redirectPath.startsWith("//")
+				|| redirectPath.indexOf('\r') >= 0 || redirectPath.indexOf('\n') >= 0) {
+			return "";
+		}
+		return redirectPath;
 	}
 
 }

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -21,6 +22,7 @@
 
         <form class="member-form" id="loginForm" method="post"
               action="<%=request.getContextPath()%>/member/login" novalidate>
+            <input type="hidden" name="redirect" value="<c:out value='${param.redirect}' />">
             <div class="member-field">
                 <label for="memberCode">아이디</label>
                 <input class="member-input" type="text" id="memberCode" name="memberCode"

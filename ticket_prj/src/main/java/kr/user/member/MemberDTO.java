@@ -6,7 +6,7 @@ public class MemberDTO {
 
 	private String memberCode;       // 회원 아이디
 	private String name;           // 이름
-	private int gradeCode;         // 등급 코드
+	private String gradeName;      // 회원 등급명
 	private String email;          // 이메일
 	private String password;       // 비밀번호
 	private String phone;          // 휴대폰 번호
@@ -21,12 +21,12 @@ public class MemberDTO {
 	public MemberDTO() {
 	}
 
-	public MemberDTO(String memberCode, String name, int gradeCode, String email, String password, String phone,
+	public MemberDTO(String memberCode, String name, String gradeName, String email, String password, String phone,
 			int zipcode, String address, String address2, String state, Date joinDate, char smsReceiveYN,
 			char emailReceiveYN) {
 		this.memberCode = memberCode;
 		this.name = name;
-		this.gradeCode = gradeCode;
+		this.gradeName = gradeName;
 		this.email = email;
 		this.password = password;
 		this.phone = phone;
@@ -55,12 +55,12 @@ public class MemberDTO {
 		this.name = name;
 	}
 
-	public int getGradeCode() {
-		return gradeCode;
+	public String getGradeName() {
+		return gradeName;
 	}
 
-	public void setGradeCode(int gradeCode) {
-		this.gradeCode = gradeCode;
+	public void setGradeName(String gradeName) {
+		this.gradeName = gradeName;
 	}
 
 	public String getEmail() {
@@ -145,9 +145,8 @@ public class MemberDTO {
 
 	@Override
 	public String toString() {
-		return "MemberDTO [memberCode=" + memberCode + ", name=" + name + ", gradeCode=" + gradeCode + ", email=" + email
-				+ ", password=" + password + ", phone=" + phone + ", zipcode=" + zipcode + ", address=" + address
-				+ ", address2=" + address2 + ", state=" + state + ", joinDate=" + joinDate + ", smsReceiveYN="
+		return "MemberDTO [memberCode=" + memberCode + ", name=" + name + ", gradeName=" + gradeName
+				+ ", state=" + state + ", joinDate=" + joinDate + ", smsReceiveYN="
 				+ smsReceiveYN + ", emailReceiveYN=" + emailReceiveYN + "]";
 	}
 

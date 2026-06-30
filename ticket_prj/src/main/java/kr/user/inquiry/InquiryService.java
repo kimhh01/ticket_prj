@@ -11,15 +11,6 @@ public class InquiryService {
 	}
 
 	/**
-	 * 문의 카테고리 목록 조회
-	 * 
-	 * @return 문의 카테고리 목록
-	 */
-	public List<InquiryCategoryDTO> getInquiryCategoryList() {
-		return inquiryDAO.selectInquiryCategoryList();
-	}
-
-	/**
 	 * 1:1 문의 등록
 	 * 
 	 * @param inquiryDTO 등록할 문의 정보
@@ -80,8 +71,7 @@ public class InquiryService {
 			return false;
 		}
 
-		inquiryDAO.updateInquiry(inquiryDTO);
-		return true;
+		return inquiryDAO.updateInquiry(inquiryDTO) == 2;
 	}
 
 	/**

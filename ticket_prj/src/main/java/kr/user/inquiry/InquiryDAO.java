@@ -64,72 +64,6 @@ public class InquiryDAO {
 	}// selectNextInquiryCategoryCode
 
 	/**
-	 * 문의 유형 코드에 따른 문의 유형명 반환
-	 * 
-	 * JSP에서는 1, 2, 3, 4 같은 숫자 코드로 받고,
-	 * DB의 INQUIRY_CATEGORY.INQUIRY_TYPE에는 예매문의, 결제문의 같은 문자열로 저장한다.
-	 */
-	private String convertCategoryCodeToType(int inquiryCategoryCode) {
-		String inquiryType = "기타문의";
-
-		switch (inquiryCategoryCode) {
-		case 1:
-			inquiryType = "예매문의";
-			break;
-		case 2:
-			inquiryType = "결제문의";
-			break;
-		case 3:
-			inquiryType = "회원문의";
-			break;
-		case 4:
-			inquiryType = "기타문의";
-			break;
-		}
-
-		return inquiryType;
-	}// convertCategoryCodeToType
-
-	/**
-	 * 문의 유형명을 문의 유형 코드로 변환
-	 * 
-	 * DB에서 조회한 문자열을 InquiryDTO의 inquiryCategoryCode에 다시 넣기 위해 사용한다.
-	 */
-	private int convertInquiryTypeToCategoryCode(String inquiryType) {
-		int inquiryCategoryCode = 4;
-
-		if ("예매문의".equals(inquiryType)) {
-			inquiryCategoryCode = 1;
-		} else if ("결제문의".equals(inquiryType)) {
-			inquiryCategoryCode = 2;
-		} else if ("회원문의".equals(inquiryType)) {
-			inquiryCategoryCode = 3;
-		} else if ("기타문의".equals(inquiryType)) {
-			inquiryCategoryCode = 4;
-		}
-
-		return inquiryCategoryCode;
-	}// convertInquiryTypeToCategoryCode
-
-	/**
-	 * 문의 카테고리 목록 조회
-	 * 
-	 * 현재 DB의 INQUIRY_CATEGORY 테이블은 순수 카테고리 목록 테이블이라기보다
-	 * 문의글별 문의유형 저장 테이블에 가까우므로,
-	 * 사용자 문의 작성 화면에서는 고정 카테고리 목록을 만들어서 반환한다.
-	 */
-	public List<InquiryCategoryDTO> selectInquiryCategoryList() {
-		List<InquiryCategoryDTO> categoryList = new ArrayList<InquiryCategoryDTO>();
-
-		categoryList.add(new InquiryCategoryDTO(1, 0, "예매문의"));
-		categoryList.add(new InquiryCategoryDTO(2, 0, "결제문의"));
-		categoryList.add(new InquiryCategoryDTO(3, 0, "회원문의"));
-		categoryList.add(new InquiryCategoryDTO(4, 0, "기타문의"));
-
-		return categoryList;
-	}// selectInquiryCategoryList
-
-	/**
 	 * 1:1 문의 등록
 	 * 
 	 * 사용자 문의 등록 시 INQUIRY와 INQUIRY_CATEGORY 두 테이블에 INSERT한다.
@@ -140,6 +74,10 @@ public class InquiryDAO {
 	 */
 	public int insertInquiry(InquiryDTO inquiryDTO) {
 		int result = 0;
+		InquiryType inquiryType = InquiryType.fromCode(inquiryDTO.getInquiryCategoryCode());
+		if (inquiryType == null) {
+			return 0;
+		}
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -152,7 +90,6 @@ public class InquiryDAO {
 
 			int inquiryCode = selectNextInquiryCode(con);
 			int inquiryCategoryCode = selectNextInquiryCategoryCode(con);
-			String inquiryType = convertCategoryCodeToType(inquiryDTO.getInquiryCategoryCode());
 
 			// 1. 문의글 본문 저장
 			String insertInquirySql =
@@ -184,7 +121,7 @@ public class InquiryDAO {
 			pstmt = con.prepareStatement(insertCategorySql);
 			pstmt.setInt(1, inquiryCategoryCode);
 			pstmt.setInt(2, inquiryCode);
-			pstmt.setString(3, inquiryType);
+			pstmt.setString(3, inquiryType.getDbValue());
 
 			result += pstmt.executeUpdate();
 
@@ -262,7 +199,7 @@ public class InquiryDAO {
 
 					dto.setInquiryCode(rs.getInt("inquiry_id"));
 					dto.setMemberCode(rs.getString("member_id"));
-					dto.setInquiryCategoryCode(convertInquiryTypeToCategoryCode(rs.getString("inquiry_type")));
+					dto.setInquiryCategoryCode(InquiryType.fromDbValue(rs.getString("inquiry_type")).getCode());
 					dto.setInquiryTitle(rs.getString("inquiry_title"));
 					dto.setInquiryContent(rs.getString("inquiry_content"));
 					dto.setInquiryDate(rs.getDate("inquiry_date"));
@@ -321,7 +258,7 @@ public class InquiryDAO {
 
 					inquiryDTO.setInquiryCode(rs.getInt("inquiry_id"));
 					inquiryDTO.setMemberCode(rs.getString("member_id"));
-					inquiryDTO.setInquiryCategoryCode(convertInquiryTypeToCategoryCode(rs.getString("inquiry_type")));
+					inquiryDTO.setInquiryCategoryCode(InquiryType.fromDbValue(rs.getString("inquiry_type")).getCode());
 					inquiryDTO.setInquiryTitle(rs.getString("inquiry_title"));
 					inquiryDTO.setInquiryContent(rs.getString("inquiry_content"));
 					inquiryDTO.setInquiryDate(rs.getDate("inquiry_date"));
@@ -344,7 +281,8 @@ public class InquiryDAO {
 	 * 답변이 없는 문의만 수정해야 한다.
 	 * 실제 답변 여부 확인은 Service의 updateInquiry()에서 먼저 처리한다.
 	 */
-	public void updateInquiry(InquiryDTO inquiryDTO) {
+	public int updateInquiry(InquiryDTO inquiryDTO) {
+		int result = 0;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 
@@ -366,9 +304,15 @@ public class InquiryDAO {
 			pstmt.setInt(3, inquiryDTO.getInquiryCode());
 			pstmt.setString(4, inquiryDTO.getMemberCode());
 
-			pstmt.executeUpdate();
+			int inquiryResult = pstmt.executeUpdate();
 
 			pstmt.close();
+
+			// 소유자와 답변 상태 조건을 만족한 문의만 카테고리까지 수정한다.
+			if (inquiryResult != 1) {
+				con.rollback();
+				return 0;
+			}
 
 			String updateCategorySql =
 					"UPDATE inquiry_category "
@@ -376,12 +320,23 @@ public class InquiryDAO {
 					+ "WHERE inquiry_id = ?";
 
 			pstmt = con.prepareStatement(updateCategorySql);
-			pstmt.setString(1, convertCategoryCodeToType(inquiryDTO.getInquiryCategoryCode()));
+			InquiryType inquiryType = InquiryType.fromCode(inquiryDTO.getInquiryCategoryCode());
+			if (inquiryType == null) {
+				con.rollback();
+				return 0;
+			}
+			pstmt.setString(1, inquiryType.getDbValue());
 			pstmt.setInt(2, inquiryDTO.getInquiryCode());
 
-			pstmt.executeUpdate();
+			int categoryResult = pstmt.executeUpdate();
+
+			if (categoryResult != 1) {
+				con.rollback();
+				return 0;
+			}
 
 			con.commit();
+			result = inquiryResult + categoryResult;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
@@ -408,6 +363,8 @@ public class InquiryDAO {
 				se.printStackTrace();
 			}
 		}
+
+		return result;
 	}// updateInquiry
 
 	/**
