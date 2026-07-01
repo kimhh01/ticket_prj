@@ -38,18 +38,10 @@
 
                 session.setAttribute("mypagePasswordChecked", true);
 
-                /*
-                 * 지금은 마이페이지가 아직 없으므로 성공 메시지만 출력
-                 * 나중에 마이페이지 만들면 아래 redirect로 바꾸면 됩니다.
-                 */
-                successMsg = "비밀번호 확인이 완료되었습니다.";
-
-                /*
                 response.sendRedirect(
-                    request.getContextPath() + "/admin/mypage/adminMypage.jsp"
+                    request.getContextPath() + "/manage/mypage/adminMyPage.jsp"
                 );
                 return;
-                */
 
             } else {
 
@@ -229,7 +221,7 @@ body {
             }
             %>
 
-            <form method="post" action="">
+            <form method="post" action="<%= request.getContextPath() %>/manage/adminLogin/adminPasswordCheck.jsp">
 
                 <div class="form-group">
 
