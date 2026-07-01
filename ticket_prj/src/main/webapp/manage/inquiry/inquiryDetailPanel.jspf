@@ -1,0 +1,333 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<!-- 문의 상세 사이드 패널 -->
+<aside id="inquiryDetailPanel" class="detail-panel">
+
+    <!-- 문의 내용 카드 -->
+    <section class="detail-card">
+
+        <div class="detail-card-header">
+            <h2>문의 내용</h2>
+
+            <span id="detailStateBadge"
+                  class="status-badge status-waiting">
+                답변대기
+            </span>
+        </div>
+
+        <table class="detail-info-table">
+            <tr>
+                <th>제목</th>
+                <td id="detailTitle">-</td>
+            </tr>
+
+            <tr>
+                <th>작성자</th>
+                <td id="detailWriter">-</td>
+            </tr>
+
+            <tr>
+                <th>작성일</th>
+                <td id="detailDate">-</td>
+            </tr>
+        </table>
+
+        <div class="detail-content" id="detailContent">
+            문의 내용을 선택해주세요.
+        </div>
+
+    </section>
+
+    <!-- 답변 작성 카드 -->
+    <section class="detail-card reply-card">
+
+        <h2>답변 작성</h2>
+
+        <form id="replyForm"
+              method="post"
+              action="${pageContext.request.contextPath}/inquiry/reply">
+
+            <input type="hidden"
+                   name="inquiryCode"
+                   id="replyInquiryCode">
+
+            <label class="reply-label">
+                답변 내용 <span>*</span>
+            </label>
+
+            <textarea name="replyContent"
+                      id="replyContent"
+                      class="reply-textarea"
+                      placeholder="답변 내용을 입력하세요."></textarea>
+
+            <div class="reply-meta" id="replyMeta" style="display:none;">
+                <span id="replyAdminText"></span>
+                <span id="replyDateText"></span>
+            </div>
+
+            <div class="reply-button-area">
+                <button type="submit" class="reply-submit-btn">
+                    답변 등록
+                </button>
+            </div>
+
+        </form>
+
+    </section>
+
+</aside>
+
+<style>
+/* 오른쪽 상세 패널 영역 */
+.detail-panel {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: width 0.35s ease, opacity 0.25s ease;
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* 문의 선택 시 열림 */
+.detail-panel.open {
+    width: 520px;
+    opacity: 1;
+}
+
+/* 상세 카드 */
+.detail-card {
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.detail-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.detail-card h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* 상세 정보 테이블 */
+.detail-info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-info-table th {
+    width: 96px;
+    padding: 16px 18px;
+
+    background: #FAFAFA;
+    border-right: 1px solid #E5E7EB;
+    border-bottom: 1px solid #E5E7EB;
+
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+    text-align: left;
+}
+
+.detail-info-table td {
+    padding: 16px 18px;
+
+    border-bottom: 1px solid #E5E7EB;
+
+    font-size: 14px;
+    color: #374151;
+}
+
+/* 문의 본문 */
+.detail-content {
+    min-height: 170px;
+    padding: 22px 20px;
+
+    font-size: 14px;
+    line-height: 1.8;
+    color: #374151;
+
+    white-space: pre-line;
+}
+
+/* 답변 작성 */
+.reply-card {
+    padding: 18px 20px;
+}
+
+.reply-card h2 {
+    margin-bottom: 18px;
+}
+
+.reply-label {
+    display: block;
+    margin-bottom: 10px;
+
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.reply-label span {
+    color: #EF4444;
+}
+
+.reply-textarea {
+    width: 100%;
+    height: 150px;
+
+    padding: 16px;
+
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+
+    resize: none;
+
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.reply-textarea:focus {
+    outline: none;
+    border-color: #EF4444;
+}
+
+.reply-meta {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 10px;
+
+    font-size: 12px;
+    color: #6B7280;
+}
+
+.reply-button-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.reply-submit-btn {
+    width: 116px;
+    height: 42px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #E6002D;
+    color: #fff;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.reply-submit-btn:hover {
+    background: #C90027;
+}
+
+/* 목록과 상세 패널을 나란히 배치하기 위한 보조 클래스 */
+.inquiry-content-layout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.inquiry-list-area {
+    flex: 1;
+    min-width: 0;
+}
+</style>
+
+<script>
+function openInquiryPanel(row, inquiryCode) {
+
+    const panel = document.getElementById("inquiryDetailPanel");
+
+    panel.classList.add("open");
+
+    document.getElementById("replyInquiryCode").value = inquiryCode;
+
+    const cells = row.children;
+
+    const title = cells[1].innerText.replace("N", "").trim();
+    const writer = cells[2].innerText.trim();
+    const date = cells[3].innerText.trim();
+    const state = cells[4].innerText.trim();
+
+    document.getElementById("detailTitle").innerText = title;
+    document.getElementById("detailWriter").innerText = writer;
+    document.getElementById("detailDate").innerText = date;
+    document.getElementById("detailStateBadge").innerText = state;
+
+    const badge = document.getElementById("detailStateBadge");
+
+    badge.classList.remove("status-waiting", "status-complete");
+
+    if (state === "답변대기") {
+        badge.classList.add("status-waiting");
+    } else {
+        badge.classList.add("status-complete");
+    }
+
+    document.getElementById("detailContent").innerText = "문의 내용을 불러오는 중입니다.";
+    document.getElementById("replyContent").value = "";
+    document.getElementById("replyMeta").style.display = "none";
+    document.getElementById("replyAdminText").innerText = "";
+    document.getElementById("replyDateText").innerText = "";
+
+    fetch("${pageContext.request.contextPath}/inquiry/detail?inquiryCode=" + inquiryCode)
+        .then(function(response) {
+
+            if (!response.ok) {
+                throw new Error("상세 조회 실패");
+            }
+
+            return response.json();
+        })
+        .then(function(data) {
+
+            if (!data || !data.success) {
+                document.getElementById("detailContent").innerText =
+                    "문의 상세 정보를 찾을 수 없습니다.";
+                return;
+            }
+
+            document.getElementById("detailContent").innerText =
+                data.inquiryContent || "";
+
+            if (data.replyContent) {
+                document.getElementById("replyContent").value =
+                    data.replyContent;
+
+                document.getElementById("replyMeta").style.display = "flex";
+
+                document.getElementById("replyAdminText").innerText =
+                    data.adminId ? "답변 관리자: " + data.adminId : "";
+
+                document.getElementById("replyDateText").innerText =
+                    data.replyDate ? "답변일: " + data.replyDate : "";
+            }
+        })
+        .catch(function(error) {
+
+            console.error(error);
+
+            document.getElementById("detailContent").innerText =
+                "문의 내용을 불러오는 중 오류가 발생했습니다.";
+        });
+}
+</script>
