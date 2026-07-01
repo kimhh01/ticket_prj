@@ -1,0 +1,330 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<!-- 좌석 추가/수정 모달 -->
+<div class="modal-overlay" id="seatModal">
+
+    <div class="modal seat-modal">
+
+        <div class="modal-header">
+            <h2 class="modal-title" id="seatModalTitle">좌석 추가</h2>
+
+            <button type="button"
+                    class="modal-close"
+                    id="closeSeatModal">
+                ×
+            </button>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/stadium/seat"
+              method="post"
+              id="seatModalForm">
+
+            <input type="hidden"
+                   name="seatMode"
+                   id="seatMode"
+                   value="insert">
+
+            <input type="hidden"
+                   name="stadiumCode"
+                   id="seatStadiumCode"
+                   value="">
+
+            <input type="hidden"
+                   name="seatCode"
+                   id="seatCode"
+                   value="">
+
+            <div class="modal-body">
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        기본 정보
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            좌석 이름
+                        </label>
+
+                        <input type="text"
+                               name="seatName"
+                               id="seatName"
+                               class="form-control"
+                               placeholder="예) 1루 자유석"
+                               required>
+
+                        <p class="form-help">
+                            좌석 이름을 입력하세요.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <div class="form-section-title required-title">
+                        가격 설정
+                    </div>
+
+                    <p class="form-help section-help">
+                        좌석 등급별 가격을 설정해주세요.
+                    </p>
+
+                    <div class="price-row">
+                        <label class="price-label">
+                            성인
+                        </label>
+
+                        <div class="input-with-unit">
+                            <input type="number"
+                                   name="adultPrice"
+                                   id="adultPrice"
+                                   class="form-control"
+                                   min="0"
+                                   placeholder="0"
+                                   required>
+
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="price-row">
+                        <label class="price-label">
+                            청소년 (만 13세 ~ 만 18세)
+                        </label>
+
+                        <div class="input-with-unit">
+                            <input type="number"
+                                   name="youthPrice"
+                                   id="youthPrice"
+                                   class="form-control"
+                                   min="0"
+                                   placeholder="0"
+                                   required>
+
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="price-row">
+                        <label class="price-label">
+                            어린이 (만 3세 ~ 만 12세)
+                        </label>
+
+                        <div class="input-with-unit">
+                            <input type="number"
+                                   name="childPrice"
+                                   id="childPrice"
+                                   class="form-control"
+                                   min="0"
+                                   placeholder="0"
+                                   required>
+
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            좌석 수
+                        </label>
+
+                        <div class="input-with-unit full">
+                            <input type="number"
+                                   name="seatQty"
+                                   id="seatQty"
+                                   class="form-control"
+                                   min="0"
+                                   placeholder="0"
+                                   required>
+
+                            <span class="input-unit">석</span>
+                        </div>
+
+                        <p class="form-help">
+                            해당 좌석의 총 좌석 수를 입력하세요.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn-cancel"
+                        id="cancelSeatModal">
+                    취소
+                </button>
+
+                <button type="submit"
+                        class="btn-submit"
+                        id="seatSubmitBtn">
+                    추가
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+/* ===== 좌석 추가/수정 모달 ===== */
+
+.seat-modal {
+    width: 520px;
+    max-width: 100%;
+}
+
+.required-title::after {
+    content: " *";
+    color: #EF4444;
+}
+
+.form-help {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #6B7280;
+}
+
+.section-help {
+    margin-bottom: 16px;
+}
+
+.price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+    margin-bottom: 16px;
+}
+
+.price-label {
+    width: 190px;
+
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.input-with-unit {
+    position: relative;
+    flex: 1;
+}
+
+.input-with-unit.full {
+    width: 100%;
+}
+
+.input-with-unit .form-control {
+    padding-right: 42px;
+}
+
+.input-unit {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+
+    transform: translateY(-50%);
+
+    font-size: 13px;
+    color: #6B7280;
+}
+</style>
+
+<script>
+const seatModal = document.getElementById('seatModal');
+const closeSeatModalBtn = document.getElementById('closeSeatModal');
+const cancelSeatModalBtn = document.getElementById('cancelSeatModal');
+
+function openSeatModal(stadiumCode) {
+
+    if (!seatModal) {
+        return;
+    }
+
+    clearSeatModal();
+
+    document.getElementById('seatMode').value = 'insert';
+    document.getElementById('seatModalTitle').textContent = '좌석 추가';
+    document.getElementById('seatSubmitBtn').textContent = '추가';
+
+    document.getElementById('seatStadiumCode').value = stadiumCode;
+
+    seatModal.classList.add('show');
+}
+
+function openSeatEditModal(stadiumCode,
+                           seatCode,
+                           seatName,
+                           adultPrice,
+                           youthPrice,
+                           childPrice,
+                           seatQty) {
+
+    if (!seatModal) {
+        return;
+    }
+
+    clearSeatModal();
+
+    document.getElementById('seatMode').value = 'edit';
+    document.getElementById('seatModalTitle').textContent = '좌석 수정';
+    document.getElementById('seatSubmitBtn').textContent = '수정';
+
+    document.getElementById('seatStadiumCode').value = stadiumCode;
+    document.getElementById('seatCode').value = seatCode;
+    document.getElementById('seatName').value = seatName;
+    document.getElementById('adultPrice').value = adultPrice;
+    document.getElementById('youthPrice').value = youthPrice;
+    document.getElementById('childPrice').value = childPrice;
+    document.getElementById('seatQty').value = seatQty;
+
+    seatModal.classList.add('show');
+}
+
+function closeSeatModal() {
+
+    if (!seatModal) {
+        return;
+    }
+
+    seatModal.classList.remove('show');
+}
+
+function clearSeatModal() {
+
+    document.getElementById('seatMode').value = 'insert';
+    document.getElementById('seatStadiumCode').value = '';
+    document.getElementById('seatCode').value = '';
+    document.getElementById('seatName').value = '';
+    document.getElementById('adultPrice').value = '';
+    document.getElementById('youthPrice').value = '';
+    document.getElementById('childPrice').value = '';
+    document.getElementById('seatQty').value = '';
+}
+
+if (closeSeatModalBtn) {
+    closeSeatModalBtn.addEventListener('click', closeSeatModal);
+}
+
+if (cancelSeatModalBtn) {
+    cancelSeatModalBtn.addEventListener('click', closeSeatModal);
+}
+
+if (seatModal) {
+    seatModal.addEventListener('click', function(e) {
+        if (e.target === seatModal) {
+            closeSeatModal();
+        }
+    });
+}
+</script>

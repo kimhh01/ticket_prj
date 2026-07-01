@@ -1,0 +1,545 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="kr.admin.common.StadiumOptionDTO" %>
+
+<div class="modal-overlay" id="teamModal">
+
+    <div class="modal team-modal">
+
+        <div class="modal-header">
+            <h2 class="modal-title" id="teamModalTitle">팀 등록</h2>
+
+            <button type="button"
+                    class="modal-close"
+                    id="closeTeamModal">
+                ×
+            </button>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/teamManagement"
+              method="post"
+              enctype="multipart/form-data"
+              id="teamModalForm">
+
+            <input type="hidden" name="action" value="team">
+            <input type="hidden" name="teamMode" id="teamMode" value="insert">
+            <input type="hidden" name="teamCode" id="teamCode" value="">
+            <input type="hidden" name="oldTeamLogoImg" id="oldTeamLogoImg" value="">
+
+            <div class="modal-body">
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        기본 정보
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label class="form-label required">
+                                팀 이름
+                            </label>
+
+                            <input type="text"
+                                   name="teamName"
+                                   id="teamName"
+                                   class="form-control"
+                                   maxlength="20"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">
+                                팀 약칭
+                            </label>
+
+                            <input type="text"
+                                   name="teamShortName"
+                                   id="teamShortName"
+                                   class="form-control"
+                                   maxlength="3"
+                                   required>
+
+                            <div class="form-help">
+                                마크에 표시됩니다 (최대 3자)
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">
+                            홈 경기장
+                        </label>
+
+                        <select name="stadiumCode"
+                                id="teamStadiumCode"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                선택하세요
+                            </option>
+
+                            <%
+                                List<StadiumOptionDTO> modalStadiumOptionList =
+                                        (List<StadiumOptionDTO>) request.getAttribute("stadiumOptionList");
+
+                                if (modalStadiumOptionList != null) {
+                                    for (StadiumOptionDTO s : modalStadiumOptionList) {
+                            %>
+
+                                <option value="<%= s.getStadiumCode() %>">
+                                    <%= s.getStadiumName() %>
+                                </option>
+
+                            <%
+                                    }
+                                }
+                            %>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        팀 로고
+                    </div>
+
+                    <div class="upload-box" id="teamLogoUploadBox">
+
+                        <input type="file"
+                               id="teamLogo"
+                               name="teamLogo"
+                               accept="image/png,image/svg+xml,image/jpeg"
+                               hidden>
+
+                        <label for="teamLogo"
+                               class="upload-label">
+
+                            <div class="upload-icon">
+                                ↑
+                            </div>
+
+                            <div class="upload-text">
+                                이미지를 드래그하거나 클릭해서 업로드
+                            </div>
+
+                            <div class="upload-desc">
+                                PNG, SVG, JPG 권장 · 최대 2MB
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        미리보기
+                    </div>
+
+                    <div class="preview-card">
+
+                        <div class="preview-logo"
+                             id="previewLogo">
+                        </div>
+
+                        <div class="preview-info">
+
+                            <div class="preview-name"
+                                 id="previewName">
+                                팀 이름
+                            </div>
+
+                            <div class="preview-short"
+                                 id="previewShort">
+                                약칭
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-help">
+                        팀 목록에 표시되는 모습입니다.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn-cancel"
+                        id="cancelTeamModal">
+                    취소
+                </button>
+
+                <button type="submit"
+                        class="btn-submit btn-red"
+                        id="teamSubmitBtn">
+                    팀 등록
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+const teamModal = document.getElementById('teamModal');
+const teamModalForm = document.getElementById('teamModalForm');
+
+const closeTeamModalBtn = document.getElementById('closeTeamModal');
+const cancelTeamModalBtn = document.getElementById('cancelTeamModal');
+
+const teamModeInput = document.getElementById('teamMode');
+const teamCodeInput = document.getElementById('teamCode');
+const oldTeamLogoImgInput = document.getElementById('oldTeamLogoImg');
+
+const teamNameInput = document.getElementById('teamName');
+const teamShortNameInput = document.getElementById('teamShortName');
+const teamStadiumCodeSelect = document.getElementById('teamStadiumCode');
+const teamLogoInput = document.getElementById('teamLogo');
+
+const teamModalTitle = document.getElementById('teamModalTitle');
+const teamSubmitBtn = document.getElementById('teamSubmitBtn');
+
+const previewLogo = document.getElementById('previewLogo');
+const previewName = document.getElementById('previewName');
+const previewShort = document.getElementById('previewShort');
+
+const teamLogoUploadBox = document.getElementById('teamLogoUploadBox');
+
+function openTeamModal(mode) {
+
+    if (!teamModal) {
+        return;
+    }
+
+    clearTeamModal();
+
+    if (!mode) {
+        mode = 'insert';
+    }
+
+    if (teamModeInput) {
+        teamModeInput.value = mode;
+    }
+
+    if (mode === 'edit') {
+
+        if (teamModalTitle) {
+            teamModalTitle.textContent = '팀 수정';
+        }
+
+        if (teamSubmitBtn) {
+            teamSubmitBtn.textContent = '수정';
+        }
+
+        if (teamLogoInput) {
+            teamLogoInput.required = false;
+        }
+
+    } else {
+
+        if (teamModalTitle) {
+            teamModalTitle.textContent = '팀 등록';
+        }
+
+        if (teamSubmitBtn) {
+            teamSubmitBtn.textContent = '팀 등록';
+        }
+
+        if (teamLogoInput) {
+            teamLogoInput.required = true;
+        }
+
+        if (teamModeInput) {
+            teamModeInput.value = 'insert';
+        }
+
+        if (teamCodeInput) {
+            teamCodeInput.value = '';
+        }
+
+        if (oldTeamLogoImgInput) {
+            oldTeamLogoImgInput.value = '';
+        }
+    }
+
+    console.log('openTeamModal mode =', teamModeInput ? teamModeInput.value : null);
+
+    teamModal.classList.add('show');
+}
+
+function openTeamEditModal(teamCode) {
+
+    const data = teamDataMap[String(teamCode)];
+
+    if (!data) {
+        alert('팀 정보를 찾을 수 없습니다.');
+        return;
+    }
+
+    openTeamModal('edit');
+
+    const teamCodeInput = document.getElementById('teamCode');
+    const teamNameInput = document.getElementById('teamName');
+    const teamShortNameInput = document.getElementById('teamShortName');
+    const teamStadiumCodeSelect = document.getElementById('teamStadiumCode');
+
+    if (teamCodeInput) {
+        teamCodeInput.value = data.teamCode;
+    }
+
+    if (teamNameInput) {
+        teamNameInput.value = data.teamName;
+    }
+
+    if (teamShortNameInput) {
+        teamShortNameInput.value = data.teamShortName;
+    }
+
+    if (teamStadiumCodeSelect) {
+        teamStadiumCodeSelect.value = data.stadiumCode;
+    }
+
+    setTeamLogoPreview(data.teamLogoImg);
+    updateTeamPreviewText();
+
+    console.log('수정 모달 teamCode hidden =',
+            document.getElementById('teamCode').value);
+}
+
+function closeTeamModal() {
+
+    if (!teamModal) {
+        return;
+    }
+
+    teamModal.classList.remove('show');
+}
+
+function clearTeamModal() {
+
+    if (teamModeInput) {
+        teamModeInput.value = 'insert';
+    }
+
+    if (teamCodeInput) {
+        teamCodeInput.value = '';
+    }
+
+    if (oldTeamLogoImgInput) {
+        oldTeamLogoImgInput.value = '';
+    }
+
+    if (teamNameInput) {
+        teamNameInput.value = '';
+    }
+
+    if (teamShortNameInput) {
+        teamShortNameInput.value = '';
+    }
+
+    if (teamStadiumCodeSelect) {
+        teamStadiumCodeSelect.value = '';
+    }
+
+    if (teamLogoInput) {
+        teamLogoInput.value = '';
+    }
+
+    if (previewLogo) {
+        previewLogo.style.backgroundImage = '';
+    }
+
+    if (previewName) {
+        previewName.textContent = '팀 이름';
+    }
+
+    if (previewShort) {
+        previewShort.textContent = '약칭';
+    }
+}
+
+function updateTeamPreviewText() {
+
+    if (previewName) {
+        previewName.textContent =
+            teamNameInput.value.trim() || '팀 이름';
+    }
+
+    if (previewShort) {
+        previewShort.textContent =
+            teamShortNameInput.value.trim() || '약칭';
+    }
+}
+
+function setTeamLogoPreview(imagePath) {
+
+    if (!imagePath) {
+        if (previewLogo) {
+            previewLogo.style.backgroundImage = '';
+        }
+
+        if (oldTeamLogoImgInput) {
+            oldTeamLogoImgInput.value = '';
+        }
+
+        return;
+    }
+
+    if (oldTeamLogoImgInput) {
+        oldTeamLogoImgInput.value = imagePath;
+    }
+
+    let imageSrc = imagePath;
+
+    if (imagePath.startsWith('/')) {
+        imageSrc = '${pageContext.request.contextPath}' + imagePath;
+    }
+
+    if (previewLogo) {
+        previewLogo.style.backgroundImage =
+            "url('" + imageSrc + "')";
+    }
+}
+
+function previewSelectedTeamLogo(file) {
+
+    if (!file || !previewLogo) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        previewLogo.style.backgroundImage =
+            "url('" + e.target.result + "')";
+    };
+
+    reader.readAsDataURL(file);
+}
+
+if (teamNameInput) {
+    teamNameInput.addEventListener('input', updateTeamPreviewText);
+}
+
+if (teamShortNameInput) {
+    teamShortNameInput.addEventListener('input', updateTeamPreviewText);
+}
+
+if (teamLogoInput) {
+    teamLogoInput.addEventListener('change', function() {
+
+        const file = this.files && this.files[0];
+
+        if (!file) {
+            const oldLogo = oldTeamLogoImgInput.value;
+
+            if (oldLogo) {
+                setTeamLogoPreview(oldLogo);
+            } else if (previewLogo) {
+                previewLogo.style.backgroundImage = '';
+            }
+
+            return;
+        }
+
+        previewSelectedTeamLogo(file);
+    });
+}
+
+if (teamLogoUploadBox && teamLogoInput) {
+
+    teamLogoUploadBox.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        teamLogoUploadBox.classList.add('dragover');
+    });
+
+    teamLogoUploadBox.addEventListener('dragleave', function() {
+        teamLogoUploadBox.classList.remove('dragover');
+    });
+
+    teamLogoUploadBox.addEventListener('drop', function(e) {
+        e.preventDefault();
+
+        teamLogoUploadBox.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+
+        if (!files || files.length === 0) {
+            return;
+        }
+
+        const file = files[0];
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+
+        teamLogoInput.files = dataTransfer.files;
+
+        previewSelectedTeamLogo(file);
+    });
+}
+
+if (teamModalForm) {
+    teamModalForm.addEventListener('submit', function(e) {
+
+        const mode = teamModeInput.value;
+
+        if (mode === 'insert') {
+
+            if (!teamLogoInput.files ||
+                teamLogoInput.files.length === 0) {
+
+                alert('팀 로고 이미지를 등록해주세요.');
+                e.preventDefault();
+                return;
+            }
+        }
+
+        if (teamLogoInput.files &&
+            teamLogoInput.files.length > 0) {
+
+            const file = teamLogoInput.files[0];
+
+            if (file.size > 1024 * 1024 * 2) {
+                alert('팀 로고 이미지는 최대 2MB까지 등록할 수 있습니다.');
+                e.preventDefault();
+                return;
+            }
+        }
+    });
+}
+
+if (closeTeamModalBtn) {
+    closeTeamModalBtn.addEventListener('click', closeTeamModal);
+}
+
+if (cancelTeamModalBtn) {
+    cancelTeamModalBtn.addEventListener('click', closeTeamModal);
+}
+
+if (teamModal) {
+    teamModal.addEventListener('click', function(e) {
+        if (e.target === teamModal) {
+            closeTeamModal();
+        }
+    });
+}
+</script>

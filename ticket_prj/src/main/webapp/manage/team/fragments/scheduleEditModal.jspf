@@ -1,0 +1,268 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="kr.admin.team.ScheduleSaveDTO" %>
+<%@ page import="kr.admin.common.TeamOptionDTO" %>
+<%@ page import="kr.admin.common.StadiumOptionDTO" %>
+
+<%
+    List<ScheduleSaveDTO> scheduleSaveList =
+            (List<ScheduleSaveDTO>) request.getAttribute("scheduleSaveList");
+
+    if (scheduleSaveList == null) {
+        scheduleSaveList = new ArrayList<>();
+    }
+%>
+
+<div class="modal-overlay" id="scheduleEditModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2 class="modal-title">
+                경기 일정 수정
+            </h2>
+
+            <button type="button"
+                    class="modal-close"
+                    id="closeScheduleEditModal">
+                ×
+            </button>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/teamManagement"
+              method="post"
+              id="scheduleEditForm">
+
+            <input type="hidden"
+                   name="action"
+                   value="schedule">
+
+            <input type="hidden"
+                   name="scheduleMode"
+                   value="edit">
+
+            <input type="hidden"
+                   name="gameScheduleCode"
+                   id="editGameScheduleCode"
+                   value="">
+
+            <div class="modal-body">
+
+                <div class="form-section">
+
+                    <div class="form-section-title">대진 설정</div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label class="form-label required">홈팀</label>
+
+                            <select name="homeTeamCode"
+                                    id="editHomeTeamCode"
+                                    class="form-control"
+                                    required>
+
+                                <option value="">선택하세요</option>
+
+                                <% for (TeamOptionDTO t : teamOptionList) { %>
+                                    <option value="<%= t.getTeamCode() %>">
+                                        <%= t.getTeamName() %>
+                                    </option>
+                                <% } %>
+
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">원정팀</label>
+
+                            <select name="awayTeamCode"
+                                    id="editAwayTeamCode"
+                                    class="form-control"
+                                    required>
+
+                                <option value="">선택하세요</option>
+
+                                <% for (TeamOptionDTO t : teamOptionList) { %>
+                                    <option value="<%= t.getTeamCode() %>">
+                                        <%= t.getTeamName() %>
+                                    </option>
+                                <% } %>
+
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-section">
+
+                    <div class="form-section-title">경기 정보</div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label class="form-label required">경기일</label>
+
+                            <input type="date"
+                                   name="gameDate"
+                                   id="editGameDate"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">경기 시작 시간</label>
+
+                            <input type="time"
+                                   name="gameStartTime"
+                                   id="editGameStartTime"
+                                   class="form-control"
+                                   required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="form-label required">구장</label>
+
+                        <select name="stadiumCode"
+                                id="editStadiumCode"
+                                class="form-control"
+                                required>
+
+                            <option value="">선택하세요</option>
+
+                            <% for (StadiumOptionDTO s : stadiumOptionList) { %>
+                                <option value="<%= s.getStadiumCode() %>">
+                                    <%= s.getStadiumName() %>
+                                </option>
+                            <% } %>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn-cancel"
+                        id="cancelScheduleEditModal">
+                    취소
+                </button>
+
+                <button type="submit"
+                        class="btn-submit">
+                    일정 수정
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+const scheduleEditDataMap = {
+<%
+for (ScheduleSaveDTO s : scheduleSaveList) {
+
+    String gameStartTime = s.getGameStartTime();
+
+    if (gameStartTime != null && gameStartTime.length() >= 5) {
+        gameStartTime = gameStartTime.substring(0, 5);
+    }
+
+    if (gameStartTime == null) {
+        gameStartTime = "";
+    }
+%>
+    "<%= s.getGameScheduleCode() %>": {
+        gameScheduleCode: "<%= s.getGameScheduleCode() %>",
+        homeTeamCode: "<%= s.getHomeTeamCode() %>",
+        awayTeamCode: "<%= s.getAwayTeamCode() %>",
+        stadiumCode: "<%= s.getStadiumCode() %>",
+        gameDate: "<%= s.getGameDate() != null ? s.getGameDate() : "" %>",
+        gameStartTime: "<%= gameStartTime %>"
+    },
+<%
+}
+%>
+};
+
+const scheduleEditModal = document.getElementById('scheduleEditModal');
+const closeScheduleEditModalBtn = document.getElementById('closeScheduleEditModal');
+const cancelScheduleEditModalBtn = document.getElementById('cancelScheduleEditModal');
+
+function openScheduleEditModal(gameScheduleCode) {
+
+    if (!scheduleEditModal) {
+        return;
+    }
+
+    const data = scheduleEditDataMap[String(gameScheduleCode)];
+
+    if (!data) {
+        alert('경기 일정 정보를 찾을 수 없습니다.');
+        return;
+    }
+
+    setScheduleEditValue('editGameScheduleCode', data.gameScheduleCode);
+    setScheduleEditValue('editHomeTeamCode', data.homeTeamCode);
+    setScheduleEditValue('editAwayTeamCode', data.awayTeamCode);
+    setScheduleEditValue('editGameDate', data.gameDate);
+    setScheduleEditValue('editGameStartTime', data.gameStartTime);
+    setScheduleEditValue('editStadiumCode', data.stadiumCode);
+
+    scheduleEditModal.classList.add('show');
+}
+
+function closeScheduleEditModal() {
+
+    if (!scheduleEditModal) {
+        return;
+    }
+
+    scheduleEditModal.classList.remove('show');
+}
+
+function setScheduleEditValue(id, value) {
+
+    const target = document.getElementById(id);
+
+    if (target) {
+        target.value = value == null ? '' : value;
+    }
+}
+
+if (closeScheduleEditModalBtn) {
+    closeScheduleEditModalBtn.addEventListener('click', closeScheduleEditModal);
+}
+
+if (cancelScheduleEditModalBtn) {
+    cancelScheduleEditModalBtn.addEventListener('click', closeScheduleEditModal);
+}
+
+if (scheduleEditModal) {
+    scheduleEditModal.addEventListener('click', function(e) {
+        if (e.target === scheduleEditModal) {
+            closeScheduleEditModal();
+        }
+    });
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeScheduleEditModal();
+    }
+});
+</script>

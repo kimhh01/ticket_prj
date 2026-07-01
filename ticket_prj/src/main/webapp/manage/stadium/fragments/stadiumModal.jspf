@@ -1,0 +1,383 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="kr.admin.common.StadiumOptionDTO" %>
+<%@ page import="java.util.List" %>
+
+<div class="modal-overlay" id="stadiumModal">
+    <div class="modal stadium-modal">
+
+        <div class="modal-header">
+            <h2 class="modal-title" id="stadiumModalTitle">구장 추가</h2>
+
+            <button type="button"
+                    class="modal-close"
+                    id="closeStadiumModal">
+                ×
+            </button>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/stadium"
+              method="post"
+              id="stadiumModalForm"
+              enctype="multipart/form-data">
+
+            <input type="hidden" name="mode" id="stadiumModalMode" value="insert">
+            <input type="hidden" name="stadiumCode" id="stadiumCode" value="">
+
+            <!-- 수정 시 기존 이미지 유지용 -->
+            <input type="hidden" name="oldStadiumSeatImg" id="oldStadiumSeatImg" value="">
+
+            <div class="modal-body">
+
+                <div class="form-section">
+                    <div class="form-section-title">구장 정보</div>
+
+                    <div class="form-group">
+                        <label class="form-label required">구장명</label>
+                        <input type="text"
+                               name="stadiumName"
+                               id="stadiumName"
+                               class="form-control"
+                               placeholder="구장명을 입력하세요"
+                               required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required">지역</label>
+                            <select name="stadiumRegion"
+                                    id="stadiumRegion"
+                                    class="form-control"
+                                    required>
+                                <option value="">지역을 선택하세요</option>
+                                <option value="서울">서울</option>
+                                <option value="인천">인천</option>
+                                <option value="대전">대전</option>
+                                <option value="대구">대구</option>
+                                <option value="광주">광주</option>
+                                <option value="부산">부산</option>
+                                <option value="울산">울산</option>
+                                <option value="수원">수원</option>
+                                <option value="창원">창원</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">홈팀1</label>
+                            <select name="homeTeamCode"
+                                    id="homeTeamCode"
+                                    class="form-control"
+                                    required>
+                                <option value="">홈팀을 선택하세요</option>
+
+                                <%
+                                    List<StadiumOptionDTO> modalTeamOptionList =
+                                            (List<StadiumOptionDTO>) request.getAttribute("teamOptionList");
+
+                                    if (modalTeamOptionList != null) {
+                                        for (StadiumOptionDTO team : modalTeamOptionList) {
+                                %>
+                                            <option value="<%= team.getStadiumCode() %>">
+                                                <%= team.getStadiumName() %>
+                                            </option>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+					    <label class="form-label">
+					        홈팀 2
+					        <span style="font-size:12px; color:#6B7280; font-weight:400;">
+					            선택
+					        </span>
+					    </label>
+					
+					    <select name="homeTeamCode2"
+					            id="homeTeamCode2"
+					            class="form-control">
+					        <option value="">없음</option>
+					
+					        <%
+					            if (modalTeamOptionList != null) {
+					                for (StadiumOptionDTO team : modalTeamOptionList) {
+					        %>
+					                    <option value="<%= team.getStadiumCode() %>">
+					                        <%= team.getStadiumName() %>
+					                    </option>
+					        <%
+					                }
+					            }
+					        %>
+					    </select>
+					</div>
+
+                    <div class="form-group">
+                        <label class="form-label required">주소</label>
+                        <input type="text"
+                               name="stadiumAddr"
+                               id="stadiumAddr"
+                               class="form-control"
+                               placeholder="주소를 입력하세요"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required" id="stadiumSeatImgLabel">
+                            구장 좌석 이미지
+                        </label>
+
+                        <div class="image-upload-box">
+                            <input type="file"
+                                   name="stadiumSeatImg"
+                                   id="stadiumSeatImg"
+                                   class="form-control file-control"
+                                   accept="image/*">
+
+                            <p class="image-help">
+                                좌석 배치도 또는 구장 좌석 이미지를 등록하세요.
+                            </p>
+
+                            <div class="image-preview-wrap" id="stadiumImgPreviewWrap" style="display:none;">
+                                <img id="stadiumImgPreview"
+                                     class="image-preview"
+                                     alt="구장 좌석 이미지 미리보기">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn-cancel"
+                        id="cancelStadiumModal">
+                    취소
+                </button>
+
+                <button type="submit"
+                        class="btn-submit"
+                        id="stadiumSubmitBtn">
+                    등록
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<style>
+/* 구장 모달 높이 고정 */
+#stadiumModal .stadium-modal {
+    width: 760px;
+    max-width: 100%;
+    max-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* 본문만 스크롤 */
+#stadiumModal .modal-body {
+    overflow-y: auto;
+    flex: 1;
+    max-height: calc(90vh - 150px);
+}
+
+/* footer는 항상 아래 고정 */
+#stadiumModal .modal-footer {
+    flex-shrink: 0;
+    background: #fff;
+}
+
+/* 이미지 업로드 영역 */
+.image-upload-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.file-control {
+    padding: 8px 12px;
+    height: auto;
+}
+
+.image-help {
+    font-size: 12px;
+    color: #6B7280;
+}
+
+/* 미리보기 박스 크기 제한 */
+.image-preview-wrap {
+    width: 100%;
+    height: 180px;
+
+    margin-top: 8px;
+
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+
+    overflow: hidden;
+    background: #F9FAFB;
+}
+
+/* 이미지가 박스 안에 맞게 들어가도록 */
+.image-preview {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+</style>
+
+<script>
+(function() {
+
+    const imageInput = document.getElementById('stadiumSeatImg');
+    const previewWrap = document.getElementById('stadiumImgPreviewWrap');
+    const previewImg = document.getElementById('stadiumImgPreview');
+
+    if (!imageInput || !previewWrap || !previewImg) {
+        return;
+    }
+
+    imageInput.addEventListener('change', function() {
+
+        const file = this.files && this.files[0];
+
+        if (!file) {
+            previewWrap.style.display = 'none';
+            previewImg.removeAttribute('src');
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewWrap.style.display = 'block';
+        };
+
+        reader.readAsDataURL(file);
+    });
+    
+})();
+
+function resetStadiumImagePreview() {
+
+    const imageInput = document.getElementById('stadiumSeatImg');
+    const previewWrap = document.getElementById('stadiumImgPreviewWrap');
+    const previewImg = document.getElementById('stadiumImgPreview');
+    const oldImg = document.getElementById('oldStadiumSeatImg');
+
+    if (imageInput) {
+        imageInput.value = '';
+    }
+
+    if (oldImg) {
+        oldImg.value = '';
+    }
+
+    if (previewImg) {
+        previewImg.removeAttribute('src');
+    }
+
+    if (previewWrap) {
+        previewWrap.style.display = 'none';
+    }
+}
+
+function setStadiumImagePreview(imagePath) {
+	
+    const previewWrap = document.getElementById('stadiumImgPreviewWrap');
+    const previewImg = document.getElementById('stadiumImgPreview');
+    const oldImg = document.getElementById('oldStadiumSeatImg');
+
+    if (!imagePath) {
+        resetStadiumImagePreview();
+        return;
+    }
+
+    /*
+     * hidden에는 DB 저장용 원본 경로를 넣음
+     * 예: /upload/stadium/stadium_xxx.png
+     */
+    if (oldImg) {
+        oldImg.value = imagePath;
+    }
+
+    /*
+     * img src에는 contextPath를 붙여서 실제 브라우저 접근 경로로 만듦
+     * 예: /ticket_copy_prj/upload/stadium/stadium_xxx.png
+     */
+    let imageSrc = imagePath;
+
+    if (imagePath.startsWith('/')) {
+        imageSrc = '${pageContext.request.contextPath}' + imagePath;
+    }
+
+    if (previewImg) {
+        previewImg.src = imageSrc;
+    }
+
+    if (previewWrap) {
+        previewWrap.style.display = 'block';
+    }
+}
+
+(function() {
+
+    const form =
+            document.getElementById('stadiumModalForm');
+
+    const homeTeamCode =
+            document.getElementById('homeTeamCode');
+
+    const homeTeamCode2 =
+            document.getElementById('homeTeamCode2');
+
+    if (!form || !homeTeamCode || !homeTeamCode2) {
+        return;
+    }
+
+    function validateHomeTeams() {
+
+        const team1 =
+                homeTeamCode.value;
+
+        const team2 =
+                homeTeamCode2.value;
+
+        if (team1 &&
+            team2 &&
+            team1 === team2) {
+
+            alert('홈팀 1과 홈팀 2는 서로 다른 팀을 선택해야 합니다.');
+
+            homeTeamCode2.value = '';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    homeTeamCode.addEventListener('change', validateHomeTeams);
+    homeTeamCode2.addEventListener('change', validateHomeTeams);
+
+    form.addEventListener('submit', function(e) {
+
+        if (!validateHomeTeams()) {
+            e.preventDefault();
+            return;
+        }
+    });
+
+})();
+
+</script>
