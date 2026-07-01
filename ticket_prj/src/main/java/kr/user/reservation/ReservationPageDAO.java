@@ -119,6 +119,40 @@ public class ReservationPageDAO {
 		
 		return rowCnt;
 	}
+	
+	// 좌석 차감
+	public int updateSeatCount(Connection con, ReservationPageDTO rpDTO) throws SQLException {
+
+	    int rowCnt = 0;
+
+	    PreparedStatement pstmt = null;
+
+	    try {
+
+	        String sql =
+	            "UPDATE stadium_seat " +
+	            "SET stadium_seat_count = stadium_seat_count - ? " +
+	            "WHERE stadium_seat_id = ? " +
+	            "AND stadium_seat_count >= ?";
+
+
+	        pstmt = con.prepareStatement(sql);
+
+	        pstmt.setInt(1, rpDTO.getReservationQuantity());
+	        pstmt.setInt(2, rpDTO.getStadiumSeatCode());
+	        pstmt.setInt(3, rpDTO.getReservationQuantity());
+
+
+	        rowCnt = pstmt.executeUpdate();
+
+
+	    } finally {
+	        udbc.close(null, pstmt, null);
+	    }
+
+
+	    return rowCnt;
+	}
 
 	
 	//예매창에서 보여줄 경기 구장 이미지 및 경기 일자
@@ -196,12 +230,11 @@ public class ReservationPageDAO {
 	        .append("	where stadium_id = ?	");
 
 	        pstmt = con.prepareStatement(sql.toString());
-	        // 서브쿼리 때문에 ?(파라미터)가 2개 필요합니다.
 	        pstmt.setInt(1, stadiumCode);
 	        
 	        rs = pstmt.executeQuery();
 	            
-	        // 결과가 1건 이하이므로 if문 처리
+	        
 	        while (rs.next()) {
 	        	rpDTO=new ReservationPageDTO();
 	        	
