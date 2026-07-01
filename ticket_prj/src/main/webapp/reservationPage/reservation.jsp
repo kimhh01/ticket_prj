@@ -31,9 +31,9 @@
 
 	<div class="ticketlink-container">
 		<header class="booking-header">
-			<div class="logo-area">
-				big<span style="font-weight: 900;">Ball</span> 예매
-			</div>
+					<div class="logo-area">
+						BallPick⚾
+					</div>
 			<div class="timer-area">
 				<span>예매가능 시간</span> <span id="countdown" class="timer-time">10:00</span>
 			</div>
@@ -271,13 +271,13 @@
 							<tbody>
 								<tr>
 									<td class="step4-label-cell">이름 *</td>
-									<td><input type="text" value="${sessionScope.loginMember.name}" class="step4-input" style="font-weight: bold;"></td>
+									<td><input type="text" value="${sessionScope.loginMember.name}" class="step4-input" style="font-weight: bold;" readonly></td>
 									<td class="step4-label-cell">휴대폰 번호 *</td>
-									<td><input type="text" value="${sessionScope.loginMember.phone}" class="step4-input" style="font-weight: bold;"></td>
+									<td><input type="text" value="${sessionScope.loginMember.phone}" class="step4-input" style="font-weight: bold;" readonly="readonly"></td>
 								</tr>
 								<tr>
 									<td class="step4-label-cell">이메일</td>
-									<td colspan="3"><input type="text" value="${sessionScope.loginMember.email}" class="step4-input-full"></td>
+									<td colspan="3"><input type="text" value="${sessionScope.loginMember.email}" class="step4-input-full" readonly="readonly"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -407,8 +407,9 @@
 	        }
 	    }
 	
+	    //날짜 다시 선택시 예매창은 팝업으로 만들어지므로 그냥 닫기만 넣음
 	    function goToTeamSelection() {
-	        location.href = "${pageContext.request.contextPath}/gameScheduleList"; 
+	        window.close();
 	    }
 		
 	    function mockSeatSelect(name, id, seatCode) {
@@ -581,7 +582,8 @@
 	            orderName: "야구 경기 티켓 예매",
 	            customerName: "${sessionScope.loginMember.name}", 
 	            successUrl: successUrl,
-	            failUrl: window.location.origin + "${pageContext.request.contextPath}/reservationPage/reservationFail.jsp",
+	            failUrl: window.location.origin + "${pageContext.request.contextPath}/reservationPage/reservationFail.jsp"
+	            								+ "?teamCode=${gameInfo.teamHomeCode}",
 	        });
 	    }
 	
@@ -649,10 +651,9 @@
 	    }
 	
 	    window.addEventListener("load", () => {
-	        // 페이지가 완전히 켜진 후 보안문자 생성
 	        generateCaptchaValue();
 
-	        let totalSeconds = 600; // 10분
+	        let totalSeconds = 600; 
 	        const timerDisplay = document.getElementById("countdown");
 
 	        if (timerDisplay) {

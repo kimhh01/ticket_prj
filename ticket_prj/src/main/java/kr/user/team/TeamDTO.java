@@ -30,6 +30,6 @@ public class TeamDTO {
 	private String noticeTab;//공지사항구분
 	private String noticeImg;//공지사항 이미지 or 리그안내 이미지
 	private Date noticeWriteDate;//공지사항일자
-
+	private boolean reservationOpen;//경기 오픈 예정
 	
 }

@@ -83,7 +83,6 @@ if ("GET".equalsIgnoreCase(request.getMethod()) && !currentPath.startsWith("/mem
 	font-size: 28px;
 	font-weight: 900;
 	color: #e50020;
-	letter-spacing: -1px;
 }
 
 .search-box {

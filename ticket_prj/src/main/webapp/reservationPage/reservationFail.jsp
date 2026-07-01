@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+String teamCode = request.getParameter("teamCode");
+session.setAttribute("teamCode", teamCode);
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -92,6 +96,7 @@
     .btn-home:hover { background: #f5f5f5; }
     .btn-retry:hover { background: #555; }
 </style>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
@@ -148,16 +153,26 @@
 <script type="text/javascript">
 $(function(){
 	$(".btn-home").click(function(){
-		opener.location.href='location.href='+${pageContext.request.contextPath}+'/index.jsp'
-		window.close()
+		if(opener){
+			opener.location.href='${pageContext.request.contextPath}/index.jsp';
+			window.close();
+		}else{
+			location.href='${pageContext.request.contextPath}/index.jsp';
+		}
 	});
-	
+
+
 	$(".btn-retry").click(function(){
-		opener.location.href='location.href='+${pageContext.request.contextPath}+'/teamPage/teamPage.jsp'
-		window.close()
+		let teamCode = "<%=teamCode%>";
+
+		if(opener){
+			opener.location.href='${pageContext.request.contextPath}/teamPage/teamPage.jsp?teamCode='+teamCode;
+			window.close();
+		}else{
+			location.href='${pageContext.request.contextPath}/teamPage/teamPage.jsp?teamCode='+teamCode;
+		}
 	});
-	
-	
-});//ready
+
+});
 </script>
 </html>

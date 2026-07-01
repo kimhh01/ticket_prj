@@ -3,6 +3,8 @@ package kr.user.team;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -36,6 +38,21 @@ import javax.servlet.http.HttpServletResponse;
 		
 		try {
 			List<TeamDTO> gameList=tpService.getGame(teamCode);
+			
+			Date now = new Date();
+
+			Calendar cal = Calendar.getInstance();
+
+			for(TeamDTO dto : gameList){
+			    cal.setTime(dto.getGameDate());
+			    cal.add(Calendar.DAY_OF_MONTH, -7);
+			    Date openDate = cal.getTime();
+			    dto.setReservationOpen(
+			        now.compareTo(openDate) >= 0 &&
+			        now.before(dto.getGameDate())
+			    );
+			}
+			
 			List<TeamDTO> noticeList=tpService.getNotice(teamCode);
 			String leagueImg=tpService.getLeagueGuide(teamCode);
 			TeamDTO tDTO = tpService.getTeamInfo(teamCode);

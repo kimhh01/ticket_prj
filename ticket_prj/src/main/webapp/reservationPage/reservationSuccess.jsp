@@ -84,6 +84,7 @@
     .btn-home:hover{background: #f5f5f5;}
     .btn-mypage:hover{background: #555;}
 </style>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
@@ -153,17 +154,25 @@
 <script type="text/javascript">
 $(function(){
 	$(".btn-home").click(function(){
-		opener.location.href='location.href='+${pageContext.request.contextPath}+'/index.jsp'
-		window.close()
+		if(opener){
+			opener.location.href='${pageContext.request.contextPath}/index.jsp';
+			window.close();
+		}else{
+			location.href='${pageContext.request.contextPath}/index.jsp';
+		}
 	});
-	
+
+
 	$(".btn-mypage").click(function(){
-		opener.location.href=${pageContext.request.contextPath}+'/mypage_user/reservation.jsp'
-		window.close()
+		if(opener){
+			opener.location.href='${pageContext.request.contextPath}/mypage_user/reservation.jsp';
+			window.close();
+		}else{
+			location.href='${pageContext.request.contextPath}/mypage_user/reservation.jsp';
+		}
 	});
-	
-	
-});//ready
+
+});
 
 </script>
 </html>

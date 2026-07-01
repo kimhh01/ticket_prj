@@ -140,7 +140,9 @@ public class TeamPageDAO {
 		    .append(" join team ht on gs.team_home = ht.team_id ")
 		    .append(" join team ot on gs.team_other = ot.team_id ")
 		    .append(" join stadium s on gs.stadium_id = s.stadium_id ")
-		    .append(" where ht.team_id = ? or ot.team_id = ? ");
+		    .append(" where (ht.team_id = ? or ot.team_id = ?) ")
+		    .append(" and gs.game_date >= trunc(sysdate) ")
+			.append(" order by gs.game_date, gs.game_start_time ");
 			
 			pstmt=con.prepareStatement(selectTeamImg.toString());
 				pstmt.setInt(1, teamCode);

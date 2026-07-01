@@ -66,13 +66,15 @@ $(function(){
         $("#" + targetId).addClass("active");
     });
 
-    //예매가이드 클릭시 이동
+    // 🌟 구단 소개 및 가이드 버튼 클릭 시 상단에서 계산된 JSTL teamUrl 주소로 새 창 띄우기 연동 완료
     $(".guideBtn").click(function(){
-	    location.href =
-        contextPath + "/user_reservationGuide/reservationGuide.jsp";
-	});
+    window.open(
+        contextPath + "/user_reservationGuide/reservationGuide.jsp",
+        "_blank",
+        "width=900,height=700"
+    );
+});
     
-    //구단 소개 클릭시 이동
     $(".introduceBtn").click(function(){
         window.open(
             "${teamUrl}",
@@ -273,13 +275,19 @@ $(function(){
 
                         <div class="game-btn">
                             <c:choose>
-                                <c:when test="${not isUpcoming}">
-                                    <button type="button" class="reserve-btn" data-game="${game.gameScheduleCode}">예매하기</button>
-                                </c:when>
-                                <c:otherwise>
-                                    <button type="button" class="coming-btn" disabled>예매오픈 예정</button>
-                                </c:otherwise>
-                            </c:choose>
+							    <c:when test="${game.reservationOpen}">
+								    <button class="reserve-btn"
+								        data-game="${game.gameScheduleCode}">
+								        예매하기
+								    </button>
+								</c:when>
+								
+								<c:otherwise>
+								    <button class="coming-btn" disabled>
+								        예매오픈 예정
+								    </button>
+								</c:otherwise>
+							</c:choose>
                         </div>
                     </div>
                 </c:forEach>
@@ -291,7 +299,7 @@ $(function(){
     </section>
 </div>
 
-<%-- [탭 2] 공지사항 컨텐츠 영역 --%>
+<%-- [탭 2] 공지사항 컨텐츠 영역 임시로 만듬 --%>
 <div id="tab-notice" class="tab-content">
     <section class="notice-detail-wrap">
     <c:forEach var="notice" items="${noticeList}">
@@ -344,6 +352,7 @@ $(function(){
     </section>
 </div>
 
+<%-- [탭 3] 리그안내 컨텐츠 영역 --%>
 <div id="tab-league" class="tab-content">
     <section class="league-guide-wrap">
     	<div>
