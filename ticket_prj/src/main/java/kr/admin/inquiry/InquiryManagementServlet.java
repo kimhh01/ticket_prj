@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.admin.common.BoardRangeDTO;
 
-@WebServlet({ "/inquiry", "/inquiry/detail", "/inquiry/reply" })
+@WebServlet({ "admin/inquiry", "admin/inquiry/detail", "admin/inquiry/reply" })
 public class InquiryManagementServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
