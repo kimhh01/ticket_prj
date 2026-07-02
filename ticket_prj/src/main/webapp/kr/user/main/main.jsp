@@ -20,42 +20,61 @@ if (!forwardedByServlet && "/kr/user/main/main.jsp".equals(mainRequestPath)) {
 
 <%@ include file="/fragment/header.jsp"%>
 
-<%!
-@SuppressWarnings("unchecked")
-private <T> List<T> getListAttribute(HttpServletRequest request, String attributeName) {
-	Object value = request.getAttribute(attributeName);
-	return value == null ? null : (List<T>) value;
-}
-
-private String getTeamLogoFile(int teamCode, String logoFile, String teamName) {
-	String name = teamName == null ? "" : teamName.toLowerCase(Locale.KOREAN).replace(" ", "");
-
-	if (name.contains("lg")) return "lg.png";
-	if (name.contains("두산") || name.contains("doosan")) return "doosan.png";
-	if (name.contains("한화") || name.contains("hanwha") || name.contains("hanhwa")) return "hanwha.png";
-	if (name.contains("롯데") || name.contains("lotte")) return "lotte.png";
-	if (name.contains("kia") || name.contains("기아")) return "kia.png";
-	if (name.contains("nc")) return "nc.png";
-	if (name.contains("ssg")) return "ssg.png";
-	if (name.contains("삼성") || name.contains("samsung")) return "samsung.png";
-	if (name.contains("키움") || name.contains("kiwoom") || name.contains("kium")) return "kium.png";
-	if (name.contains("kt")) return "kt.png";
-
-	switch (teamCode) {
-	case 1: return "lg.png";
-	case 2: return "doosan.png";
-	case 3: return "hanwha.png";
-	case 4: return "lotte.png";
-	case 5: return "kia.png";
-	case 6: return "nc.png";
-	case 7: return "ssg.png";
-	case 8: return "samsung.png";
-	case 9: return "kium.png";
-	case 10: return "kt.png";
-	default: return logoFile == null ? "" : logoFile;
+<%!@SuppressWarnings("unchecked")
+	private <T> List<T> getListAttribute(HttpServletRequest request, String attributeName) {
+		Object value = request.getAttribute(attributeName);
+		return value == null ? null : (List<T>) value;
 	}
-}
-%>
+
+	private String getTeamLogoFile(int teamCode, String logoFile, String teamName) {
+		String name = teamName == null ? "" : teamName.toLowerCase(Locale.KOREAN).replace(" ", "");
+
+		if (name.contains("lg"))
+			return "lg.png";
+		if (name.contains("두산") || name.contains("doosan"))
+			return "doosan.png";
+		if (name.contains("한화") || name.contains("hanwha") || name.contains("hanhwa"))
+			return "hanwha.png";
+		if (name.contains("롯데") || name.contains("lotte"))
+			return "lotte.png";
+		if (name.contains("kia") || name.contains("기아"))
+			return "kia.png";
+		if (name.contains("nc"))
+			return "nc.png";
+		if (name.contains("ssg"))
+			return "ssg.png";
+		if (name.contains("삼성") || name.contains("samsung"))
+			return "samsung.png";
+		if (name.contains("키움") || name.contains("kiwoom") || name.contains("kium"))
+			return "kium.png";
+		if (name.contains("kt"))
+			return "kt.png";
+
+		switch (teamCode) {
+			case 1 :
+				return "lg.png";
+			case 2 :
+				return "doosan.png";
+			case 3 :
+				return "hanwha.png";
+			case 4 :
+				return "lotte.png";
+			case 5 :
+				return "kia.png";
+			case 6 :
+				return "nc.png";
+			case 7 :
+				return "ssg.png";
+			case 8 :
+				return "samsung.png";
+			case 9 :
+				return "kium.png";
+			case 10 :
+				return "kt.png";
+			default :
+				return logoFile == null ? "" : logoFile;
+		}
+	}%>
 
 <%
 /*
@@ -495,52 +514,42 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 	color: #ccc;
 }
 
-@media (max-width: 760px) {
-	.rank-box,
-	.rank-slide {
+@media ( max-width : 760px) {
+	.rank-box, .rank-slide {
 		height: 350px;
 	}
-
 	.rank-slide {
 		grid-template-columns: 1fr;
 		align-content: center;
 		gap: 18px;
 		padding: 22px 24px;
 	}
-
 	.rank-team-panel {
 		gap: 20px;
 	}
-
 	.rank-logo-wrap {
 		width: 104px;
 		height: 104px;
 	}
-
 	.rank-logo-wrap img {
 		width: 76px;
 		height: 76px;
 	}
-
 	.rank-team-name {
 		font-size: 27px;
 	}
-
 	.rank-season-panel {
 		padding: 16px 0 0;
 		border-left: 0;
 		border-top: 1px solid rgba(255, 255, 255, 0.1);
 	}
-
 	.rank-stat-grid {
 		column-gap: 10px;
 		row-gap: 13px;
 	}
-
 	.rank-stat-value {
 		font-size: 17px;
 	}
-
 	.rank-stat-date {
 		font-size: 13px;
 	}
@@ -717,10 +726,19 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 				<%
 				boolean canReserve = "판매중".equals(game.getSaleStatus());
 				%>
-				<a class="reserve-btn <%=canReserve ? "" : "wait"%>"
-					href="<%=request.getContextPath()%>/reservation/detail?gameScheduleCode=<%=game.getGameScheduleCode()%>">
-					<%=canReserve ? "예매하기" : "예매대기"%>
-				</a>
+				<%
+				if (canReserve) {
+				%>
+				<a class="reserve-btn"
+					href="<%=request.getContextPath()%>/reservation?gameScheduleCode=<%=game.getGameScheduleCode()%>">
+					예매하기 </a>
+				<%
+				} else {
+				%>
+				<span class="reserve-btn wait">예매대기</span>
+				<%
+				}
+				%>
 			</article>
 			<%
 			}
@@ -748,38 +766,41 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 						String rankLogo = getTeamLogoFile(rank.getTeamCode(), rank.getTeamLogo(), rank.getTeamName());
 						String winRateText = String.format("%.3f", rank.getWinRate());
 						String scoreGapText = rank.getScoreGap() == Math.rint(rank.getScoreGap())
-								? String.format("%.0f", rank.getScoreGap())
-								: String.format("%.1f", rank.getScoreGap());
-						String seasonYear = new SimpleDateFormat("yyyy").format(
-								rank.getRankUpdateDate() != null ? rank.getRankUpdateDate() : new java.util.Date());
+						? String.format("%.0f", rank.getScoreGap())
+						: String.format("%.1f", rank.getScoreGap());
+						String seasonYear = new SimpleDateFormat("yyyy")
+						.format(rank.getRankUpdateDate() != null ? rank.getRankUpdateDate() : new java.util.Date());
 					%>
 					<div class="rank-slide">
 						<div class="rank-team-panel">
 							<div class="rank-logo-wrap">
-								<img src="<%=request.getContextPath()%>/images/team_logo/<%=rankLogo%>"
+								<img
+									src="<%=request.getContextPath()%>/images/team_logo/<%=rankLogo%>"
 									alt="<%=rank.getTeamName()%>"
 									onerror="this.onerror=null; this.style.display='none';">
 							</div>
 							<div class="rank-team-copy">
-								<label class="rank-team-select-wrap">
-									<span>팀 선택</span>
+								<label class="rank-team-select-wrap"> <span>팀 선택</span>
 									<select class="rank-team-select" aria-label="팀 선택">
 										<%
 										for (int teamIndex = 0; teamIndex < rankList.size(); teamIndex++) {
 											TeamRankDTO teamOption = rankList.get(teamIndex);
 										%>
-										<option value="<%=teamIndex%>" <%=teamIndex == rankIndex ? "selected" : ""%>><%=teamOption.getTeamName()%></option>
+										<option value="<%=teamIndex%>"
+											<%=teamIndex == rankIndex ? "selected" : ""%>><%=teamOption.getTeamName()%></option>
 										<%
 										}
 										%>
-									</select>
+								</select>
 								</label>
 								<div class="rank-team-name"><%=rank.getTeamName()%></div>
 							</div>
 						</div>
 
 						<div class="rank-season-panel">
-							<div class="rank-season-title"><%=seasonYear%> 시즌</div>
+							<div class="rank-season-title"><%=seasonYear%>
+								시즌
+							</div>
 							<div class="rank-stat-grid">
 								<div class="rank-stat-item">
 									<div class="rank-stat-label">순위</div>
@@ -855,61 +876,62 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 	</section>
 
 
-<script>
-(function() {
-	var slider = document.getElementById('rankSlider');
-	var track = document.getElementById('rankSliderTrack');
-	if (!slider || !track) {
-		return;
-	}
+	<script>
+		(function() {
+			var slider = document.getElementById('rankSlider');
+			var track = document.getElementById('rankSliderTrack');
+			if (!slider || !track) {
+				return;
+			}
 
-	var slides = track.querySelectorAll('.rank-slide');
-	var teamSelects = slider.querySelectorAll('.rank-team-select');
-	if (slides.length === 0) {
-		return;
-	}
+			var slides = track.querySelectorAll('.rank-slide');
+			var teamSelects = slider.querySelectorAll('.rank-team-select');
+			if (slides.length === 0) {
+				return;
+			}
 
-	var current = 0;
-	var timer = null;
+			var current = 0;
+			var timer = null;
 
-	function showRank(index) {
-		current = (index + slides.length) % slides.length;
-		track.style.transform = 'translateY(-' + (current * slider.clientHeight) + 'px)';
-	}
+			function showRank(index) {
+				current = (index + slides.length) % slides.length;
+				track.style.transform = 'translateY(-'
+						+ (current * slider.clientHeight) + 'px)';
+			}
 
-	function stopAutoSlide() {
-		if (timer !== null) {
-			clearInterval(timer);
-			timer = null;
-		}
-	}
+			function stopAutoSlide() {
+				if (timer !== null) {
+					clearInterval(timer);
+					timer = null;
+				}
+			}
 
-	function startAutoSlide() {
-		stopAutoSlide();
-		if (slides.length <= 1) {
-			return;
-		}
-		timer = setInterval(function() {
-			showRank(current + 1);
-		}, 3200);
-	}
+			function startAutoSlide() {
+				stopAutoSlide();
+				if (slides.length <= 1) {
+					return;
+				}
+				timer = setInterval(function() {
+					showRank(current + 1);
+				}, 3200);
+			}
 
-	for (var i = 0; i < teamSelects.length; i++) {
-		teamSelects[i].addEventListener('change', function() {
-			showRank(parseInt(this.value, 10));
-		});
-	}
+			for (var i = 0; i < teamSelects.length; i++) {
+				teamSelects[i].addEventListener('change', function() {
+					showRank(parseInt(this.value, 10));
+				});
+			}
 
-	slider.addEventListener('mouseenter', stopAutoSlide);
-	slider.addEventListener('mouseleave', startAutoSlide);
-	window.addEventListener('resize', function() {
-		showRank(current);
-	});
+			slider.addEventListener('mouseenter', stopAutoSlide);
+			slider.addEventListener('mouseleave', startAutoSlide);
+			window.addEventListener('resize', function() {
+				showRank(current);
+			});
 
-	showRank(0);
-	startAutoSlide();
-})();
-</script>
+			showRank(0);
+			startAutoSlide();
+		})();
+	</script>
 </main>
 
 <script>

@@ -4,4 +4,4 @@
     여기로 실행
      */
     response.sendRedirect(request.getContextPath() + "/main");
-%>	
+%>

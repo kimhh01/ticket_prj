@@ -160,12 +160,6 @@ public class InquiryViewServlet extends HttpServlet {
 			return;
 		}
 		
-		String result = request.getParameter("result");
-
-		if ("write-success".equals(result)) {
-			request.setAttribute("successMessage", "문의가 정상적으로 등록되었습니다.");
-		}
-
 		List<InquiryDTO> inquiryList = inquiryService.getInquiryList(loginMember.getMemberCode());
 
 		request.setAttribute("inquiryList", inquiryList);
