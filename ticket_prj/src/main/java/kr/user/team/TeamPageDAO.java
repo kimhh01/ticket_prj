@@ -6,13 +6,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import common.DBConnection;
+import kr.user.common.UserDBConnection;
 
 
 public class TeamPageDAO {
@@ -27,7 +24,7 @@ public class TeamPageDAO {
 			}
 
 			File file = new File(url.toURI());
-			return DBConnection.getInstance().getConnection(file);
+			return UserDBConnection.getInstance().getConnection();
 
 		} catch (Exception e) {
 			throw new SQLException("DB 연결 설정 파일 로딩 실패", e);
@@ -84,6 +81,11 @@ public class TeamPageDAO {
 	}
 	
 	//팀메인이미지 //없앨수도 있음
+	/**
+	 * @param teamCode
+	 * @return
+	 * @throws SQLException
+	 */
 	public String selectTeamImg(int teamCode) throws SQLException{
 		String teamImg=null; //이미지 경로 받을 변수
 		
@@ -193,7 +195,7 @@ public class TeamPageDAO {
 			selectTeamImg
 			.append("	select 	notice_title, notice_img, notice_content, notice_write_date		")
 			.append("	from notice	")
-			.append("	where team_id = ?	");
+			.append("	where team_id = ? and notice_tab=1 ");
 			
 			pstmt=con.prepareStatement(selectTeamImg.toString());
 				pstmt.setInt(1, teamCode);

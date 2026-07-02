@@ -9,6 +9,10 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/reservationPage/reservation.css">
 <style>
     /* 성공 페이지 전용 추가 스타일 */
+    .logo-area{
+	    font-size:22px;
+	    font-weight:bold;
+	}
     .success-container {
         flex: 1;
         padding: 40px;
@@ -91,8 +95,8 @@
 	<div class="ticketlink-container">
 		<header class="booking-header">
 			<div class="logo-area">
-				big<span style="font-weight: 900;">Ball</span> 예매
-			</div>
+						BallPick⚾
+					</div>
 		</header>
 
 		<!-- 진행 바: 마지막 단계(결제) 활성화 -->
@@ -155,10 +159,10 @@
 $(function(){
 	$(".btn-home").click(function(){
 		if(opener){
-			opener.location.href='${pageContext.request.contextPath}/index.jsp';
+			opener.location.href='${pageContext.request.contextPath}/kr/user/main/main.jsp';
 			window.close();
 		}else{
-			location.href='${pageContext.request.contextPath}/index.jsp';
+			location.href='${pageContext.request.contextPath}/kr/user/main/main.jsp';
 		}
 	});
 

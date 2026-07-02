@@ -646,6 +646,8 @@
 	        }
 	    }
 	
+	    
+	    //예매 시간
 	    function closeDetailModal() {
 	        document.getElementById('detail-modal').classList.add('hidden');
 	    }
@@ -672,9 +674,7 @@
 	                    window.close();
 	                    return;
 	                }
-
 	                totalSeconds--;
-
 	            }, 1000);
 	        }
 	    });									

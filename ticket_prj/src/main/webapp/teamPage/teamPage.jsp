@@ -66,15 +66,16 @@ $(function(){
         $("#" + targetId).addClass("active");
     });
 
-    // 🌟 구단 소개 및 가이드 버튼 클릭 시 상단에서 계산된 JSTL teamUrl 주소로 새 창 띄우기 연동 완료
+   	//예매 가이드 사이트 새 창으로 여는 함수
     $(".guideBtn").click(function(){
     window.open(
         contextPath + "/user_reservationGuide/reservationGuide.jsp",
         "_blank",
         "width=900,height=700"
-    );
-});
+	    );
+	});
     
+  	//구단 사이트로 이동하는 새 창을 여는 함수
     $(".introduceBtn").click(function(){
         window.open(
             "${teamUrl}",
@@ -130,6 +131,24 @@ $(function(){
             $(".game-row").show();
         }
     });
+    
+    $(".calendar-wrap").hide();
+
+    $(".calendar-btn").click(function () {
+        $(".game-wrap").hide();
+        $(".calendar-wrap").show();
+
+        $(".calendar-btn").hide();
+        $(".list-btn").show();
+    });
+
+    $(".list-btn").click(function () {
+        $(".calendar-wrap").hide();
+        $(".game-wrap").show();
+
+        $(".list-btn").hide();
+        $(".calendar-btn").show();
+    });
        
     // 예매하기 버튼 클릭시 예매창으로 이동 (맵핑 주소 정합 완료)
     $(".reserve-btn").click(function(){
@@ -166,7 +185,7 @@ $(function(){
                     <div class="common_popup">
                         <div class="common_popup_header">
                             <h3 class="common_popup_title">클린예매 서비스 안내</h3>
-                            <button type="button" id="closeClean" class="common_popup_close">✕</button>
+                            <button type="button" id="closeClean" class="common_popup_close" style="color: #333">✕</button>
                         </div>
                         <div class="common_popup_content">
                             <p class="popup_desc">
@@ -187,7 +206,7 @@ $(function(){
                     <div class="common_popup">
                         <div class="common_popup_header">
                             <h3 class="common_popup_title">취소표대기 서비스 안내</h3>
-                            <button type="button" id="closeCancel" class="common_popup_close">✕</button>
+                            <button type="button" id="closeCancel" class="common_popup_close" style="color: #333">✕</button>
                         </div>
                         <div class="common_popup_content">
                             <p class="popup_desc">
@@ -236,7 +255,8 @@ $(function(){
             <input type="checkbox" class="onlyHomeCheck">
             홈경기만 보기
         </label>
-        <button type="button" class="calendar-btn" title="달력형 보기">📅</button>
+        <button type="button" class="calendar-btn" title="달력형 보기" style="border:none; width: 20px; height: 20px; "><img src="<%=request.getContextPath() %>/images/teamPage/calendar-icon.png" style="border:none; width: 20px; height: 20px; "></button>
+        <button type="button" class="list-btn" style="display:none; width: 20px; height: 20px; "><img src="<%=request.getContextPath() %>/images/teamPage/list-icon.png" style="display:none; width: 20px; height: 20px; "></button>
     </div>
 
     <section class="game-wrap">
@@ -297,7 +317,16 @@ $(function(){
             </c:otherwise>
         </c:choose>
     </section>
+    
+    <section class="calendar-wrap">
+    	<table border="1">
+    		<tr>
+    			<td><td>
+    		</tr>
+    	</table>
+    </section>
 </div>
+
 
 <%-- [탭 2] 공지사항 컨텐츠 영역 임시로 만듬 --%>
 <div id="tab-notice" class="tab-content">
@@ -356,7 +385,7 @@ $(function(){
 <div id="tab-league" class="tab-content">
     <section class="league-guide-wrap">
     	<div>
-    		${leagueImg}
+    		<img src="${pageContext.request.contextPath}/images/notice/${leagueImg}"/>
     	</div>
     </section>
 </div> 

@@ -12,6 +12,10 @@ session.setAttribute("teamCode", teamCode);
 <link rel="stylesheet" href="${pageContext.request.contextPath}/reservationPage/reservation.css">
 <style>
     /* 실패 페이지 전용 추가 스타일 */
+    .logo-area{
+	    font-size:22px;
+	    font-weight:bold;
+	}
     .fail-container {
         flex: 1;
         padding: 50px 40px;
@@ -103,11 +107,8 @@ session.setAttribute("teamCode", teamCode);
 	<div class="ticketlink-container">
 		<header class="booking-header">
 			<div class="logo-area">
-				big<span style="font-weight: 900;">Ball</span> 예매
-			</div>
-			<div class="timer-area">
-				<span style="color: #e60000; font-weight: bold;">결제 실패</span>
-			</div>
+						BallPick⚾
+					</div>
 		</header>
 
 		<nav class="step-progress-bar">
@@ -154,10 +155,10 @@ session.setAttribute("teamCode", teamCode);
 $(function(){
 	$(".btn-home").click(function(){
 		if(opener){
-			opener.location.href='${pageContext.request.contextPath}/index.jsp';
+			opener.location.href='${pageContext.request.contextPath}/kr/user/main/main.jsp';
 			window.close();
 		}else{
-			location.href='${pageContext.request.contextPath}/index.jsp';
+			location.href='${pageContext.request.contextPath}/kr/user/main/main.jsp';
 		}
 	});
 
