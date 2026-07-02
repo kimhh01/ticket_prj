@@ -48,12 +48,12 @@ public class EventManagementServlet extends HttpServlet {
         String servletPath =
                 request.getServletPath();
 
-        if ("/event/edit".equals(servletPath)) {
+        if ("/admin/event/edit".equals(servletPath)) {
             getEventEditPage(request, response);
             return;
         }
 
-        if ("/event/delete".equals(servletPath)) {
+        if ("/admin/event/delete".equals(servletPath)) {
             deleteEvent(request, response);
             return;
         }
@@ -180,11 +180,11 @@ public class EventManagementServlet extends HttpServlet {
         if (result) {
             response.sendRedirect(
                     request.getContextPath()
-                    + "/event");
+                    + "/admin/event");
         } else {
             response.sendRedirect(
                     request.getContextPath()
-                    + "/event?error=delete");
+                    + "/admin/event?error=delete");
         }
     }
 
@@ -196,7 +196,7 @@ public class EventManagementServlet extends HttpServlet {
 
 		String servletPath = request.getServletPath();
 
-		if ("/event/save".equals(servletPath)) {
+		if ("/admin/event/save".equals(servletPath)) {
 			saveEvent(request, response);
 			return;
 		}
@@ -390,7 +390,7 @@ public class EventManagementServlet extends HttpServlet {
 
 		if (result) {
 
-			response.sendRedirect(request.getContextPath() + "/event");
+			response.sendRedirect(request.getContextPath() + "/admin/event");
 
 		} else {
 

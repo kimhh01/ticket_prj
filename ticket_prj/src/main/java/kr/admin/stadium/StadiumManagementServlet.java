@@ -47,7 +47,7 @@ public class StadiumManagementServlet extends HttpServlet {
 
         String servletPath = request.getServletPath();
 
-        if ("/stadium/seat".equals(servletPath)) {
+        if ("/admin/stadium/seat".equals(servletPath)) {
             response.sendRedirect(request.getContextPath() + "/admin/stadium");
             return;
         }
@@ -109,7 +109,7 @@ public class StadiumManagementServlet extends HttpServlet {
 
         String servletPath = request.getServletPath();
 
-        if ("/stadium/seat".equals(servletPath)) {
+        if ("/admin/stadium/seat".equals(servletPath)) {
             saveStadiumSeat(request, response);
             return;
         }
