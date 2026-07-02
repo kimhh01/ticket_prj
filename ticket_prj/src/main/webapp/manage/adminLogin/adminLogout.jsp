@@ -12,5 +12,5 @@
      */
     response.sendRedirect(
             request.getContextPath()
-            + "/manage/adminLogin/login.jsp");
+            + "/manage/adminLogin/adminLogin.jsp");
 %>
