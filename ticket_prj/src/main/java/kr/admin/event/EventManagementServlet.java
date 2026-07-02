@@ -17,10 +17,10 @@ import javax.servlet.http.Part;
 import kr.admin.common.BoardRangeDTO;
 
 @WebServlet({
-    "admin/event",
-    "admin/event/edit",
-    "admin/event/save",
-    "admin/event/delete"
+    "/admin/event",
+    "/admin/event/edit",
+    "/admin/event/save",
+    "/admin/event/delete"
 })
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024,
@@ -147,7 +147,7 @@ public class EventManagementServlet extends HttpServlet {
 			event = service.getEventDetail(eventCode);
 
 			if (event == null) {
-				response.sendRedirect(request.getContextPath() + "/event?error=notfound");
+				response.sendRedirect(request.getContextPath() + "/admin/event?error=notfound");
 				return;
 			}
 
@@ -201,7 +201,7 @@ public class EventManagementServlet extends HttpServlet {
 			return;
 		}
 
-		response.sendRedirect(request.getContextPath() + "/event?error=unknownAction");
+		response.sendRedirect(request.getContextPath() + "/admin/event?error=unknownAction");
 	}
 
 	/**
@@ -337,7 +337,7 @@ public class EventManagementServlet extends HttpServlet {
 		 */
 		if ("edit".equals(mode) && eventCode <= 0) {
 
-			response.sendRedirect(request.getContextPath() + "/event?error=eventCode");
+			response.sendRedirect(request.getContextPath() + "/admin/event?error=eventCode");
 			return;
 		}
 
@@ -518,7 +518,7 @@ public class EventManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/event/edit?eventCode="
+                    + "/admin/event/edit?eventCode="
                     + eventCode
                     + "&error="
                     + errorCode);
@@ -527,7 +527,7 @@ public class EventManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/event/edit?error="
+                    + "/admin/event/edit?error="
                     + errorCode);
         }
     }
