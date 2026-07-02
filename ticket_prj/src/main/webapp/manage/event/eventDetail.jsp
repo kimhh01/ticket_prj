@@ -640,7 +640,7 @@ body {
 
                 <button type="button"
                         class="back-btn"
-                        onclick="location.href='${pageContext.request.contextPath}/event'">
+                        onclick="location.href='${pageContext.request.contextPath}/admin/event'">
                     뒤로 가기
                 </button>
 
@@ -650,7 +650,7 @@ body {
 
             </div>
 
-            <form action="${pageContext.request.contextPath}/event/save"
+            <form action="${pageContext.request.contextPath}/admin/event/save"
                   method="post"
                   enctype="multipart/form-data"
                   id="eventForm">
@@ -1018,7 +1018,7 @@ body {
 
                     <button type="button"
                             class="cancel-btn"
-                            onclick="location.href='${pageContext.request.contextPath}/event'">
+                            onclick="location.href='${pageContext.request.contextPath}/admin/event'">
                         취소
                     </button>
 

@@ -15,7 +15,7 @@
             </button>
         </div>
 
-        <form action="${pageContext.request.contextPath}/stadium"
+        <form action="${pageContext.request.contextPath}/admin/stadium"
               method="post"
               id="stadiumModalForm"
               enctype="multipart/form-data">

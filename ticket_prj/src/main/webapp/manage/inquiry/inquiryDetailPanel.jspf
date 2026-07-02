@@ -45,7 +45,7 @@
 
         <form id="replyForm"
               method="post"
-              action="${pageContext.request.contextPath}/inquiry/reply">
+              action="${pageContext.request.contextPath}/admin/inquiry/reply">
 
             <input type="hidden"
                    name="inquiryCode"
@@ -289,7 +289,7 @@ function openInquiryPanel(row, inquiryCode) {
     document.getElementById("replyAdminText").innerText = "";
     document.getElementById("replyDateText").innerText = "";
 
-    fetch("${pageContext.request.contextPath}/inquiry/detail?inquiryCode=" + inquiryCode)
+    fetch("${pageContext.request.contextPath}/admin/inquiry/detail?inquiryCode=" + inquiryCode)
         .then(function(response) {
 
             if (!response.ok) {
