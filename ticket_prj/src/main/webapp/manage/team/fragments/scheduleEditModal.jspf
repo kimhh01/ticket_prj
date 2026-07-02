@@ -30,7 +30,7 @@
             </button>
         </div>
 
-        <form action="${pageContext.request.contextPath}/teamManagement"
+        <form action="${pageContext.request.contextPath}/amdin/teamManagement"
               method="post"
               id="scheduleEditForm">
 

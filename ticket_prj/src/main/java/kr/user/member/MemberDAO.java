@@ -73,7 +73,7 @@ public class MemberDAO {
 	/**
 	 * 회원가입
 	 */
-	public int insertMember(MemberDTO memberDTO) {
+ 	public int insertMember(MemberDTO memberDTO) {
 		int cnt = 0;
 
 		Connection con = null;
@@ -89,6 +89,7 @@ public class MemberDAO {
 
 		try {
 			con = getConnection();
+			con.setAutoCommit(false);
 			pstmt = con.prepareStatement(sql);
 
 			pstmt.setString(1, memberDTO.getMemberCode());
@@ -103,10 +104,37 @@ public class MemberDAO {
 			pstmt.setString(10, String.valueOf(memberDTO.getEmailReceiveYN()));
 
 			cnt = pstmt.executeUpdate();
+			pstmt.close();
+			pstmt = null;
+
+			if (cnt == 1) {
+				insertJoinCoupon(con, memberDTO.getMemberCode());
+				con.commit();
+			} else {
+				con.rollback();
+				cnt = 0;
+			}
 
 		} catch (SQLException se) {
 			se.printStackTrace();
+			cnt = 0;
+
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException rollbackException) {
+					rollbackException.printStackTrace();
+				}
+			}
 		} finally {
+			try {
+				if (con != null) {
+					con.setAutoCommit(true);
+				}
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}
+
 			try {
 				UserDBConnection.getInstance().close(null, pstmt, con);
 			} catch (SQLException se) {
@@ -115,6 +143,32 @@ public class MemberDAO {
 		}
 
 		return cnt;
+	}
+
+	/**
+	 * 신규회원 쿠폰의 이벤트 기간에 가입한 회원에게 쿠폰을 발급한다.
+	 */
+	private int insertJoinCoupon(Connection con, String memberCode) throws SQLException {
+		String sql =
+			" INSERT INTO CUSTODY_COUPON ( " +
+			"     COUPON_CODE, MEMBER_ID, GET_DATE, COUPON_STATE " +
+			" ) " +
+			" SELECT C.COUPON_CODE, ?, SYSDATE, '사용가능' " +
+			" FROM COUPON C " +
+			" WHERE C.COUPON_CODE = 'CP001' " +
+			" AND TRUNC(SYSDATE) BETWEEN TRUNC(C.START_DATE) AND TRUNC(C.END_DATE) " +
+			" AND NOT EXISTS ( " +
+			"     SELECT 1 " +
+			"     FROM CUSTODY_COUPON CC " +
+			"     WHERE CC.COUPON_CODE = C.COUPON_CODE " +
+			"     AND CC.MEMBER_ID = ? " +
+			" ) ";
+
+		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+			pstmt.setString(1, memberCode);
+			pstmt.setString(2, memberCode);
+			return pstmt.executeUpdate();
+		}
 	}
 
 	/**

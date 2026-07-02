@@ -19,8 +19,8 @@ import javax.servlet.http.Part;
 import kr.admin.common.StadiumOptionDTO;
 
 @WebServlet({
-    "/stadium",
-    "/stadium/seat"
+    "/admin/stadium",
+    "/admin/stadium/seat"
 })
 
 @MultipartConfig(
@@ -47,8 +47,8 @@ public class StadiumManagementServlet extends HttpServlet {
 
         String servletPath = request.getServletPath();
 
-        if ("/stadium/seat".equals(servletPath)) {
-            response.sendRedirect(request.getContextPath() + "/stadium");
+        if ("/admin/stadium/seat".equals(servletPath)) {
+            response.sendRedirect(request.getContextPath() + "/admin/stadium");
             return;
         }
 
@@ -109,7 +109,7 @@ public class StadiumManagementServlet extends HttpServlet {
 
         String servletPath = request.getServletPath();
 
-        if ("/stadium/seat".equals(servletPath)) {
+        if ("/admin/stadium/seat".equals(servletPath)) {
             saveStadiumSeat(request, response);
             return;
         }
@@ -159,7 +159,7 @@ public class StadiumManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/stadium?error=team");
+                    + "/admin/stadium?error=team");
 
             return;
         }
@@ -175,7 +175,7 @@ public class StadiumManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/stadium?error=sameTeam");
+                    + "/admin/stadium?error=sameTeam");
 
             return;
         }
@@ -190,7 +190,7 @@ public class StadiumManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/stadium?error=stadiumCode");
+                    + "/admin/stadium?error=stadiumCode");
 
             return;
         }
@@ -224,7 +224,7 @@ public class StadiumManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/stadium?error=image");
+                    + "/admin/stadium?error=image");
 
             return;
         }
@@ -276,13 +276,13 @@ public class StadiumManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/stadium");
+                    + "/admin/stadium");
 
         } else {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/stadium?error=save");
+                    + "/admin/stadium?error=save");
         }
     }
 
@@ -344,9 +344,9 @@ public class StadiumManagementServlet extends HttpServlet {
         }
 
         if (result) {
-            response.sendRedirect(request.getContextPath() + "/stadium");
+            response.sendRedirect(request.getContextPath() + "/admin/stadium");
         } else {
-            response.sendRedirect(request.getContextPath() + "/stadium?error=seat");
+            response.sendRedirect(request.getContextPath() + "/admin/stadium?error=seat");
         }
     }
     

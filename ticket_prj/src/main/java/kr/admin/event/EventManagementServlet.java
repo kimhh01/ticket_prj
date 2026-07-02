@@ -17,10 +17,10 @@ import javax.servlet.http.Part;
 import kr.admin.common.BoardRangeDTO;
 
 @WebServlet({
-    "/event",
-    "/event/edit",
-    "/event/save",
-    "/event/delete"
+    "/admin/event",
+    "/admin/event/edit",
+    "/admin/event/save",
+    "/admin/event/delete"
 })
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024,
@@ -48,12 +48,12 @@ public class EventManagementServlet extends HttpServlet {
         String servletPath =
                 request.getServletPath();
 
-        if ("/event/edit".equals(servletPath)) {
+        if ("/admin/event/edit".equals(servletPath)) {
             getEventEditPage(request, response);
             return;
         }
 
-        if ("/event/delete".equals(servletPath)) {
+        if ("/admin/event/delete".equals(servletPath)) {
             deleteEvent(request, response);
             return;
         }
@@ -147,7 +147,7 @@ public class EventManagementServlet extends HttpServlet {
 			event = service.getEventDetail(eventCode);
 
 			if (event == null) {
-				response.sendRedirect(request.getContextPath() + "/event?error=notfound");
+				response.sendRedirect(request.getContextPath() + "/admin/event?error=notfound");
 				return;
 			}
 
@@ -180,11 +180,11 @@ public class EventManagementServlet extends HttpServlet {
         if (result) {
             response.sendRedirect(
                     request.getContextPath()
-                    + "/event");
+                    + "/admin/event");
         } else {
             response.sendRedirect(
                     request.getContextPath()
-                    + "/event?error=delete");
+                    + "/admin/event?error=delete");
         }
     }
 
@@ -196,12 +196,12 @@ public class EventManagementServlet extends HttpServlet {
 
 		String servletPath = request.getServletPath();
 
-		if ("/event/save".equals(servletPath)) {
+		if ("/admin/event/save".equals(servletPath)) {
 			saveEvent(request, response);
 			return;
 		}
 
-		response.sendRedirect(request.getContextPath() + "/event?error=unknownAction");
+		response.sendRedirect(request.getContextPath() + "/admin/event?error=unknownAction");
 	}
 
 	/**
@@ -337,7 +337,7 @@ public class EventManagementServlet extends HttpServlet {
 		 */
 		if ("edit".equals(mode) && eventCode <= 0) {
 
-			response.sendRedirect(request.getContextPath() + "/event?error=eventCode");
+			response.sendRedirect(request.getContextPath() + "/admin/event?error=eventCode");
 			return;
 		}
 
@@ -390,7 +390,7 @@ public class EventManagementServlet extends HttpServlet {
 
 		if (result) {
 
-			response.sendRedirect(request.getContextPath() + "/event");
+			response.sendRedirect(request.getContextPath() + "/admin/event");
 
 		} else {
 
@@ -518,7 +518,7 @@ public class EventManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/event/edit?eventCode="
+                    + "/admin/event/edit?eventCode="
                     + eventCode
                     + "&error="
                     + errorCode);
@@ -527,7 +527,7 @@ public class EventManagementServlet extends HttpServlet {
 
             response.sendRedirect(
                     request.getContextPath()
-                    + "/event/edit?error="
+                    + "/admin/event/edit?error="
                     + errorCode);
         }
     }

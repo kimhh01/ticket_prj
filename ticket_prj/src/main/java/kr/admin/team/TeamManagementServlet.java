@@ -14,7 +14,7 @@ import java.util.UUID;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Part;
 
-@WebServlet("/teamManagement")
+@WebServlet("/admin/teamManagement")
 @MultipartConfig(
 	    fileSizeThreshold = 1024 * 1024,
 	    maxFileSize = 1024 * 1024 * 2,
@@ -87,7 +87,7 @@ public class TeamManagementServlet extends HttpServlet {
         }
 
         response.sendRedirect(request.getContextPath()
-                + "/teamManagement?error=unknownAction");
+                + "/admin/teamManagement?error=unknownAction");
     }
 
     /**
@@ -146,10 +146,10 @@ public class TeamManagementServlet extends HttpServlet {
 
         if (result) {
             response.sendRedirect(request.getContextPath()
-                    + "/teamManagement");
+                    + "/admin/teamManagement");
         } else {
             response.sendRedirect(request.getContextPath()
-                    + "/teamManagement?error=schedule");
+                    + "/admin/teamManagement?error=schedule");
         }
     }
     /**
@@ -220,7 +220,7 @@ public class TeamManagementServlet extends HttpServlet {
             System.out.println("팀 등록 실패 : 로고 이미지 없음");
 
             response.sendRedirect(request.getContextPath()
-                    + "/teamManagement?tab=teamlist&error=teamLogo");
+                    + "/admin/teamManagement?tab=teamlist&error=teamLogo");
             return;
         }
 
@@ -233,7 +233,7 @@ public class TeamManagementServlet extends HttpServlet {
             System.out.println("팀 수정 실패 : teamCode가 없습니다.");
 
             response.sendRedirect(request.getContextPath()
-                    + "/teamManagement?tab=teamlist&error=teamCode");
+                    + "/admin/teamManagement?tab=teamlist&error=teamCode");
             return;
         }
 
@@ -246,7 +246,7 @@ public class TeamManagementServlet extends HttpServlet {
             System.out.println("팀 저장 실패 : 최종 로고 경로가 없습니다.");
 
             response.sendRedirect(request.getContextPath()
-                    + "/teamManagement?tab=teamlist&error=teamLogo");
+                    + "/admin/teamManagement?tab=teamlist&error=teamLogo");
             return;
         }
 
@@ -272,10 +272,10 @@ public class TeamManagementServlet extends HttpServlet {
 
         if (result) {
             response.sendRedirect(request.getContextPath()
-                    + "/teamManagement?tab=teamlist");
+                    + "/admin/teamManagement?tab=teamlist");
         } else {
             response.sendRedirect(request.getContextPath()
-                    + "/teamManagement?tab=teamlist&error=team");
+                    + "/admin/teamManagement?tab=teamlist&error=team");
         }
     }
 

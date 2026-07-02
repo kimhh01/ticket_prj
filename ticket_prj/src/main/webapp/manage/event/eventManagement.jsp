@@ -466,7 +466,7 @@ request.setAttribute("activeMenu", "event");
 
             <button type="button"
                     class="register-btn"
-                    onclick="location.href='${pageContext.request.contextPath}/event/edit'">
+                    onclick="location.href='${pageContext.request.contextPath}/admin/event/edit'">
 
 
                 <i class="ti ti-plus"></i>
@@ -625,7 +625,7 @@ request.setAttribute("activeMenu", "event");
             %>
 
                 <button class="page-btn <%= i == range.getPage() ? "active" : "" %>"
-                        onclick="location.href='${pageContext.request.contextPath}/event?page=<%= i %>'">
+                        onclick="location.href='${pageContext.request.contextPath}/admin/event?page=<%= i %>'">
 
                     <%= i %>
 
@@ -648,7 +648,7 @@ request.setAttribute("activeMenu", "event");
 function editEvent(eventCode){
 
     location.href =
-        "${pageContext.request.contextPath}/event/edit?eventCode="
+        "${pageContext.request.contextPath}/admin/event/edit?eventCode="
         + eventCode;
 }
 
@@ -657,7 +657,7 @@ function deleteEvent(eventCode){
     if(confirm("이벤트를 삭제하시겠습니까?")){
 
         location.href =
-            "${pageContext.request.contextPath}/event/delete?eventCode="
+            "${pageContext.request.contextPath}/admin/event/delete?eventCode="
             + eventCode;
     }
 }

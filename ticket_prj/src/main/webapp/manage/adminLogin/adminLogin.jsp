@@ -66,7 +66,7 @@
                         loginAdmin.getAdminName());
 
                 response.sendRedirect(
-                        request.getContextPath() + "/event");
+                        request.getContextPath() + "/manage/dashboard/main.jsp");
 
                 return;
 

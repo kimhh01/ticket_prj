@@ -570,7 +570,7 @@ body{
 
             <div class="tabs">
 
-                <a href="${pageContext.request.contextPath}/inquiry?status=all&keyword=<%= encodedKeyword %>&searchDate=<%= searchDate %>"
+                <a href="${pageContext.request.contextPath}/admin/inquiry?status=all&keyword=<%= encodedKeyword %>&searchDate=<%= searchDate %>"
 				   class="tab <%= "all".equals(status) ? "active" : "" %>">
 
                     전체
@@ -581,7 +581,7 @@ body{
 
                 </a>
 
-                <a href="${pageContext.request.contextPath}/inquiry?status=waiting&keyword=<%= encodedKeyword %>&searchDate=<%= searchDate %>"
+                <a href="${pageContext.request.contextPath}/admin/inquiry?status=waiting&keyword=<%= encodedKeyword %>&searchDate=<%= searchDate %>"
   				 class="tab <%= "waiting".equals(status) ? "active" : "" %>">
 
                     답변대기
@@ -592,7 +592,7 @@ body{
 
                 </a>
 
-                <a href="${pageContext.request.contextPath}/inquiry?status=complete&keyword=<%= encodedKeyword %>&searchDate=<%= searchDate %>"
+                <a href="${pageContext.request.contextPath}/admin/inquiry?status=complete&keyword=<%= encodedKeyword %>&searchDate=<%= searchDate %>"
    					class="tab <%= "complete".equals(status) ? "active" : "" %>">
                    
                     답변완료
@@ -607,7 +607,7 @@ body{
 
             <form class="search-area"
 			      method="get"
-			      action="${pageContext.request.contextPath}/inquiry">
+			      action="${pageContext.request.contextPath}/admin/inquiry">
 			
 			    <input type="hidden"
 			           name="status"
@@ -637,7 +637,7 @@ body{
 			
 			    <button type="button"
 			            class="search-reset-btn"
-			            onclick="location.href='${pageContext.request.contextPath}/inquiry?status=<%= status %>'">
+			            onclick="location.href='${pageContext.request.contextPath}/admin/inquiry?status=<%= status %>'">
 			        초기화
 			    </button>
 			
@@ -744,7 +744,7 @@ body{
 
                         <button type="button"
                                 class="page-btn <%= i == range.getPage() ? "active" : "" %>"
-                                onclick="location.href='${pageContext.request.contextPath}/inquiry?page=<%= i %>&status=<%= status %>&keyword=<%= encodedKeyword %>&searchDate=<%= searchDate %>'">
+                                onclick="location.href='${pageContext.request.contextPath}/admin/inquiry?page=<%= i %>&status=<%= status %>&keyword=<%= encodedKeyword %>&searchDate=<%= searchDate %>'">
 
                             <%= i %>
 
