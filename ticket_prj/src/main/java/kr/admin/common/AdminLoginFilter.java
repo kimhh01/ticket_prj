@@ -71,7 +71,7 @@ public class AdminLoginFilter implements Filter {
         }
 
         if (admin == null) {
-            resp.sendRedirect(contextPath + "/manage/adminLogin/login.jsp");
+            resp.sendRedirect(contextPath + "/manage/adminLogin/adminLogin.jsp");
             return;
         }
 
