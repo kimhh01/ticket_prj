@@ -17,10 +17,10 @@ import javax.servlet.http.Part;
 import kr.admin.common.BoardRangeDTO;
 
 @WebServlet({
-    "/event",
-    "/event/edit",
-    "/event/save",
-    "/event/delete"
+    "admin/event",
+    "admin/event/edit",
+    "admin/event/save",
+    "admin/event/delete"
 })
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024,
