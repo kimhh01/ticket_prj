@@ -2,6 +2,8 @@ package kr.user.member;
 
 import java.security.SecureRandom;
 
+import kr.user.common.PasswordHashUtil;
+
 public class MemberService {
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
@@ -15,6 +17,7 @@ public class MemberService {
 	 * 로그인 정보를 확인하고 일치하는 회원 정보를 반환한다.
 	 */
 	public MemberDTO login(MemberDTO memberDTO) {
+		memberDTO.setPassword(PasswordHashUtil.sha1(memberDTO.getPassword()));
 		return memberDAO.selectLogin(memberDTO);
 	}
 
@@ -22,6 +25,7 @@ public class MemberService {
 	 * 회원가입 정보를 DB에 저장한다.
 	 */
 	public boolean register(MemberDTO memberDTO) {
+		memberDTO.setPassword(PasswordHashUtil.sha1(memberDTO.getPassword()));
 		return memberDAO.insertMember(memberDTO) == 1;
 	}
 
@@ -68,7 +72,7 @@ public class MemberService {
 
 		// 가입 비밀번호 규칙을 만족하면서 예측하기 어려운 임시 비밀번호를 생성한다.
 		String tempPassword = String.format("Tmp!%06d", SECURE_RANDOM.nextInt(1000000));
-		findMemberDTO.setPassword(tempPassword);
+		findMemberDTO.setPassword(PasswordHashUtil.sha1(tempPassword));
 
 		if (memberDAO.updatePassword(findMemberDTO) != 1) {
 			return null;
