@@ -388,31 +388,41 @@ public class ReservationPageDAO {
 	    return seatName;
 	}
 	
-	//이벤트 할인율 조회
-	public int selectDiscountRate(String eventCode) throws SQLException{
-		int discount=0;
-		Connection con=null;
-		PreparedStatement pstmt=null;
-		ResultSet rs=null;
-		
-		try {
-	        con = udbc.getConnection();
-	        // stadium_seat 테이블에서 ID로 좌석 이름을 가져오는 쿼리
-	        String sql = "SELECT discount FROM event WHERE event_code = ?";;
-	        
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setString(1, eventCode);
-	        rs = pstmt.executeQuery();
-
-	        if (rs.next()) {
-	            discount = rs.getInt("discount");
-	        }
-	    } finally {
-	        udbc.close(rs, pstmt, con);
-	    }
-	    return discount;
-		
-	}
+	//이벤트 할인 조회
+		public int selectDiscount(String memberCode) throws SQLException{
+			int discount=0;
+			
+			Connection con=null;
+			PreparedStatement pstmt=null;
+			ResultSet rs=null;
+			
+			
+			try {
+				con=udbc.getConnection();
+				StringBuilder selectTeamImg=new StringBuilder();
+				selectTeamImg
+				.append("	select cc.count_discount_rate as discount	")
+				.append("	from custody_coupon	cc ")
+				.append("	join coupon	c ")
+				.append("	on cc.coupon_code=c.coupon_code ")
+				.append("	where member_id = ?	");
+				
+				pstmt=con.prepareStatement(selectTeamImg.toString());
+					pstmt.setString(1, memberCode);
+					rs=pstmt.executeQuery();
+					
+				if(rs.next()) {
+					    discount=rs.getInt("discount");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}finally {
+				 if(rs != null) rs.close();
+				    if(pstmt != null) pstmt.close();
+				    if(con != null) con.close();
+			}
+			return discount;
+		}
 	//좌석 가격 조회 메서드
 	public int selectSeatPrice(int stadiumSeatCode, String reservationType) throws SQLException {
 

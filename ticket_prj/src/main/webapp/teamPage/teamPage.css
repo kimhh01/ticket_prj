@@ -389,6 +389,148 @@
     display: none;
 }
 
+/* [달력형 보기] 스타일 추가 */
+
+.calendar-wrap {
+    max-width: 1000px;
+    margin: 20px auto 50px auto;
+    background: #fff;
+    border: 1px solid #e1e4e6;
+    border-radius: 8px;
+    padding: 25px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+/* 달력 헤더 (연도/월/이동 버튼) */
+.calendar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.calendar-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    color: #222;
+}
+
+.calendar-header a {
+    text-decoration: none;
+    color: #888;
+    font-size: 20px;
+    transition: color 0.2s;
+    padding: 5px 10px;
+}
+
+.calendar-header a:hover {
+    color: #f1404b;
+}
+
+/* 달력 테이블 기본 */
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 셀 너비 고정 */
+}
+
+.calendar-table th {
+    padding: 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    border-bottom: 2px solid #333;
+    background: #fcfcfc;
+}
+
+.calendar-table th.sun { color: #f1404b; }
+.calendar-table th.sat { color: #0066ff; }
+
+/* 달력 셀 */
+.calendar-cell {
+    height: 140px;
+    vertical-align: top;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+    transition: background 0.1s;
+}
+
+.calendar-cell:nth-child(7n) { border-right: none; } /* 토요일 열 경계선 제거 */
+
+.calendar-date {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* 일요일 숫자 빨간색 */
+.calendar-table tr td:first-child .calendar-date { color: #f1404b; }
+/* 토요일 숫자 파란색 */
+.calendar-table tr td:last-child .calendar-date { color: #0066ff; }
+
+/* 경기 정보 컨테이너 */
+.calendar-match {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 5px;
+}
+
+.calendar-logo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.calendar-match span {
+    font-size: 10px;
+    color: #bbb;
+    font-weight: bold;
+}
+
+.calendar-time {
+    text-align: center;
+    font-size: 11px;
+    color: #666;
+    margin: 4px 0;
+}
+
+/* 달력 내 버튼 스타일링 (기본 버튼보다 작게) */
+.calendar-cell .reserve-btn, 
+.calendar-cell .coming-btn {
+    display: block;
+    width: 100%;
+    padding: 4px 0;
+    font-size: 11px;
+    margin-top: 5px;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.calendar-cell .reserve-btn {
+    background: #f1404b;
+}
+
+.calendar-cell .coming-btn {
+    background: #e1e4e6;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* 오늘 날짜나 빈 셀 강조 등 필요시 추가 */
+.calendar-cell:hover {
+    background-color: #fafafa;
+}
+
 
 /* 펼침 */
 .notice-detail-body.active {

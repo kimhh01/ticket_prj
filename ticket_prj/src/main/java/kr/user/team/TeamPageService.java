@@ -20,9 +20,9 @@ public class TeamPageService {
 	}
 	
 	//경기리스트
-	public List<TeamDTO> getGame(int teamCode) throws SQLException {
+	public List<TeamDTO> getGame(int teamCode,int year,int month) throws SQLException {
 		
-		return tpDAO.selectGame(teamCode);
+		return tpDAO.selectGame(teamCode,year,month);
 	}
 	
 	//각팀공지사항
@@ -32,7 +32,9 @@ public class TeamPageService {
 	}
 	
 	//리그안내페이지
-		public String getLeagueGuide(int teamCode) throws SQLException {
-			return tpDAO.selectLeagueGuide(teamCode);
+	public String getLeagueGuide(int teamCode) throws SQLException {
+		return tpDAO.selectLeagueGuide(teamCode);
 	}
+	
+	
 }
