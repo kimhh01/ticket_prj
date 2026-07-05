@@ -1,6 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%@page import="userEvent.EventDTO"%>
+<%@page import="userEvent.EventPageService"%>
+
+<%
+int eventId = Integer.parseInt(request.getParameter("eventId"));
+
+EventPageService service = new EventPageService();
+
+EventDTO event = service.searchEventDetail(eventId);
+
+pageContext.setAttribute("event", event);
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,26 +27,22 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
 
 </head>
 <body>
-
 <jsp:include page="../fragment/header.jsp"/>
-<style>
-@import url("eventDetail.css");
-</style>
 <div class="event-detail-wrap">
 
     <h1 class="event-title">이벤트</h1>
 
-
-    <!-- 배너 -->
     <div class="event-banner">
-        <img src="../images/event/event1_banner.png" alt="이벤트">
+        <img src="../images/event/${event.representativeImg}"
+             alt="${event.eventTitle}">
     </div>
 
-    <!-- 제목 -->
     <div class="event-header">
-        <h2>[이벤트] 신규회원 첫 예매 3,000원 할인</h2>
-        <span>2026.05.20 ~ 2026.06.30</span>
+        <h2>${event.eventTitle}</h2>
+        <span>${event.eventStartDate} ~ ${event.eventEndDate}</span>
     </div>
+
+
 
     <!-- 혜택안내 / 이용방법 -->
     <div class="event-info-wrap">
@@ -133,9 +142,5 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
 </div>
 
 <jsp:include page="../fragment/footer.jsp"/>
-<style>
-@import url("event.css");
-</style>
-
 </body>
 </html>

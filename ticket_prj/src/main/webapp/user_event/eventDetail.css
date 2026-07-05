@@ -320,3 +320,21 @@
     margin-bottom:8px;
     line-height:1.8;
 }
+
+.event-content{
+
+    margin-top:40px;
+
+    padding:40px;
+
+    border:1px solid #ddd;
+
+    border-radius:8px;
+
+    line-height:2;
+
+    font-size:16px;
+
+    white-space:pre-line;
+
+}

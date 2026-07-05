@@ -4,136 +4,159 @@ import java.sql.Date;
 
 public class EventDTO {
 
-    private int eventCode;                 // 이벤트코드
-    private String eventTitle;             // 이벤트제목
+    // EVENT 테이블
+    private int eventId;
+    private int adminId;
 
-    private String benefitGuide;           // 혜택 안내
-    private String useGuide;               // 이용방법
-    private String guideline;              // 유의사항
+    private String eventTitle;
+    private String eventSummary;
+    private String eventContent;
 
-    private String thumbnailImg;           // 이벤트 썸네일
-    private String eventImg;               // 이벤트 이미지
-    private String representativeImg;      // 본문 이미지
+    private String thumbnailImg;
+    private String representativeImg;
 
-    private Date eventStartDate;           // 이벤트 시작일
-    private Date eventEndDate;             // 이벤트 종료일
+    private Date eventStartDate;
+    private Date eventEndDate;
+    private Date eventWriteDate;
 
-    private int discountPrice;             // 이벤트 할인율
+    // EVENT_DISCOUNT 테이블
+    private int eventDiscountRate;
+    private int teamId;
 
-    public EventDTO(int eventCode, String eventTitle, String benefitGuide, String useGuide, String guideline,
-			String thumbnailImg, String eventImg, String representativeImg, Date eventStartDate, Date eventEndDate,
-			int discountPrice) {
-		super();
-		this.eventCode = eventCode;
-		this.eventTitle = eventTitle;
-		this.benefitGuide = benefitGuide;
-		this.useGuide = useGuide;
-		this.guideline = guideline;
-		this.thumbnailImg = thumbnailImg;
-		this.eventImg = eventImg;
-		this.representativeImg = representativeImg;
-		this.eventStartDate = eventStartDate;
-		this.eventEndDate = eventEndDate;
-		this.discountPrice = discountPrice;
-	}
+    public EventDTO() {
+    }
 
-	public int getEventCode() {
-		return eventCode;
-	}
+    public EventDTO(int eventId, int adminId, String eventTitle,
+            String eventSummary, String eventContent,
+            String thumbnailImg, String representativeImg,
+            Date eventStartDate, Date eventEndDate,
+            Date eventWriteDate, int eventDiscountRate,
+            int teamId) {
 
-	public void setEventCode(int eventCode) {
-		this.eventCode = eventCode;
-	}
+        this.eventId = eventId;
+        this.adminId = adminId;
+        this.eventTitle = eventTitle;
+        this.eventSummary = eventSummary;
+        this.eventContent = eventContent;
+        this.thumbnailImg = thumbnailImg;
+        this.representativeImg = representativeImg;
+        this.eventStartDate = eventStartDate;
+        this.eventEndDate = eventEndDate;
+        this.eventWriteDate = eventWriteDate;
+        this.eventDiscountRate = eventDiscountRate;
+        this.teamId = teamId;
+    }
 
-	public String getEventTitle() {
-		return eventTitle;
-	}
+    public int getEventId() {
+        return eventId;
+    }
 
-	public void setEventTitle(String eventTitle) {
-		this.eventTitle = eventTitle;
-	}
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
+    }
 
-	public String getBenefitGuide() {
-		return benefitGuide;
-	}
+    public int getAdminId() {
+        return adminId;
+    }
 
-	public void setBenefitGuide(String benefitGuide) {
-		this.benefitGuide = benefitGuide;
-	}
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
+    }
 
-	public String getUseGuide() {
-		return useGuide;
-	}
+    public String getEventTitle() {
+        return eventTitle;
+    }
 
-	public void setUseGuide(String useGuide) {
-		this.useGuide = useGuide;
-	}
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
+    }
 
-	public String getGuideline() {
-		return guideline;
-	}
+    public String getEventSummary() {
+        return eventSummary;
+    }
 
-	public void setGuideline(String guideline) {
-		this.guideline = guideline;
-	}
+    public void setEventSummary(String eventSummary) {
+        this.eventSummary = eventSummary;
+    }
 
-	public String getThumbnailImg() {
-		return thumbnailImg;
-	}
+    public String getEventContent() {
+        return eventContent;
+    }
 
-	public void setThumbnailImg(String thumbnailImg) {
-		this.thumbnailImg = thumbnailImg;
-	}
+    public void setEventContent(String eventContent) {
+        this.eventContent = eventContent;
+    }
 
-	public String getEventImg() {
-		return eventImg;
-	}
+    public String getThumbnailImg() {
+        return thumbnailImg;
+    }
 
-	public void setEventImg(String eventImg) {
-		this.eventImg = eventImg;
-	}
+    public void setThumbnailImg(String thumbnailImg) {
+        this.thumbnailImg = thumbnailImg;
+    }
 
-	public String getRepresentativeImg() {
-		return representativeImg;
-	}
+    public String getRepresentativeImg() {
+        return representativeImg;
+    }
 
-	public void setRepresentativeImg(String representativeImg) {
-		this.representativeImg = representativeImg;
-	}
+    public void setRepresentativeImg(String representativeImg) {
+        this.representativeImg = representativeImg;
+    }
 
-	public Date getEventStartDate() {
-		return eventStartDate;
-	}
+    public Date getEventStartDate() {
+        return eventStartDate;
+    }
 
-	public void setEventStartDate(Date eventStartDate) {
-		this.eventStartDate = eventStartDate;
-	}
+    public void setEventStartDate(Date eventStartDate) {
+        this.eventStartDate = eventStartDate;
+    }
 
-	public Date getEventEndDate() {
-		return eventEndDate;
-	}
+    public Date getEventEndDate() {
+        return eventEndDate;
+    }
 
-	public void setEventEndDate(Date eventEndDate) {
-		this.eventEndDate = eventEndDate;
-	}
+    public void setEventEndDate(Date eventEndDate) {
+        this.eventEndDate = eventEndDate;
+    }
 
-	public int getDiscountPrice() {
-		return discountPrice;
-	}
+    public Date getEventWriteDate() {
+        return eventWriteDate;
+    }
 
-	public void setDiscountPrice(int discountPrice) {
-		this.discountPrice = discountPrice;
-	}
+    public void setEventWriteDate(Date eventWriteDate) {
+        this.eventWriteDate = eventWriteDate;
+    }
 
-	@Override
-	public String toString() {
-		return "EventDTO [eventCode=" + eventCode + ", eventTitle=" + eventTitle + ", benefitGuide=" + benefitGuide
-				+ ", useGuide=" + useGuide + ", guideline=" + guideline + ", thumbnailImg=" + thumbnailImg
-				+ ", eventImg=" + eventImg + ", representativeImg=" + representativeImg + ", eventStartDate="
-				+ eventStartDate + ", eventEndDate=" + eventEndDate + ", discountPrice=" + discountPrice + "]";
-	}
+    public int getEventDiscountRate() {
+        return eventDiscountRate;
+    }
 
-	public EventDTO() {
+    public void setEventDiscountRate(int eventDiscountRate) {
+        this.eventDiscountRate = eventDiscountRate;
+    }
+
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
+    }
+
+    @Override
+    public String toString() {
+        return "EventDTO [eventId=" + eventId
+                + ", adminId=" + adminId
+                + ", eventTitle=" + eventTitle
+                + ", eventSummary=" + eventSummary
+                + ", eventContent=" + eventContent
+                + ", thumbnailImg=" + thumbnailImg
+                + ", representativeImg=" + representativeImg
+                + ", eventStartDate=" + eventStartDate
+                + ", eventEndDate=" + eventEndDate
+                + ", eventWriteDate=" + eventWriteDate
+                + ", eventDiscountRate=" + eventDiscountRate
+                + ", teamId=" + teamId + "]";
     }
 
 }
