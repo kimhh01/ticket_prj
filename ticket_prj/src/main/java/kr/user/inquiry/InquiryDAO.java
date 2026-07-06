@@ -202,9 +202,9 @@ public class InquiryDAO {
 					dto.setInquiryCategoryCode(InquiryType.fromDbValue(rs.getString("inquiry_type")).getCode());
 					dto.setInquiryTitle(rs.getString("inquiry_title"));
 					dto.setInquiryContent(rs.getString("inquiry_content"));
-					dto.setInquiryDate(rs.getDate("inquiry_date"));
+					dto.setInquiryDate(rs.getTimestamp("inquiry_date"));
 					dto.setReplyContent(rs.getString("reply_content"));
-					dto.setReplyDate(rs.getDate("reply_date"));
+					dto.setReplyDate(rs.getTimestamp("reply_date"));
 					dto.setInquiryStatus(rs.getString("inquiry_status"));
 
 					inquiryList.add(dto);
@@ -261,9 +261,9 @@ public class InquiryDAO {
 					inquiryDTO.setInquiryCategoryCode(InquiryType.fromDbValue(rs.getString("inquiry_type")).getCode());
 					inquiryDTO.setInquiryTitle(rs.getString("inquiry_title"));
 					inquiryDTO.setInquiryContent(rs.getString("inquiry_content"));
-					inquiryDTO.setInquiryDate(rs.getDate("inquiry_date"));
+					inquiryDTO.setInquiryDate(rs.getTimestamp("inquiry_date"));
 					inquiryDTO.setReplyContent(rs.getString("reply_content"));
-					inquiryDTO.setReplyDate(rs.getDate("reply_date"));
+					inquiryDTO.setReplyDate(rs.getTimestamp("reply_date"));
 					inquiryDTO.setInquiryStatus(rs.getString("inquiry_status"));
 				}
 			}
