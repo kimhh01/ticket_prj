@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>bigBall예매</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/reservationPage/reservation.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/reservationPage/reservation.css?v=2">
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
 <body>
@@ -47,9 +47,13 @@
 			<div class="step-item" id="step-nav-5">결제</div>
 		</nav>
 
+		<!-- [수정] 첫 번째 좌석 정보를 변수(defaultSeat)로 지정해 둡니다 -->
+		<c:set var="defaultSeat" value="${seatList[0]}" />
+
 		<form id="reservationForm" action="${pageContext.request.contextPath}/reservationPageServlet" method="POST">
 			
-			<input type="hidden" name="stadiumSeatCode" id="hiddenStadiumSeatCode" value="1"> 
+			<!-- [수정] 기본 선택된 좌석 코드를 첫 번째 좌석 ID로 EL 매핑합니다 -->
+			<input type="hidden" name="stadiumSeatCode" id="hiddenStadiumSeatCode" value="${defaultSeat.stadiumSeatCode}"> 
 			<input type="hidden" name="reservationType" id="hiddenReservationType" value="성인">
 			<input type="hidden" name="reservationQuantity" id="hiddenReservationQuantity" value="0">
 			<input type="hidden" name="totalPrice" id="hiddenTotalPrice" value="0">
@@ -90,21 +94,30 @@
 								<span>전체</span>
 							</div>
 							
-							<c:forEach var="seat" items="${seatList }" varStatus="status">
-								<div class="seats-list-item-img" id="item-${status.index+1}" onclick="mockSeatSelect('${seat.seatName}','item-${status.index+1}',${seat.stadiumSeatCode})">
+							<c:forEach var="seat" items="${seatList}" varStatus="status">
+								<!-- [수정] 첫 번째 좌석 목록에 selected 클래스를 기본 부여합니다 -->
+								<div class="seats-list-item-img ${status.first ? 'selected' : ''}" id="item-${status.index+1}" 
+									 data-adult="${seat.adultSeatPrice}"
+									 data-youth="${seat.youthSeatPrice}"
+									 data-child="${seat.childSeatPrice}"
+									 onclick="mockSeatSelect('${seat.seatName}','item-${status.index+1}',${seat.stadiumSeatCode}, this)">
 						
 						            <div class="grade-name-group">
 						                <c:choose>
-										    <c:when test="${seat.seatName == '자유석- 내야 A구역'}">
+										    <c:when test="${seat.seatName == '1루 자유석'}">
 										        <span class="color-square sq-blue"></span>
 										    </c:when>
 										
-										    <c:when test="${seat.seatName == '자유석- 내야 B구역'}">
+										    <c:when test="${seat.seatName == '3루 자유석'}">
 										        <span class="color-square sq-red"></span>
 										    </c:when>
 										
-										    <c:when test="${seat.seatName == '자유석- 외야 C구역'}">
+										    <c:when test="${seat.seatName == '홈 자유석'}">
 										        <span class="color-square sq-yellow"></span>
+										    </c:when>
+										
+										    <c:when test="${seat.seatName == '외야 자유석'}">
+										        <span class="color-square sq-green"></span>
 										    </c:when>
 										
 										    <c:otherwise>
@@ -133,7 +146,8 @@
 	
 						<div class="selection-alert-wrapper">
 							<div class="selection-alert-bar">
-								<span id="selected-seat-alert"><strong id="dynamic-seat-name">${seat.seatName }</strong>을 <strong id="dynamic-seat-qty">0매</strong> 선택하셨습니다.</span>
+								<!-- [수정] 기본 선택된 좌석명(defaultSeat.seatName)을 EL로 출력합니다 -->
+								<span id="selected-seat-alert"><strong id="dynamic-seat-name">${defaultSeat.seatName}</strong>을 <strong id="dynamic-seat-qty">0매</strong> 선택하셨습니다.</span>
 							</div>
 						</div>
 	
@@ -149,9 +163,10 @@
 									<tr>
 										<td class="cat-cell" rowspan="3">일반 권종</td>
 										<td class="name-cell">성인</td>
-										<td class="price-cell">${seatPrice.adultSeatPrice }원</td>
+										<!-- [수정] 기본 성인 요금을 DB 데이터(EL)로 바인딩하고 data-price 기본 속성을 부여합니다 -->
+										<td class="price-cell" id="price-adult">${defaultSeat.adultSeatPrice}원</td>
 										<td class="select-cell">
-											<select class="qty-select ticket-qty" data-type="성인" data-price="${seatPrice.adultSeatPrice }" onchange="calculateInvoice()">
+											<select class="qty-select ticket-qty" id="qty-adult" data-type="성인" data-price="${defaultSeat.adultSeatPrice}" onchange="calculateInvoice()">
 												<option value="0">0</option>
 												<option value="1">1</option>
 												<option value="2">2</option>
@@ -161,9 +176,10 @@
 									</tr>
 									<tr>
 										<td class="name-cell">청소년</td>
-										<td class="price-cell">${seatPrice.youthSeatPrice }원</td>
+										<!-- [수정] 기본 청소년 요금을 DB 데이터(EL)로 바인딩하고 data-price 기본 속성을 부여합니다 -->
+										<td class="price-cell" id="price-youth">${defaultSeat.youthSeatPrice}원</td>
 										<td class="select-cell">
-											<select class="qty-select ticket-qty" data-type="청소년" data-price="${seatPrice.youthSeatPrice }" onchange="calculateInvoice()">
+											<select class="qty-select ticket-qty" id="qty-youth" data-type="청소년" data-price="${defaultSeat.youthSeatPrice}" onchange="calculateInvoice()">
 												<option value="0">0</option>
 												<option value="1">1</option>
 												<option value="2">2</option>
@@ -173,9 +189,10 @@
 									</tr>
 									<tr>
 										<td class="name-cell">어린이</td>
-										<td class="price-cell">${seatPrice.childSeatPrice }원</td>
+										<!-- [수정] 기본 어린이 요금을 DB 데이터(EL)로 바인딩하고 data-price 기본 속성을 부여합니다 -->
+										<td class="price-cell" id="price-child">${defaultSeat.childSeatPrice}원</td>
 										<td class="select-cell">
-											<select class="qty-select ticket-qty" data-type="어린이" data-price="${seatPrice.childSeatPrice }" onchange="calculateInvoice()">
+											<select class="qty-select ticket-qty" id="qty-child" data-type="어린이" data-price="${defaultSeat.childSeatPrice}" onchange="calculateInvoice()">
 												<option value="0">0</option>
 												<option value="1">1</option>
 												<option value="2">2</option>
@@ -184,17 +201,35 @@
 										</td>
 									</tr>
 									<tr class="discount-row">
-									    <td class="cat-cell">할인</td>
-									
-									    <td colspan="3" class="discount-cell">
-									        <div class="discount-wrap">
-									            <input type="text" class="discount-code" placeholder="할인쿠폰 코드를 입력하세요">
-												<input type="hidden" name="eventCode" id="hiddenEventCode">
-									            <button type="button" class="btn-discount" onclick="discountEvent()">적용</button>
-									            <span class="discount-msg"></span>
-									        </div>
-									    </td>
-									</tr>
+    <td class="cat-cell">할인</td>
+
+    <td class="discount-cell" colspan="3">
+        <div class="coupon-area" style="margin-left: auto;">
+
+            <c:choose>
+                <c:when test="${not empty couponList}">
+                    <select id="couponSelect" class="qty-select" style="width: 180px;" onchange="changeCoupon()">
+                        <option value="0">쿠폰 선택</option>
+
+                        <c:forEach var="coupon" items="${couponList}">
+                            <option
+                                value="${coupon.couponCode}"
+                                data-rate="${coupon.couponDiscountRate}">
+                                ${coupon.couponDiscountRate}% 할인
+                            </option>
+                        </c:forEach>
+                    </select>
+                </c:when>
+
+                <c:otherwise>
+                    <span class="coupon-empty-text">사용 가능한 쿠폰이 없습니다.</span>
+                </c:otherwise>
+
+            </c:choose>
+
+        </div>
+    </td>
+</tr>
 								</tbody>
 							</table>
 						</div>
@@ -224,7 +259,8 @@
 						<div class="booking-summary-box-img">
 							<div class="box-label">예매정보</div>
 							<div class="seat-info-detail">
-								<span class="seat-grade-txt" id="summary-seat-name">선택 안 됨</span>
+								<!-- [수정] 기본 선택된 좌석 등급명을 EL로 세팅합니다 -->
+								<span class="seat-grade-txt" id="summary-seat-name">${defaultSeat.seatName}</span>
 							</div>
 						</div>
 	
@@ -271,13 +307,13 @@
 							<tbody>
 								<tr>
 									<td class="step4-label-cell">이름 *</td>
-									<td><input type="text" value="${sessionScope.loginMember.name}" class="step4-input" style="font-weight: bold;" readonly></td>
+									<td><input type="text" value="${memberInfo.memberName}" class="step4-input" style="font-weight: bold;" readonly></td>
 									<td class="step4-label-cell">휴대폰 번호 *</td>
-									<td><input type="text" value="${sessionScope.loginMember.phone}" class="step4-input" style="font-weight: bold;" readonly="readonly"></td>
+									<td><input type="text" value="${memberInfo.memberPhone}" class="step4-input" style="font-weight: bold;" readonly="readonly"></td>
 								</tr>
 								<tr>
 									<td class="step4-label-cell">이메일</td>
-									<td colspan="3"><input type="text" value="${sessionScope.loginMember.email}" class="step4-input-full" readonly="readonly"></td>
+									<td colspan="3"><input type="text" value="${memberInfo.memberEmail}" class="step4-input-full" readonly="readonly"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -292,27 +328,21 @@
 							</div>
 							<div class="consent-item">
 								<div class="consent-left">
-									<input type="checkbox" id="check-consent-2"> <span>(선택) 예매 안내 메일 발송을 위한 이메일 수집 동의</span>
+									<input type="checkbox" id="check-consent-3"> <span>개인정보 제 3자 제공에 동의합니다. (필수)</span>
 								</div>
 								<span class="link-detail" onclick="openDetailModal(2)">[상세보기]</span>
 							</div>
 							<div class="consent-item">
 								<div class="consent-left">
-									<input type="checkbox" id="check-consent-3"> <span>개인정보 제 3자 제공에 동의합니다. (필수)</span>
+									<input type="checkbox" id="check-consent-4"> <span>KBO리그 SAFE캠페인에 동의합니다. (필수)</span>
 								</div>
 								<span class="link-detail" onclick="openDetailModal(3)">[상세보기]</span>
 							</div>
 							<div class="consent-item">
 								<div class="consent-left">
-									<input type="checkbox" id="check-consent-4"> <span>KBO리그 SAFE캠페인에 동의합니다. (필수)</span>
-								</div>
-								<span class="link-detail" onclick="openDetailModal(4)">[상세보기]</span>
-							</div>
-							<div class="consent-item">
-								<div class="consent-left">
 									<input type="checkbox" id="check-consent-5"> <span>암표매매 행위에 따른 제재사항 동의 (필수)</span>
 								</div>
-								<span class="link-detail" onclick="openDetailModal(5)">[상세보기]</span>
+								<span class="link-detail" onclick="openDetailModal(4)">[상세보기]</span>
 							</div>
 						</div>
 					</div>
@@ -336,7 +366,8 @@
 						<div class="booking-summary-box-img">
 							<div class="box-label">예매정보</div>
 							<div class="seat-info-detail">
-								<span class="seat-grade-txt" id="summary-seat-name-step4">선택 안 됨</span>
+								<!-- [수정] 기본 선택된 좌석 등급명을 EL로 세팅합니다 -->
+								<span class="seat-grade-txt" id="summary-seat-name-step4">${defaultSeat.seatName}</span>
 							</div>
 						</div>
 	
@@ -383,8 +414,9 @@
 
 	<script>
 	    let currentCaptchaCode = "";
-	    let selectActive = false; 
-	    let selectedSeatGlobalName = "";
+	    // [수정] 기본적으로 첫 번째 좌석 등급이 활성화된 상태이므로 초기 상태 값들을 그에 맞게 정의합니다
+	    let selectActive = true; 
+	    let selectedSeatGlobalName = "${defaultSeat.seatName}";
 	
 	    function generateCaptchaValue() {
 	        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -407,12 +439,11 @@
 	        }
 	    }
 	
-	    //날짜 다시 선택시 예매창은 팝업으로 만들어지므로 그냥 닫기만 넣음
 	    function goToTeamSelection() {
 	        window.close();
 	    }
 		
-	    function mockSeatSelect(name, id, seatCode) {
+	    function mockSeatSelect(name, id, seatCode, element) {
 	        document.querySelectorAll('.seats-list-item-img').forEach(el => el.classList.remove('selected'));
 	        const target = document.getElementById(id);
 	        if(target) target.classList.add('selected');
@@ -424,6 +455,28 @@
 	        
 	        document.getElementById('hiddenStadiumSeatCode').value = seatCode;
 	        selectActive = true;
+
+	        // 가격 정보 동적 할당
+	        const adultPrice = parseInt(element.getAttribute('data-adult')) || 0;
+	        const youthPrice = parseInt(element.getAttribute('data-youth')) || 0;
+	        const childPrice = parseInt(element.getAttribute('data-child')) || 0;
+
+	        // UI 텍스트 및 select 옵션 계산용 data-price 반영
+	        document.getElementById('price-adult').innerText = adultPrice.toLocaleString() + "원";
+	        document.getElementById('price-youth').innerText = youthPrice.toLocaleString() + "원";
+	        document.getElementById('price-child').innerText = childPrice.toLocaleString() + "원";
+
+	        const qtyAdult = document.getElementById('qty-adult');
+	        const qtyYouth = document.getElementById('qty-youth');
+	        const qtyChild = document.getElementById('qty-child');
+
+	        qtyAdult.setAttribute('data-price', adultPrice);
+	        qtyYouth.setAttribute('data-price', youthPrice);
+	        qtyChild.setAttribute('data-price', childPrice);
+
+	        // 새로운 등급 선택 시 선택 매수를 초기화하여 버그 방지
+	        document.querySelectorAll('.ticket-qty').forEach(el => el.value = "0");
+	        calculateInvoice();
 	    }
 	
 	    function transitionToStep3() {
@@ -448,25 +501,24 @@
 	    let calculatedTicketPrice = 0;
 	    let calculatedFee = 0;
 	    let calculatedTotal = 0;
+
 	    let discountRate = 0;
 	    let discountAmount = 0;
+	    let couponCode = "";
 	    
 	    function calculateInvoice() {
-	        const qtyDropdowns = document.querySelectorAll('.ticket-qty');
-	        let sumTicketPrice = 0;
-	        let sumQty = 0;
-	        let lastSelectedType = "성인";
-	
-	        qtyDropdowns.forEach(dropdown => {
-	            const qty = parseInt(dropdown.value);
-	            const pricePerOne = parseInt(dropdown.getAttribute('data-price'));
-	            
-	            if (qty > 0) {
-	                sumTicketPrice += (qty * pricePerOne);
-	                sumQty += qty;
-	                lastSelectedType = dropdown.getAttribute('data-type');
-	            }
-	        });
+	        // 각 등급별 선택 수량
+	        const qtyAdult = parseInt(document.getElementById('qty-adult').value) || 0;
+	        const qtyYouth = parseInt(document.getElementById('qty-youth').value) || 0;
+	        const qtyChild = parseInt(document.getElementById('qty-child').value) || 0;
+
+	        // 실시간 로드된 각 요금 단가
+	        const priceAdult = parseInt(document.getElementById('qty-adult').getAttribute('data-price')) || 0;
+	        const priceYouth = parseInt(document.getElementById('qty-youth').getAttribute('data-price')) || 0;
+	        const priceChild = parseInt(document.getElementById('qty-child').getAttribute('data-price')) || 0;
+
+	        const sumQty = qtyAdult + qtyYouth + qtyChild;
+	        const sumTicketPrice = (qtyAdult * priceAdult) + (qtyYouth * priceYouth) + (qtyChild * priceChild);
 	
 	        calculatedTicketPrice = sumTicketPrice;
 	        discountAmount = calculatedTicketPrice * discountRate / 100;
@@ -483,47 +535,23 @@
 	        document.getElementById('invoice-total').innerText = calculatedTotal.toLocaleString() + "원";
 	        
 	        document.getElementById('hiddenReservationQuantity').value = sumQty;
-	        document.getElementById('hiddenReservationType').value = lastSelectedType;
 	        document.getElementById('hiddenTotalPrice').value = calculatedTicketPrice;
 	        document.getElementById('hiddenDiscountPrice').value = discountAmount;
 	        document.getElementById('hiddenPayPrice').value = calculatedTotal;
-	        document.getElementById("hiddenEventCode").value = document.querySelector(".discount-code").value.trim();
 	    }
 	    
-	    //할인 함수
-	    function discountEvent() {
-
-	        const eventCode = document.querySelector(".discount-code").value.trim();
-
-	        if(eventCode===""){
-	            alert("쿠폰 코드를 입력해주세요.");
-	            return;
-	        }
-
-	        fetch("${pageContext.request.contextPath}/reservation?mode=coupon&eventCode=" + encodeURIComponent(eventCode))
-	        .then(response => response.text())
-	        .then(data => {
-
-	            const rate = parseInt(data);
-
-	            if(rate < 0){
-	                alert("존재하지 않는 쿠폰입니다.");
-	                return;
-	            }
-
-	            discountRate = rate;
-
-	            alert(rate + "% 할인쿠폰이 적용되었습니다.");
-
-	            calculateInvoice();
-
-	        })
-	        .catch(error=>{
-	            console.log(error);
-	            alert("쿠폰 조회 중 오류가 발생했습니다.");
-	        });
-
-	    }
+	    //할인 적용 함수
+		
+		function changeCoupon() {
+		
+		    const select = document.getElementById("couponSelect");
+		    const option = select.options[select.selectedIndex];
+		
+		    couponCode = option.value;
+		    discountRate = parseInt(option.dataset.rate || 0);
+		
+		    calculateInvoice();   // 금액 다시 계산
+		}
 	
 	    function transitionToStep4() {
 	        if (calculatedTotal === 0) {
@@ -532,7 +560,7 @@
 	        }
 	        
 	        if (parseInt(document.getElementById("hiddenReservationQuantity").value) > 3) {
-	            alert("티켓은 3매 이상 구매 불가입니다.");
+	            alert("티켓은 최대 3매까지만 구매 가능합니다.");
 	            return;
 	        }
 	        document.getElementById('step-nav-3').classList.remove('active');
@@ -561,6 +589,17 @@
 
 	        const clientKey = 'test_ck_ma60RZblrq5wx4j5Pa9ZrwzYWBn1'; 
 	        const tossPayments = TossPayments(clientKey);
+	        const couponSelect = document.getElementById("couponSelect");
+
+	        let selectedCoupon = "";
+	        if (couponSelect && couponSelect.value !== "0") {
+	            selectedCoupon = couponSelect.value;
+	        }
+	        
+	        // 각각의 선택된 티켓 수량을 수집합니다
+	        const adultQty = document.getElementById('qty-adult').value;
+	        const youthQty = document.getElementById('qty-youth').value;
+	        const childQty = document.getElementById('qty-child').value;
 	        
 	        const successUrl =
 	            window.location.origin +
@@ -568,19 +607,18 @@
 	            + "?mode=success"
 	            + "&memberCode=${sessionScope.loginMember.memberCode}"
 	            + "&stadiumSeatCode=" + document.getElementById("hiddenStadiumSeatCode").value
-	            + "&reservationType=" + encodeURIComponent(document.getElementById("hiddenReservationType").value)
-	            + "&reservationQuantity=" + document.getElementById("hiddenReservationQuantity").value
-	            + "&totalPrice=" + document.getElementById("hiddenTotalPrice").value
-	            + "&discountPrice=" + document.getElementById("hiddenDiscountPrice").value
-	            + "&payPrice=" + document.getElementById("hiddenPayPrice").value
+	            + "&adultQty=" + adultQty
+	            + "&youthQty=" + youthQty
+	            + "&childQty=" + childQty
 	            + "&gameScheduleCode=" + document.getElementById("hiddenGameScheduleCode").value
-	            + "&eventCode=" + encodeURIComponent(document.getElementById("hiddenEventCode").value);
+	            + "&couponCode=" + selectedCoupon
+	            + "&discountRate=" + discountRate;
 
 	        tossPayments.requestPayment('카드', {
 	            amount: calculatedTotal,
 	            orderId: "ORDER-" + new Date().getTime(),
 	            orderName: "야구 경기 티켓 예매",
-	            customerName: "${sessionScope.loginMember.name}", 
+	            customerName: "${memberInfo.memberName}", 
 	            successUrl: successUrl,
 	            failUrl: window.location.origin + "${pageContext.request.contextPath}/reservationPage/reservationFail.jsp"
 	            								+ "?teamCode=${gameInfo.teamHomeCode}",
@@ -599,17 +637,6 @@
 	                  " - 배송 수령 정보: 예매티켓 배송\n\n" +
 	                  "3. 보유/이용 기간\n" +
 	                  " - 예매일로부터 5년 후 파기"
-	        },
-	        2: {
-	            title: "(선택) 개인정보 수집/이용 동의",
-	            text: "1. 개인정보 항목\n" +
-	                  " - 이메일\n\n" +
-	                  "2. 개인정보 수집/이용 목적\n" +
-	                  " - 마케팅 활용 안내 메일 발송 및 행사 정보 전송\n\n" +
-	                  "3. 보유/이용 기간\n" +
-	                  " - 회원탈퇴 및 수집 거부 시 즉시 파기\n\n" +
-	                  "4. 동의 거부권에 대한 고지\n" +
-	                  " - 해당 개인정보 수집/이용 동의를 거부할 권리가 있으며 거부하더라도 예매 자체의 영향은 주지 않습니다."
 	        },
 	        3: {
 	            title: "개인정보 제3자 정보제공",

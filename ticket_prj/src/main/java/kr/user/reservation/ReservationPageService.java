@@ -4,22 +4,22 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import kr.user.common.UserDBConnection; // 커넥션 클래스 임포트
+import kr.user.common.UserDBConnection;
 
 public class ReservationPageService {
 
     private ReservationPageDAO rpDAO;
-    // DAO와 동일하게 데이터베이스 커넥션 인스턴스를 가져옵니다.
     private UserDBConnection udbc = UserDBConnection.getInstance();
 
     public ReservationPageService() {
         rpDAO = ReservationPageDAO.getInstance();
     }
 
-    public int insertTotalReservation(ReservationPageDTO rpDTO) {
+ // [수정] 메인 예약 정보(rpDTO)와 선택된 권종 리스트(detailList)를 함께 받아서 단일 트랜잭션으로 처리합니다
+    public int insertTotalReservation(ReservationPageDTO rpDTO, List<ReservationPageDTO> detailList) {
 
         Connection conn = null;
-        int reservationCode=0;
+        int reservationCode = 0;
         try {
 
             conn = udbc.getConnection();
@@ -32,15 +32,26 @@ public class ReservationPageService {
                 int reservationId = rpDAO.getReservationSeq(conn);
                 rpDTO.setReservationCode(reservationId);
 
-                // ② reservation 저장
+                // ② reservation 마스터 테이블 저장
                 int mainResult = rpDAO.insertReservation(conn, rpDTO);
 
-                // ③ reservation_detail 저장
-                int detailResult = rpDAO.insertReservationDetail(conn, rpDTO);
+                // ③ [수정] reservation_detail 다중 리스트 루프 실행 및 일괄 저장
+                int detailResultCount = 0;
+                for (ReservationPageDTO detailDTO : detailList) {
+                    detailDTO.setReservationCode(reservationId); // 생성된 부모 예약 코드를 똑같이 바인딩
+                    int result = rpDAO.insertReservationDetail(conn, detailDTO);
+                    if (result > 0) {
+                        detailResultCount++;
+                    }
+                }
 
-                if(mainResult > 0 && detailResult > 0){
+                // ④ 좌석 수 차감 처리 (전체 구매 수량만큼 일괄 반영)
+                int seatUpdateResult = rpDAO.updateSeatCount(conn, rpDTO);
+
+                // 마스터 등록 성공 && 상세 리스트 전체 저장 성공 && 좌석 차감 성공 시 최종 커밋
+                if(mainResult > 0 && detailResultCount == detailList.size() && seatUpdateResult > 0){
                     conn.commit();
-                    reservationCode=rpDTO.getReservationCode();
+                    reservationCode = rpDTO.getReservationCode();
                 }else{
                     conn.rollback();
                 }
@@ -83,26 +94,21 @@ public class ReservationPageService {
         return rpDAO.selectRemainingSeat(stadiumCode);
     }
 
-    // 좌석 가격 조회
-    public ReservationPageDTO searchSeatPrice(int stadiumCode) throws SQLException {
-        return rpDAO.selectSeatPrice(stadiumCode);
-    }
-
     // 주문자 정보 조회
     public ReservationPageDTO searchOrderMemberInfo(String memberCode) throws SQLException {
         return rpDAO.selectOrderMemberInfo(memberCode);
     }
 
-    // 주문자 정보 수정
-    public int modifyOrderMemberInfo(ReservationPageDTO rpDTO) throws SQLException {
-        return rpDAO.updateOrderMemberInfo(rpDTO);
-    }
     public String getSeatName(int stadiumSeatCode) throws SQLException { 
     	return rpDAO.selectSeatName(stadiumSeatCode); 
     }
     //할인율 가져오기
-  	public int getDiscount(String memberCode) throws SQLException {
-  		return rpDAO.selectDiscount(memberCode);
+  	public List<ReservationPageDTO> getCoupon(String memberCode) throws SQLException {
+  		return rpDAO.selectCoupon(memberCode);
+  	}
+  	//쿠폰 사용 완료후 상태값 변경
+  	public void updateCouponState(String memberCode, String couponCode) throws SQLException {
+  	    rpDAO.updateCouponState(memberCode, couponCode);
   	}
     //가격조회 메서드
     public int getSeatPrice(int stadiumSeatCode, String reservationType) throws SQLException{

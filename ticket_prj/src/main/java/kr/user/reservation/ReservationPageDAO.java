@@ -210,87 +210,53 @@ public class ReservationPageDAO {
 		return rpDTO;
 	}
 	
-	// 잔여 좌석 보여주기
-	public List<ReservationPageDTO> selectRemainingSeat(int stadiumCode) throws SQLException {
-		List<ReservationPageDTO> list=new ArrayList<ReservationPageDTO>();
-	    ReservationPageDTO rpDTO = null;
+	// 잔여 좌석 및 요금 조회 [수정: adult_seat_price, youth_seat_price, child_seat_price 정보를 쿼리에 추가 및 바인딩 완료]
+		public List<ReservationPageDTO> selectRemainingSeat(int stadiumCode) throws SQLException {
+			List<ReservationPageDTO> list=new ArrayList<ReservationPageDTO>();
+		    ReservationPageDTO rpDTO = null;
 
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+		    Connection con = null;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
 
-	    try {
-	        con = udbc.getConnection();
-	        StringBuilder sql = new StringBuilder();
-	        
-	        // 예약 테이블을 먼저 서브쿼리로 축약한 후 JOIN하여 뻥튀기 방지
-	        sql
-	        .append("	select stadium_seat_id, seat_name, stadium_seat_count	")
-	        .append("	from stadium_seat	")
-	        .append("	where stadium_id = ?	");
+		    try {
+		        con = udbc.getConnection();
+		        StringBuilder sql = new StringBuilder();
+		        
+		        // [수정] adult_seat_price, youth_seat_price, child_seat_price 컬럼을 함께 조회하도록 쿼리를 보완했습니다
+		        sql
+		        .append("	select stadium_seat_id, seat_name, stadium_seat_count, adult_seat_price, youth_seat_price, child_seat_price	")
+		        .append("	from stadium_seat	")
+		        .append("	where stadium_id = ?	");
 
-	        pstmt = con.prepareStatement(sql.toString());
-	        pstmt.setInt(1, stadiumCode);
-	        
-	        rs = pstmt.executeQuery();
-	            
-	        
-	        while (rs.next()) {
-	        	rpDTO=new ReservationPageDTO();
-	        	
-	        	rpDTO.setStadiumSeatCode(rs.getInt("stadium_seat_id"));
-	        	rpDTO.setSeatName(rs.getString("seat_name"));
-	        	rpDTO.setRemainSeatNum(rs.getInt("stadium_seat_count"));
-	        	
-	        	
-	        	list.add(rpDTO);
-	        }
-	    } finally {
-	        udbc.close(rs, pstmt, con);
-	    }    
+		        pstmt = con.prepareStatement(sql.toString());
+		        pstmt.setInt(1, stadiumCode);
+		        
+		        rs = pstmt.executeQuery();
+		            
+		        
+		        while (rs.next()) {
+		        	rpDTO=new ReservationPageDTO();
+		        	
+		        	rpDTO.setStadiumSeatCode(rs.getInt("stadium_seat_id"));
+		        	rpDTO.setSeatName(rs.getString("seat_name"));
+		        	rpDTO.setRemainSeatNum(rs.getInt("stadium_seat_count"));
+		        	
+		        	// [추가] 조회해 온 단가 정보를 DTO 객체에 세팅하여 JSP의 EL이 정상 인식하도록 처리합니다
+		        	rpDTO.setAdultSeatPrice(rs.getInt("adult_seat_price"));
+		        	rpDTO.setYouthSeatPrice(rs.getInt("youth_seat_price"));
+		        	rpDTO.setChildSeatPrice(rs.getInt("child_seat_price"));
+		        	
+		        	list.add(rpDTO);
+		        }
+		    } finally {
+		        udbc.close(rs, pstmt, con);
+		    }    
 
-	    return list;
-	}
+		    return list;
+		}
 	
-	//구장별 좌석 가격
-	public ReservationPageDTO selectSeatPrice(int stadiumCode) throws SQLException {
-		ReservationPageDTO rpDTO=null;
 
-	    Connection con = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-
-		
-		
-		try {
-			con=udbc.getConnection();
-			StringBuilder selectTeamImg=new StringBuilder();
-			selectTeamImg
-			.append("	select seat_name, adult_seat_price, youth_seat_price,child_seat_price	")
-			.append("	from stadium_seat	")
-			.append("	where stadium_id = ?	");
-
-			
-			
-			pstmt=con.prepareStatement(selectTeamImg.toString());
-				pstmt.setInt(1, stadiumCode);
-				rs=pstmt.executeQuery();
-				
-			while(rs.next()) {
-				rpDTO=new ReservationPageDTO();
-				rpDTO.setSeatName(rs.getString("seat_name"));
-				rpDTO.setAdultSeatPrice(rs.getInt("adult_seat_price"));
-				rpDTO.setYouthSeatPrice(rs.getInt("youth_seat_price"));
-				rpDTO.setChildSeatPrice(rs.getInt("child_seat_price"));
-				
-				
-			}
-		} finally {
-			udbc.close(rs, pstmt, con);
-		}    
-
-		return rpDTO;
-	}
 	
 	//주문자정보
 	public ReservationPageDTO selectOrderMemberInfo(String memberCode) throws SQLException {
@@ -332,36 +298,6 @@ public class ReservationPageDAO {
 		
 	}
 	
-	//주문자정보수정시 데이터베이스에 들어갈 주문자 정보
-	public int updateOrderMemberInfo(ReservationPageDTO rpDTO) throws SQLException {
-		int rowCnt=0;
-		
-		Connection con = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    
-	    try {
-			con=udbc.getConnection();
-			
-			StringBuilder sql=new StringBuilder();
-			sql
-			.append("	update member	")
-			.append("	set name=?,email=?,phone=?	")
-			.append("	where member_id = ?	");
-			
-			pstmt=con.prepareStatement(sql.toString());
-			
-			pstmt.setString(1,rpDTO.getMemberName());
-			pstmt.setString(2,rpDTO.getMemberEmail());
-			pstmt.setString(3,rpDTO.getMemberPhone());
-			pstmt.setString(4,rpDTO.getMemberCode());
-			
-			rowCnt=pstmt.executeUpdate();
-		} finally {
-			udbc.close(rs, pstmt, con);
-		}
-		return rowCnt;
-	}
 	
 	// 좌석 코드(ID)로 좌석 이름(예: 1루 자유석) 조회
 	public String selectSeatName(int stadiumSeatCode) throws SQLException {
@@ -389,8 +325,9 @@ public class ReservationPageDAO {
 	}
 	
 	//이벤트 할인 조회
-		public int selectDiscount(String memberCode) throws SQLException{
-			int discount=0;
+		public List<ReservationPageDTO> selectCoupon(String memberCode) throws SQLException{
+			List<ReservationPageDTO> couponList=new ArrayList<ReservationPageDTO>();
+			ReservationPageDTO rpDTO=null;
 			
 			Connection con=null;
 			PreparedStatement pstmt=null;
@@ -399,30 +336,57 @@ public class ReservationPageDAO {
 			
 			try {
 				con=udbc.getConnection();
-				StringBuilder selectTeamImg=new StringBuilder();
-				selectTeamImg
-				.append("	select cc.count_discount_rate as discount	")
-				.append("	from custody_coupon	cc ")
-				.append("	join coupon	c ")
-				.append("	on cc.coupon_code=c.coupon_code ")
-				.append("	where member_id = ?	");
+				StringBuilder selectCoupon=new StringBuilder();
+				selectCoupon
+				.append("	select cp.coupon_code as couponCode, cp.coupon_discount_rate as discount	")
+				.append("	from coupon cp ")
+				.append("	join custody_coupon ctcp ")
+				.append("	on cp.coupon_code=ctcp.coupon_code ")
+				.append("	where ctcp.member_id=? ")
+				.append("	and ctcp.coupon_state='사용가능' ");
 				
-				pstmt=con.prepareStatement(selectTeamImg.toString());
+				pstmt=con.prepareStatement(selectCoupon.toString());
 					pstmt.setString(1, memberCode);
 					rs=pstmt.executeQuery();
 					
-				if(rs.next()) {
-					    discount=rs.getInt("discount");
+				while(rs.next()) {
+					rpDTO=new ReservationPageDTO();
+					rpDTO.setCouponCode(rs.getString("couponCode"));
+					rpDTO.setCouponDiscountRate(rs.getInt("discount"));
+					
+					couponList.add(rpDTO);
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}finally {
-				 if(rs != null) rs.close();
-				    if(pstmt != null) pstmt.close();
-				    if(con != null) con.close();
+			} finally {
+				 udbc.close(rs, pstmt, con);
 			}
-			return discount;
+			return couponList;
 		}
+	//쿠폰 사용 완료후 상태값 변경
+	public void updateCouponState(String memberCode, String couponCode) throws SQLException{
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		try {
+			con=udbc.getConnection();
+			StringBuilder updateCoupon=new StringBuilder();
+			updateCoupon
+			.append("	update custody_coupon	")
+			.append("	set coupon_state='사용완료' ")
+			.append("	where member_id=? ")
+			.append("	and coupon_code=? ")
+			.append("	and coupon_state='사용가능' ");
+			
+			pstmt=con.prepareStatement(updateCoupon.toString());
+			pstmt.setString(1, memberCode);
+			pstmt.setString(2, couponCode);
+			pstmt.executeUpdate();
+				
+		} finally {
+			 udbc.close(rs, pstmt, con);
+		}
+	}
+		
 	//좌석 가격 조회 메서드
 	public int selectSeatPrice(int stadiumSeatCode, String reservationType) throws SQLException {
 

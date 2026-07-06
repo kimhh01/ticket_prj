@@ -121,7 +121,7 @@ public class TeamPageDAO {
 		return teamImg;
 	}
 	
-	//경기리스트 //수정완료
+	//경기리스트를 받으면서 달력형도 같이 할 생각임
 	public List<TeamDTO> selectGame(int teamCode,int year,int month)	 throws SQLException {
 		List<TeamDTO> list=new ArrayList<TeamDTO>();
 		Connection con=getConnection();
@@ -145,7 +145,8 @@ public class TeamPageDAO {
 		    .append(" where (ht.team_id = ? or ot.team_id = ?) ")
 		    .append(" and extract(year from gs.game_date)=? ")
 		    .append(" and extract(month from gs.game_date)=? ")
-			.append(" order by gs.game_date, gs.game_start_time ");
+		    .append(" and gs.game_date >= CURRENT_DATE ")
+		    .append(" order by gs.game_date, gs.game_start_time ");
 			
 			pstmt=con.prepareStatement(selectTeamImg.toString());
 				pstmt.setInt(1, teamCode);
@@ -196,7 +197,7 @@ public class TeamPageDAO {
 		try {
 			StringBuilder selectTeamImg=new StringBuilder();
 			selectTeamImg
-			.append("	select 	notice_title, notice_img, notice_content, notice_write_date		")
+			.append("	select 	notice_title, notice_img, notice_write_date		")
 			.append("	from notice	")
 			.append("	where team_id = ? and notice_tab=1 ");
 			
@@ -209,7 +210,6 @@ public class TeamPageDAO {
 					tDTO=new TeamDTO();
 					tDTO.setNoticeTitle(rs.getString("notice_title"));
 					tDTO.setNoticeImg(rs.getString("notice_img"));
-					tDTO.setNoticeContent(rs.getString("notice_content"));
 					tDTO.setNoticeWriteDate(rs.getDate("notice_write_date"));
 					
 					noticeList.add(tDTO);

@@ -21,13 +21,11 @@ public class TeamPageService {
 	
 	//경기리스트
 	public List<TeamDTO> getGame(int teamCode,int year,int month) throws SQLException {
-		
 		return tpDAO.selectGame(teamCode,year,month);
 	}
 	
 	//각팀공지사항
 	public List<TeamDTO> getNotice(int teamCode) throws SQLException {
-		
 		return tpDAO.selectNotice(teamCode);
 	}
 	
