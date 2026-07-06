@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>bigBall예매</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/reservationPage/reservation.css?v=2">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/kr/user/reservation/reservation.css">
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
 <body>
@@ -50,7 +50,7 @@
 		<!-- [수정] 첫 번째 좌석 정보를 변수(defaultSeat)로 지정해 둡니다 -->
 		<c:set var="defaultSeat" value="${seatList[0]}" />
 
-		<form id="reservationForm" action="${pageContext.request.contextPath}/reservationPageServlet" method="POST">
+		<form id="reservationForm" action="${pageContext.request.contextPath}/reservationServlet" method="POST">
 			
 			<!-- [수정] 기본 선택된 좌석 코드를 첫 번째 좌석 ID로 EL 매핑합니다 -->
 			<input type="hidden" name="stadiumSeatCode" id="hiddenStadiumSeatCode" value="${defaultSeat.stadiumSeatCode}"> 
@@ -620,7 +620,7 @@
 	            orderName: "야구 경기 티켓 예매",
 	            customerName: "${memberInfo.memberName}", 
 	            successUrl: successUrl,
-	            failUrl: window.location.origin + "${pageContext.request.contextPath}/reservationPage/reservationFail.jsp"
+	            failUrl: window.location.origin + "${pageContext.request.contextPath}/reservation/reservationFail.jsp"
 	            								+ "?teamCode=${gameInfo.teamHomeCode}",
 	        });
 	    }

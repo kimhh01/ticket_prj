@@ -13,12 +13,12 @@ import javax.servlet.http.HttpSession;
 import kr.user.member.MemberDTO;
 
 @WebServlet("/reservation")
-public class ReservationPageServlet extends HttpServlet {
+public class ReservationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private ReservationPageService rpService;
+	private ReservationService rpService;
 
-	public ReservationPageServlet() {
-		rpService = new ReservationPageService();
+	public ReservationServlet() {
+		rpService = new ReservationService();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -43,19 +43,19 @@ public class ReservationPageServlet extends HttpServlet {
 		MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
 		try {
 			int gameScheduleCode = Integer.parseInt(request.getParameter("gameScheduleCode"));
-			ReservationPageDTO memberInfo = rpService.searchOrderMemberInfo(loginMember.getMemberCode());
-			ReservationPageDTO gameInfo = rpService.searchGame(gameScheduleCode);
-			List<ReservationPageDTO> couponList=rpService.getCoupon(loginMember.getMemberCode());
+			ReservationDTO memberInfo = rpService.searchOrderMemberInfo(loginMember.getMemberCode());
+			ReservationDTO gameInfo = rpService.searchGame(gameScheduleCode);
+			List<ReservationDTO> couponList=rpService.getCoupon(loginMember.getMemberCode());
 
 			// [수정: 잔여 좌석 조회 시 내부 요금 정보도 List에 내장하여 로드되므로, 별도로 구장 코드를 통한 오적용 seatPrice 호출 영역을 제거했습니다]
-			List<ReservationPageDTO> seatList = rpService.searchRemainingSeat(gameInfo.getStadiumCode());
+			List<ReservationDTO> seatList = rpService.searchRemainingSeat(gameInfo.getStadiumCode());
 
 			request.setAttribute("memberInfo", memberInfo);
 			request.setAttribute("gameInfo", gameInfo);
 			request.setAttribute("couponList", couponList);
 			request.setAttribute("seatList", seatList);
 
-			request.getRequestDispatcher("/reservationPage/reservation.jsp").forward(request, response);
+			request.getRequestDispatcher("kr/user/reservation/reservation.jsp").forward(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(500);
@@ -101,7 +101,7 @@ public class ReservationPageServlet extends HttpServlet {
 				if (totalQuantity <= 0 || totalQuantity > 3) {
 				    response.sendRedirect(
 				        request.getContextPath()
-				        + "/reservationPage/reservationFail.jsp?message=잘못된 예매 수량입니다.");
+				        + "kr/user/reservation/reservationFail.jsp?message=잘못된 예매 수량입니다.");
 				    return;
 				}
 				
@@ -113,7 +113,7 @@ public class ReservationPageServlet extends HttpServlet {
 				if (adultPrice <= 0 || youthPrice <= 0 || childPrice <= 0) {
 				    response.sendRedirect(
 				        request.getContextPath()
-				        + "/reservationPage/reservationFail.jsp?message=존재하지 않는 좌석입니다.");
+				        + "kr/user/reservation/reservationFail.jsp?message=존재하지 않는 좌석입니다.");
 				    return;
 				}
 				
@@ -124,7 +124,7 @@ public class ReservationPageServlet extends HttpServlet {
 				int payPrice = totalPrice - discountPrice + fee;
 				
 				// 1. 예약 마스터 테이블용 DTO 세팅
-				ReservationPageDTO rpDTO = new ReservationPageDTO();
+				ReservationDTO rpDTO = new ReservationDTO();
 				rpDTO.setMemberCode(loginMember.getMemberCode());
 				rpDTO.setTotalPrice(totalPrice);
 				rpDTO.setPayPrice(payPrice);
@@ -134,24 +134,24 @@ public class ReservationPageServlet extends HttpServlet {
 				rpDTO.setDiscountPrice(discountPrice);
 
 				// 2. 예약 디테일 리스트 구성 (성인, 청소년, 어린이 중 1개라도 구매한 권종만 동적으로 Row 구성)
-				List<ReservationPageDTO> detailList = new java.util.ArrayList<>();
+				List<ReservationDTO> detailList = new java.util.ArrayList<>();
 				
 				if (adultQty > 0) {
-					ReservationPageDTO adultDetail = new ReservationPageDTO();
+					ReservationDTO adultDetail = new ReservationDTO();
 					adultDetail.setStadiumSeatCode(stadiumSeatCode);
 					adultDetail.setReservationType("성인");
 					adultDetail.setReservationQuantity(adultQty);
 					detailList.add(adultDetail);
 				}
 				if (youthQty > 0) {
-					ReservationPageDTO youthDetail = new ReservationPageDTO();
+					ReservationDTO youthDetail = new ReservationDTO();
 					youthDetail.setStadiumSeatCode(stadiumSeatCode);
 					youthDetail.setReservationType("청소년");
 					youthDetail.setReservationQuantity(youthQty);
 					detailList.add(youthDetail);
 				}
 				if (childQty > 0) {
-					ReservationPageDTO childDetail = new ReservationPageDTO();
+					ReservationDTO childDetail = new ReservationDTO();
 					childDetail.setStadiumSeatCode(stadiumSeatCode);
 					childDetail.setReservationType("어린이");
 					childDetail.setReservationQuantity(childQty);
@@ -174,16 +174,16 @@ public class ReservationPageServlet extends HttpServlet {
 					request.setAttribute("reservationQuantity", totalQuantity);
 					request.setAttribute("selectedSeatName", seatName);
 
-					request.getRequestDispatcher("/reservationPage/reservationSuccess.jsp").forward(request, response);
+					request.getRequestDispatcher("kr/user/reservation/reservationSuccess.jsp").forward(request, response);
 				} else {
 					response.sendRedirect(request.getContextPath()
-							+ "/reservationPage/reservationFail.jsp?code=DB_ERR&message=DB_Save_Failed");
+							+ "kr/user/reservation/reservationFail.jsp?code=DB_ERR&message=DB_Save_Failed");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 
 				response.sendRedirect(request.getContextPath()
-						+ "/reservationPage/reservationFail.jsp?code=SYSTEM_ERR&message=" + e.getMessage());
+						+ "kr/user/reservation/reservationFail.jsp?code=SYSTEM_ERR&message=" + e.getMessage());
 			}
 		}
 

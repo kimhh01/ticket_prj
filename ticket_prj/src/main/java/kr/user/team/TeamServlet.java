@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class TeamPageServlet
  */
-@WebServlet("/teamPage")
-	public class TeamPageServlet extends HttpServlet {
+@WebServlet("/team")
+	public class TeamServlet extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		
-		TeamPageService tpService=new TeamPageService();
+		TeamService tpService=new TeamService();
 		//URI jQuery에서 팀코드 받아옴
 		String teamCodeParam = request.getParameter("teamCode");
 		Calendar calendar = Calendar.getInstance();
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 		
 		//팀코드의 파라메터가 null일 겨우 메인페이지로 이동
 		if(teamCodeParam == null){
-		    response.sendRedirect("/index.jsp");
+		    response.sendRedirect(request.getContextPath()+"/index.jsp");
 		    return;
 		}
 		//팀코드 int형으로 변환
@@ -91,7 +91,7 @@ import javax.servlet.http.HttpServletResponse;
 			request.setAttribute("noticeList", noticeList);
 			request.setAttribute("leagueImg", leagueImg);
 			
-			RequestDispatcher rd = request.getRequestDispatcher("/teamPage/teamPage.jsp");
+			RequestDispatcher rd = request.getRequestDispatcher("kr/user/team/team.jsp");
 			rd.forward(request, response);
 			
 		} catch(SQLException e) {

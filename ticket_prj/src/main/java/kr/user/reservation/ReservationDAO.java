@@ -9,18 +9,18 @@ import java.util.List;
 
 import kr.user.common.UserDBConnection;
 
-public class ReservationPageDAO {
+public class ReservationDAO {
 	
-	private static ReservationPageDAO rDAO;
+	private static ReservationDAO rDAO;
 	private UserDBConnection udbc=UserDBConnection.getInstance();
 	
-	private ReservationPageDAO() {
+	private ReservationDAO() {
 		
 	}
 	
-	public static ReservationPageDAO getInstance() {
+	public static ReservationDAO getInstance() {
 		if(rDAO==null) {
-			rDAO=new ReservationPageDAO();
+			rDAO=new ReservationDAO();
 		}
 		
 		return rDAO;
@@ -50,7 +50,7 @@ public class ReservationPageDAO {
 	}
 	
 	//예매 추가
-	public int insertReservation(Connection con, ReservationPageDTO rpDTO) throws SQLException {
+	public int insertReservation(Connection con, ReservationDTO rpDTO) throws SQLException {
 		int rowCnt=0;
 		PreparedStatement pstmt=null;
 		
@@ -83,7 +83,7 @@ public class ReservationPageDAO {
 	}//insertReservation
 	
 	//예매 추가 디테일
-	public int insertReservationDetail(Connection con,ReservationPageDTO rpDTO) throws SQLException {
+	public int insertReservationDetail(Connection con,ReservationDTO rpDTO) throws SQLException {
 		int rowCnt=0;
 		
 		PreparedStatement pstmt=null;
@@ -121,7 +121,7 @@ public class ReservationPageDAO {
 	}
 	
 	// 좌석 차감
-	public int updateSeatCount(Connection con, ReservationPageDTO rpDTO) throws SQLException {
+	public int updateSeatCount(Connection con, ReservationDTO rpDTO) throws SQLException {
 
 	    int rowCnt = 0;
 
@@ -156,9 +156,9 @@ public class ReservationPageDAO {
 
 	
 	//예매창에서 보여줄 경기 구장 이미지 및 경기 일자
-	public ReservationPageDTO selectGame(int gameScheduleCode) throws SQLException {
+	public ReservationDTO selectGame(int gameScheduleCode) throws SQLException {
 		
-		ReservationPageDTO rpDTO=null;
+		ReservationDTO rpDTO=null;
 		
 		Connection con=null;
 		PreparedStatement pstmt=null;
@@ -189,7 +189,7 @@ public class ReservationPageDAO {
 				rs=pstmt.executeQuery();
 				
 			if(rs.next()) {
-				rpDTO=new ReservationPageDTO();
+				rpDTO=new ReservationDTO();
 				rpDTO.setGameScheduleCode(rs.getInt("game_schedule_code"));
 				rpDTO.setStadiumImg(rs.getString("stadium_Img"));
 				rpDTO.setTeamHomeName(rs.getString("home_name"));
@@ -211,9 +211,9 @@ public class ReservationPageDAO {
 	}
 	
 	// 잔여 좌석 및 요금 조회 [수정: adult_seat_price, youth_seat_price, child_seat_price 정보를 쿼리에 추가 및 바인딩 완료]
-		public List<ReservationPageDTO> selectRemainingSeat(int stadiumCode) throws SQLException {
-			List<ReservationPageDTO> list=new ArrayList<ReservationPageDTO>();
-		    ReservationPageDTO rpDTO = null;
+		public List<ReservationDTO> selectRemainingSeat(int stadiumCode) throws SQLException {
+			List<ReservationDTO> list=new ArrayList<ReservationDTO>();
+		    ReservationDTO rpDTO = null;
 
 		    Connection con = null;
 		    PreparedStatement pstmt = null;
@@ -236,7 +236,7 @@ public class ReservationPageDAO {
 		            
 		        
 		        while (rs.next()) {
-		        	rpDTO=new ReservationPageDTO();
+		        	rpDTO=new ReservationDTO();
 		        	
 		        	rpDTO.setStadiumSeatCode(rs.getInt("stadium_seat_id"));
 		        	rpDTO.setSeatName(rs.getString("seat_name"));
@@ -259,13 +259,13 @@ public class ReservationPageDAO {
 
 	
 	//주문자정보
-	public ReservationPageDTO selectOrderMemberInfo(String memberCode) throws SQLException {
+	public ReservationDTO selectOrderMemberInfo(String memberCode) throws SQLException {
 		
 		Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-	    ReservationPageDTO rpDTO = null;
+	    ReservationDTO rpDTO = null;
 
 	    try {
 	        con = udbc.getConnection();
@@ -281,7 +281,7 @@ public class ReservationPageDAO {
 	        rs = pstmt.executeQuery();
 
 	        if(rs.next()) {
-	            rpDTO = new ReservationPageDTO();
+	            rpDTO = new ReservationDTO();
 
 	            rpDTO.setMemberName(rs.getString("name"));
 	            rpDTO.setMemberPhone(rs.getString("phone"));
@@ -325,9 +325,9 @@ public class ReservationPageDAO {
 	}
 	
 	//이벤트 할인 조회
-		public List<ReservationPageDTO> selectCoupon(String memberCode) throws SQLException{
-			List<ReservationPageDTO> couponList=new ArrayList<ReservationPageDTO>();
-			ReservationPageDTO rpDTO=null;
+		public List<ReservationDTO> selectCoupon(String memberCode) throws SQLException{
+			List<ReservationDTO> couponList=new ArrayList<ReservationDTO>();
+			ReservationDTO rpDTO=null;
 			
 			Connection con=null;
 			PreparedStatement pstmt=null;
@@ -350,7 +350,7 @@ public class ReservationPageDAO {
 					rs=pstmt.executeQuery();
 					
 				while(rs.next()) {
-					rpDTO=new ReservationPageDTO();
+					rpDTO=new ReservationDTO();
 					rpDTO.setCouponCode(rs.getString("couponCode"));
 					rpDTO.setCouponDiscountRate(rs.getInt("discount"));
 					

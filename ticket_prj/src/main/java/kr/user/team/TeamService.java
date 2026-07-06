@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class TeamPageService {
+public class TeamService {
 
-	private TeamPageDAO tpDAO =TeamPageDAO.getInstance();
+	private TeamDAO tpDAO =TeamDAO.getInstance();
 	
 	//팀 정보 조회
 	public TeamDTO getTeamInfo(int teamCode) throws SQLException{

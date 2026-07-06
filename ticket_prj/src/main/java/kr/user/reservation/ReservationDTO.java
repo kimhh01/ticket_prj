@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ReservationPageDTO {
+public class ReservationDTO {
 	private int reservationCode;//예매코드
 	private int reservationDetailCode;//예매 상세 코드
 	private int gameScheduleCode;//경기코드

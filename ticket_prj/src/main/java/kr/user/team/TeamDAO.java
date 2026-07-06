@@ -12,12 +12,12 @@ import java.util.List;
 import kr.user.common.UserDBConnection;
 
 
-public class TeamPageDAO {
-	private static TeamPageDAO tpDAO;
+public class TeamDAO {
+	private static TeamDAO tpDAO;
 	
 	private Connection getConnection() throws SQLException {
 		try {
-			URL url = TeamPageDAO.class.getClassLoader().getResource("properties/database.properties");
+			URL url = TeamDAO.class.getClassLoader().getResource("properties/database.properties");
 
 			if (url == null) {
 				throw new SQLException("database.properties 파일을 찾을 수 없습니다.");
@@ -31,13 +31,13 @@ public class TeamPageDAO {
 		}
 	}// getConnection
 	
-	private TeamPageDAO() {
+	private TeamDAO() {
 		
 	}
 	
-	public static TeamPageDAO getInstance() {
+	public static TeamDAO getInstance() {
 		if(tpDAO==null) {
-			tpDAO=new TeamPageDAO();
+			tpDAO=new TeamDAO();
 		}
 		
 		return tpDAO;

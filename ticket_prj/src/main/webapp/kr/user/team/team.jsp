@@ -13,7 +13,7 @@
 		<c:set var="teamUrl" value="https://www.lgtwins.com" />
 	</c:when>
 	<c:when test="${tDTO.teamCode == 2}">
-		<c:set var="teamUrl" value="https://www.doosanbears.com/bears/intro" />
+		<c:set var="teamUrl" value="http://www.doosanbears.com/bears/intro" />
 	</c:when>
 	<c:when test="${tDTO.teamCode == 3}">
 		<c:set var="teamUrl"
@@ -57,7 +57,7 @@
 <meta charset="UTF-8">
 <title>bigball - 예매</title>
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/teamPage/teamPage.css">
+	href="${pageContext.request.contextPath}/kr/user/team/team.css">
 <script type="text/javascript">
 	$(function() {
 
@@ -244,7 +244,7 @@
 </script>
 </head>
 <body>
-	<jsp:include page="../fragment/header.jsp" />
+	<jsp:include page="/fragment/header.jsp" />
 
 	<c:if test="${not empty tDTO}">
 		<section class="team-info">
@@ -386,13 +386,13 @@
 			<div class="calendar-header">
 				<%-- 이전 달 이동 (끝에 &view=calendar 추가) --%>
 				<a
-					href="${pageContext.request.contextPath}/teamPage?teamCode=${tDTO.teamCode}&year=${month==1?year-1:year}&month=${month==1?12:month-1}&view=calendar">◀</a>
+					href="${pageContext.request.contextPath}/team?teamCode=${tDTO.teamCode}&year=${month==1?year-1:year}&month=${month==1?12:month-1}&view=calendar">◀</a>
 
 				<h2>${year}년${month}월</h2>
 
 				<%-- 다음 달 이동 (끝에 &view=calendar 추가) --%>
 				<a
-					href="${pageContext.request.contextPath}/teamPage?teamCode=${tDTO.teamCode}&year=${month==12?year+1:year}&month=${month==12?1:month+1}&view=calendar">▶</a>
+					href="${pageContext.request.contextPath}/team?teamCode=${tDTO.teamCode}&year=${month==12?year+1:year}&month=${month==12?1:month+1}&view=calendar">▶</a>
 			</div>
 
 			<table class="calendar-table">
@@ -514,7 +514,7 @@
 	</div>
 
 	<footer class="footer-wrap">
-		<jsp:include page="../fragment/footer.jsp" />
+		<jsp:include page="/fragment/footer.jsp" />
 	</footer>
 </body>
 </html>
