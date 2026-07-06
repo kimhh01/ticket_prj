@@ -55,7 +55,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>티켓링크 - 야구 예매</title>
+<title>bigball - 예매</title>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/teamPage/teamPage.css">
 <script type="text/javascript">
@@ -258,7 +258,6 @@
 					<h1>${tDTO.teamHomeName}</h1>
 					<div class="team-btns">
 						<button type="button" class="cleanBtn">클린예매</button>
-						<button type="button" class="cancelBtn">취소표대기</button>
 						<button type="button" class="guideBtn">예매가이드</button>
 						<button type="button" class="introduceBtn">구단소개</button>
 
@@ -274,29 +273,8 @@
 										<span class="text_medium">이 상품은 보안문자 입력 후 좌석 선택이 가능합니다.</span>
 									</p>
 									<p class="popup_desc">
-										<span class="text_gray"> · 대/소문자 구분 없음<br> · 혼동하기
+										<span class="text_gray"> · 대/소문자 구분<br> · 혼동하기
 											쉬운 문자 제외<br> · 보안문자 입력 후 좌석 선택 가능
-										</span>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="cancel_popup_wrap">
-							<div class="common_popup">
-								<div class="common_popup_header">
-									<h3 class="common_popup_title">취소표대기 서비스 안내</h3>
-									<button type="button" id="closeCancel"
-										class="common_popup_close" style="color: #333">✕</button>
-								</div>
-								<div class="common_popup_content">
-									<p class="popup_desc">
-										<span class="text_medium">취소된 좌석 발생 시 자동으로 예매를 시도합니다.</span>
-									</p>
-									<p class="popup_desc">
-										<span class="text_gray"> · 원하는 경기 선택 후 신청 가능<br> ·
-											취소표 발생 시 순차 배정<br> · 결제 실패 시 자동 취소<br> · 경기 시작 전까지만
-											신청 가능
 										</span>
 									</p>
 								</div>
@@ -334,16 +312,16 @@
 				class="onlyHomeCheck"> 홈경기만 보기
 			</label>
 			<button type="button" class="calendar-btn" title="달력형 보기"
-				style="border: none; width: 20px; height: 20px;">
+				style="border: none;">
 				<img
 					src="<%=request.getContextPath()%>/images/teamPage/calendar-icon.png"
-					style="border: none; width: 20px; height: 20px;">
+					style="border: none;">
 			</button>
 			<button type="button" class="list-btn"
-				style="display: none; width: 20px; height: 20px;">
+				style="display: none;">
 				<img
 					src="<%=request.getContextPath()%>/images/teamPage/list-icon.png"
-					style="width: 20px; height: 20px;">
+					style="border: none;">
 			</button>
 		</div>
 
@@ -519,47 +497,7 @@
 				</div>
 
 				<div class="notice-detail-body">
-					<div class="notice-text-box">
-						<p>안녕하세요. 티켓링크입니다.</p>
-						<p>2026 시즌 KBO 프로야구 정규리그의 원활한 티켓 예매 서비스를 위해 아래와 같이 공식 이용 방침 및
-							예매 일정을 공지하오니 이용에 참고해 주시기 바랍니다.</p>
-
-						<h4 style="margin-top: 30px; font-size: 15px; color: #222;">📌
-							1. 온라인 예매 오픈 일정</h4>
-						<table class="info-table">
-							<thead>
-								<tr>
-									<th>대상 구분</th>
-									<th>오픈 일시</th>
-									<th>예매 한도</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><strong>선예매 (구단 멤버십 회원)</strong></td>
-									<td>경기 8일 전 오전 11:00</td>
-									<td>회원당 최대 2매</td>
-								</tr>
-								<tr>
-									<td><strong>일반 예매 (전체 회원)</strong></td>
-									<td>경기 7일 전 오전 11:00</td>
-									<td>회원당 최대 4매</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<h4 style="margin-top: 30px; font-size: 15px; color: #222;">📌
-							2. 클린예매 도입 안내</h4>
-						<p>
-							매크로 프로그램 등을 이용한 비정상적인 티켓 예매를 근절하기 위해, 본 구단의 모든 경기는 <strong>[클린예매]</strong>
-							단계가 적용됩니다. 예매 시 화면에 나타나는 임의의 보안 문자를 올바르게 입력하셔야 좌석 선택 화면으로 진입할 수
-							있습니다.
-						</p>
-
-						<div class="notice-warning">⚠️ 불법적인 수단(매크로, 대리 티켓팅 등)을 통해 강제
-							예매를 시도하거나 부정 티켓 거래 적발 시, 예매 티켓은 사전 안내 없이 일괄 취소 처리되며 관련 법률에 따라 제재를
-							받을 수 있습니다.</div>
-					</div>
+					<img src="">
 				</div>
 			</c:forEach>
 		</section>

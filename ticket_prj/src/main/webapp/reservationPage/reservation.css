@@ -251,6 +251,13 @@ table{
     color:#666;
 }
 
+.coupon-area{
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+}
+
 /*************************************************
     안내문
 *************************************************/
@@ -416,63 +423,29 @@ table{
 }
 
 /*************************************************
-    할인쿠폰
+    할인쿠폰 (불필요한 스타일 모두 정리 완료)
 *************************************************/
-
-.discount-row .cat-cell{
-    background:#f8f8f8;
-    font-weight:bold;
-    color:#666;
-    text-align:center;
-}
 
 .discount-cell{
     padding:12px 15px !important;
 }
 
-.discount-wrap{
+.coupon-area{
+    width:100%;
     display:flex;
+    justify-content:flex-end;
     align-items:center;
-    gap:10px;
 }
 
-.discount-code{
-    flex:1;
-    height:34px;
-    padding:0 10px;
-    border:1px solid #ccc;
-    border-radius:4px;
-    font-size:13px;
-    transition:.2s;
+/* 쿠폰이 없을 때 표시되는 텍스트 스타일 */
+.coupon-empty-text {
+    font-size: 13px;
+    color: #888;
+    padding-right: 5px;
 }
 
-.discount-code:focus{
-    outline:none;
-    border-color:#1d70e2;
-    box-shadow:0 0 0 2px rgba(29,112,226,.15);
-}
 
-.btn-discount{
-    width:80px;
-    height:34px;
-    border:1px solid #2b2e33;
-    border-radius:4px;
-    background:#2b2e33;
-    color:#fff;
-    font-size:13px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:.2s;
-}
 
-.btn-discount:hover{
-    background:#1d1f23;
-}
-
-.discount-msg{
-    color:#1d70e2;
-    font-size:12px;
-}
 /*************************************************
     수량 선택
 *************************************************/
@@ -538,25 +511,6 @@ table{
     width:42px;
 }
 
-.team-circle-logo{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#fff;
-    font-size:11px;
-    font-weight:bold;
-}
-
-.lotte{
-    background:#002955;
-}
-
-.kia{
-    background:#c7012e;
-}
 
 .vs-label{
     font-size:14px;

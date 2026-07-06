@@ -32,11 +32,6 @@ public class ReservationPageServlet extends HttpServlet {
 			return;
 		}
 
-		// 쿠폰 조회
-		if ("coupon".equals(mode)) {
-			handleCoupon(request, response);
-			return;
-		}
 
 		// --- 기존 예매창 로드 로직 ---
 		HttpSession session = request.getSession(false);
@@ -50,15 +45,15 @@ public class ReservationPageServlet extends HttpServlet {
 			int gameScheduleCode = Integer.parseInt(request.getParameter("gameScheduleCode"));
 			ReservationPageDTO memberInfo = rpService.searchOrderMemberInfo(loginMember.getMemberCode());
 			ReservationPageDTO gameInfo = rpService.searchGame(gameScheduleCode);
+			List<ReservationPageDTO> couponList=rpService.getCoupon(loginMember.getMemberCode());
 
-			// 잔여좌석 및 가격
+			// [수정: 잔여 좌석 조회 시 내부 요금 정보도 List에 내장하여 로드되므로, 별도로 구장 코드를 통한 오적용 seatPrice 호출 영역을 제거했습니다]
 			List<ReservationPageDTO> seatList = rpService.searchRemainingSeat(gameInfo.getStadiumCode());
-			ReservationPageDTO seatPrice = rpService.searchSeatPrice(gameInfo.getStadiumCode());
 
 			request.setAttribute("memberInfo", memberInfo);
 			request.setAttribute("gameInfo", gameInfo);
+			request.setAttribute("couponList", couponList);
 			request.setAttribute("seatList", seatList);
-			request.setAttribute("seatPrice", seatPrice);
 
 			request.getRequestDispatcher("/reservationPage/reservation.jsp").forward(request, response);
 		} catch (Exception e) {
@@ -67,118 +62,151 @@ public class ReservationPageServlet extends HttpServlet {
 		}
 	}
 
-	// 결제 완료 후 실행될 로직
-	private void handlePaymentSuccess(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		try {
-			HttpSession session = request.getSession(false);
+	// 결제 완료 후 실행될 로직 (다중 권종 개별 분리 저장 지원 개편 완료)
+		private void handlePaymentSuccess(HttpServletRequest request, HttpServletResponse response)
+				throws ServletException, IOException {
+			try {
+				HttpSession session = request.getSession(false);
+				MemberDTO loginMember = null;
 
-			MemberDTO loginMember = null;
+				if (session != null) {
+					loginMember = (MemberDTO) session.getAttribute("loginMember");
+				}
 
-			if (session != null) {
-				loginMember = (MemberDTO) session.getAttribute("loginMember");
-			}
+				if (loginMember == null) {
+					System.out.println("로그인 세션 없음");
+					response.sendRedirect(request.getContextPath() + "/login.jsp");
+					return;
+				}
 
-			if (loginMember == null) {
-				System.out.println("로그인 세션 없음");
-				response.sendRedirect(request.getContextPath() + "/login.jsp");
-				return;
-			}
-			
-			
+				// 파라미터 추출
+				String couponCode = request.getParameter("couponCode");
+				String discountRateParam = request.getParameter("discountRate");
+				int discountRate = 0;
 
-			// 파라미터 추출
-			String eventCode = request.getParameter("eventCode");
-			int discountRate = 0;
-			int stadiumSeatCode = Integer.parseInt(request.getParameter("stadiumSeatCode"));
-			String reservationType = request.getParameter("reservationType");
-			int reservationQuantity = Integer.parseInt(request.getParameter("reservationQuantity"));
-			int gameScheduleCode = Integer.parseInt(request.getParameter("gameScheduleCode"));
-			
-			// 예매 수량 검증
-			if (reservationQuantity <= 0 || reservationQuantity > 3) {
-			    response.sendRedirect(
-			        request.getContextPath()
-			        + "/reservationPage/reservationFail.jsp?message=잘못된 예매 수량입니다.");
-			    return;
-			}
-			
-			if (eventCode != null && !eventCode.trim().isEmpty()) {
-				discountRate = rpService.getDiscountRate(eventCode);
-			}
-			
-			int seatPrice = rpService.getSeatPrice(stadiumSeatCode, reservationType);
-			
-			if (seatPrice <= 0) {
-			    response.sendRedirect(
-			        request.getContextPath()
-			        + "/reservationPage/reservationFail.jsp?message=존재하지 않는 좌석입니다.");
-			    return;
-			}
-			
-			int totalPrice = seatPrice * reservationQuantity;
-			int fee = reservationQuantity * 1000;
-			int discountPrice = totalPrice * discountRate / 100;
-			int payPrice = totalPrice - discountPrice + fee;
-			
-			ReservationPageDTO rpDTO = new ReservationPageDTO();
-			rpDTO.setMemberCode(loginMember.getMemberCode());
-			rpDTO.setTotalPrice(totalPrice);
-			rpDTO.setPayPrice(payPrice);
-			rpDTO.setStadiumSeatCode(stadiumSeatCode);
-			rpDTO.setReservationType(reservationType);
-			rpDTO.setReservationQuantity(reservationQuantity);
-			rpDTO.setGameScheduleCode(gameScheduleCode);
-			rpDTO.setDiscountPrice(discountPrice);
+				if (discountRateParam != null && !discountRateParam.isEmpty()) {
+				    discountRate = Integer.parseInt(discountRateParam);
+				}
+				
+				int stadiumSeatCode = Integer.parseInt(request.getParameter("stadiumSeatCode"));
+				int gameScheduleCode = Integer.parseInt(request.getParameter("gameScheduleCode"));
+				
+				// [수정] 각 권종별 개별 선택 수량을 수집합니다
+				int adultQty = Integer.parseInt(request.getParameter("adultQty"));
+				int youthQty = Integer.parseInt(request.getParameter("youthQty"));
+				int childQty = Integer.parseInt(request.getParameter("childQty"));
+				int totalQuantity = adultQty + youthQty + childQty;
+				
+				// 전체 예매 수량 한도 검증
+				if (totalQuantity <= 0 || totalQuantity > 3) {
+				    response.sendRedirect(
+				        request.getContextPath()
+				        + "/reservationPage/reservationFail.jsp?message=잘못된 예매 수량입니다.");
+				    return;
+				}
+				
+				// 각각의 좌석 등급 단가 조회
+				int adultPrice = rpService.getSeatPrice(stadiumSeatCode, "성인");
+				int youthPrice = rpService.getSeatPrice(stadiumSeatCode, "청소년");
+				int childPrice = rpService.getSeatPrice(stadiumSeatCode, "어린이");
+				
+				if (adultPrice <= 0 || youthPrice <= 0 || childPrice <= 0) {
+				    response.sendRedirect(
+				        request.getContextPath()
+				        + "/reservationPage/reservationFail.jsp?message=존재하지 않는 좌석입니다.");
+				    return;
+				}
+				
+				// 혼합 요금 합산 계산
+				int totalPrice = (adultPrice * adultQty) + (youthPrice * youthQty) + (childPrice * childQty);
+				int fee = totalQuantity * 1000;
+				int discountPrice = totalPrice * discountRate / 100;
+				int payPrice = totalPrice - discountPrice + fee;
+				
+				// 1. 예약 마스터 테이블용 DTO 세팅
+				ReservationPageDTO rpDTO = new ReservationPageDTO();
+				rpDTO.setMemberCode(loginMember.getMemberCode());
+				rpDTO.setTotalPrice(totalPrice);
+				rpDTO.setPayPrice(payPrice);
+				rpDTO.setStadiumSeatCode(stadiumSeatCode);
+				rpDTO.setReservationQuantity(totalQuantity); // 좌석 카운트 차감용 일괄 수량 설정
+				rpDTO.setGameScheduleCode(gameScheduleCode);
+				rpDTO.setDiscountPrice(discountPrice);
 
-			int reservationCode = rpService.insertTotalReservation(rpDTO);
+				// 2. 예약 디테일 리스트 구성 (성인, 청소년, 어린이 중 1개라도 구매한 권종만 동적으로 Row 구성)
+				List<ReservationPageDTO> detailList = new java.util.ArrayList<>();
+				
+				if (adultQty > 0) {
+					ReservationPageDTO adultDetail = new ReservationPageDTO();
+					adultDetail.setStadiumSeatCode(stadiumSeatCode);
+					adultDetail.setReservationType("성인");
+					adultDetail.setReservationQuantity(adultQty);
+					detailList.add(adultDetail);
+				}
+				if (youthQty > 0) {
+					ReservationPageDTO youthDetail = new ReservationPageDTO();
+					youthDetail.setStadiumSeatCode(stadiumSeatCode);
+					youthDetail.setReservationType("청소년");
+					youthDetail.setReservationQuantity(youthQty);
+					detailList.add(youthDetail);
+				}
+				if (childQty > 0) {
+					ReservationPageDTO childDetail = new ReservationPageDTO();
+					childDetail.setStadiumSeatCode(stadiumSeatCode);
+					childDetail.setReservationType("어린이");
+					childDetail.setReservationQuantity(childQty);
+					detailList.add(childDetail);
+				}
 
-			if (reservationCode > 0) {
-				// 성공 페이지에 보여줄 데이터 추가 조회
-				String seatName = rpService.getSeatName(stadiumSeatCode);
-				request.setAttribute("reservationCode", reservationCode);
-				request.setAttribute("payPrice", payPrice);
-				request.setAttribute("reservationQuantity", reservationQuantity);
-				request.setAttribute("selectedSeatName", seatName);
+				// 3. 서비스 트랜잭션 처리 호출
+				int reservationCode = rpService.insertTotalReservation(rpDTO, detailList);
 
-				request.getRequestDispatcher("/reservationPage/reservationSuccess.jsp").forward(request, response);
-			} else {
+				if (reservationCode > 0) {
+					// 쿠폰 사용 완료 처리
+				    if (couponCode != null && !couponCode.isEmpty()) {
+				        rpService.updateCouponState(loginMember.getMemberCode(), couponCode);
+				    }
+					
+					// 성공 페이지 데이터 추가 조회
+					String seatName = rpService.getSeatName(stadiumSeatCode);
+					request.setAttribute("reservationCode", reservationCode);
+					request.setAttribute("payPrice", payPrice);
+					request.setAttribute("reservationQuantity", totalQuantity);
+					request.setAttribute("selectedSeatName", seatName);
+
+					request.getRequestDispatcher("/reservationPage/reservationSuccess.jsp").forward(request, response);
+				} else {
+					response.sendRedirect(request.getContextPath()
+							+ "/reservationPage/reservationFail.jsp?code=DB_ERR&message=DB_Save_Failed");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+
 				response.sendRedirect(request.getContextPath()
-						+ "/reservationPage/reservationFail.jsp?code=DB_ERR&message=DB_Save_Failed");
+						+ "/reservationPage/reservationFail.jsp?code=SYSTEM_ERR&message=" + e.getMessage());
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			response.sendRedirect(request.getContextPath()
-					+ "/reservationPage/reservationFail.jsp?code=SYSTEM_ERR&message=" + e.getMessage());
 		}
-	}
 
-	private void handleUnauthenticated(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.setContentType("text/html; charset=UTF-8");
-		java.io.PrintWriter out = response.getWriter();
-		out.println("<script>");
-		out.println("alert('로그인이 필요합니다.');");
-		out.println("opener.location.href='" + request.getContextPath() + "/kr/user/member/login.jsp';");
-		out.println("window.close();");
-		out.println("</script>");
-	}
+		private void handleUnauthenticated(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		    response.setContentType("text/html; charset=UTF-8");
 
-	private void handleCoupon(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.setContentType("text/plain;charset=UTF-8");
-		String eventCode = request.getParameter("eventCode");
-		if (eventCode == null || eventCode.trim().isEmpty()) {
-			response.getWriter().print("-1");
-			return;
+		    String ctx = request.getContextPath();
+
+		    java.io.PrintWriter out = response.getWriter();
+		    out.println("<script>");
+		    out.println("alert('로그인이 필요합니다.');");
+
+		    out.println("if (window.opener && !window.opener.closed) {");
+		    out.println("    window.opener.location.href = '" + ctx + "/kr/user/member/login.jsp';");
+		    out.println("    window.close();");
+		    out.println("} else {");
+		    out.println("    location.href = '" + ctx + "/kr/user/member/login.jsp';");
+		    out.println("}");
+		    
+		    out.println("</script>");
 		}
-		try {
-			int discountRate = rpService.getDiscountRate(eventCode);
-			response.getWriter().print(discountRate);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.getWriter().print("-1");
-		}
-	}
+	
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

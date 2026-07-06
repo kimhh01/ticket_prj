@@ -42,12 +42,12 @@ public class ReservationPageDTO {
 	private String reservationType;//좌석 유형
 	private int reservationQuantity;//예매 수량
 	private int totalSeatNum;//전체좌석수
+	private int stadiumSeatCount; //각 자리의 좌석수
 	private int remainSeatNum;//잔여좌석수
 	private int adultSeatPrice;//성인좌석가격
 	private int youthSeatPrice;//청소년좌석가격
 	private int childSeatPrice;//어린이좌석가격
-	private String eventCode;//이벤트코드
-	private int discount;//할인율
-	
+	private String couponCode;//쿠폰코드
+	private int couponDiscountRate;//쿠폰 할인율
 	
 }

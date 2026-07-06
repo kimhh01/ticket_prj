@@ -21,12 +21,7 @@
         <p class="guide-text"><span class="bullet">●</span> 각 구단 페이지에서 예매 오픈 시간에 맞춰 [예매하기] 버튼을 클릭합니다.</p>
         
         <div class="tip-box">
-            <div class="tip-content">
-                티켓링크 시스템 시간이 예매 오픈 시간이 되는 순간, <strong>새로고침(F5)</strong> 하시면 [오픈예정] 버튼이 [예매하기] 버튼으로 변경됩니다.
-            </div>
-            <!-- 이미지 자리 -->
             <div class="img-placeholder">
-                <!-- <img src="step1_1.jpg" alt="이미지"> -->
                 <img src="<%=request.getContextPath() %>/images/reservation_guide/reservation-step1.png">
             </div>
         </div>
@@ -45,10 +40,10 @@
            		<img src="<%=request.getContextPath() %>/images/reservation_guide/reservation-step2-1.png">
        		</div>
         </div>
-        <p class="guide-text"><span class="bullet">●</span> 구장 이미지를 확인하고 오른쪽 사이드바의 자리를 클릭 후 [다음 단계] 버튼을 클릭합니다.</p>
+        <p class="guide-text"><span class="bullet">●</span> 구장 이미지를 확인하고 오른쪽 사이드바의 자리를 클릭 후 [다음단계] 버튼을 클릭합니다.</p>
         <div class="tip-box">
 	        <div class="img-placeholder">
-	            <img src="<%=request.getContextPath() %>/images/reservation_guide/reservation-step2.png">
+	            <img src="<%=request.getContextPath() %>/images/reservation_guide/reservation-step2-2.png">
 	        </div>
         </div>
     </section>
@@ -59,7 +54,8 @@
             <span class="step-num">STEP 3</span>
             <span class="step-title">권종/할인/매수 선택</span>
         </div>
-        <p class="guide-text"><span class="bullet">●</span> 티켓의 종류와 개수를 선택하고 할인이 적용되는 경우 해당 항목의 할인 코드를 작성 후 적용을 누릅니다.</p>
+        <p class="guide-text"><span class="bullet">●</span> 티켓의 종류와 할인 종류를 선택 후 [다음단계] 버튼을 클릭합니다.</p>
+        <p class="guide-text"><span class="bullet">●</span> 할인 티켓은 하나만 적용됩니다.</p>
         <div class="tip-box">
 	        <div class="img-placeholder" style="min-height: 200px;">
 	            <img src="<%=request.getContextPath() %>/images/reservation_guide/reservation-step3.png">
@@ -73,7 +69,7 @@
             <span class="step-num">STEP 4</span>
             <span class="step-title">배송선택/예매확인</span>
         </div>
-        <p class="guide-text"><span class="bullet">●</span> 예매 정보를 최종 확인 후 [결제하기] 버튼을 클릭합니다.</p>
+        <p class="guide-text"><span class="bullet">●</span> 예매자 확인 체크 박스를 클릭, 예매 정보를 최종 확인 후 [결제하기] 버튼을 클릭합니다.</p>
         <div class="tip-box">
 	        <div class="img-placeholder" style="min-height: 200px;">
 	            <img src="<%=request.getContextPath() %>/images/reservation_guide/reservation-step4.png">
@@ -87,10 +83,10 @@
             <span class="step-num">STEP 5</span>
             <span class="step-title">결제</span>
         </div>
-        <p class="guide-text"><span class="bullet">●</span> 결제하기 버튼을 누르고 결제를 완료하면 예매가 성공적으로 마무리됩니다.</p>
+        <p class="guide-text"><span class="bullet">●</span>결제를 완료하면 예매가 성공적으로 마무리됩니다.</p>
         <div class="tip-box">
 	        <div class="img-placeholder" style="min-height: 200px;">
-	             <img src="<%=request.getContextPath() %>/images/reservation_guide/reservationSuccess.png">
+	             <img src="<%=request.getContextPath() %>/images/reservation_guide/reservation-success.png">
 	        </div>
         </div>
     </section>
