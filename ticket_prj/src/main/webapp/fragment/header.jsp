@@ -9,8 +9,12 @@ response.setHeader("Pragma", "no-cache");
 response.setDateHeader("Expires", 0);
 
 String loginUrl = request.getContextPath() + "/member/login";
-String currentPath = request.getRequestURI().substring(request.getContextPath().length());
-String queryString = request.getQueryString();
+String forwardUri = (String) request.getAttribute("javax.servlet.forward.request_uri");
+String forwardQuery = (String) request.getAttribute("javax.servlet.forward.query_string");
+
+String requestUri = forwardUri != null ? forwardUri : request.getRequestURI();
+String currentPath = requestUri.substring(request.getContextPath().length());
+String queryString = forwardUri != null ? forwardQuery : request.getQueryString();
 
 // 로그인 화면 자체를 제외하고 현재 GET 화면으로 돌아올 경로를 로그인 링크에 보존한다.
 if ("GET".equalsIgnoreCase(request.getMethod()) && !currentPath.startsWith("/member/")) {
