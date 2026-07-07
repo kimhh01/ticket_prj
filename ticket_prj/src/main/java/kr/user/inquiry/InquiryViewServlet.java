@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kr.common.InquiryType;
 import kr.user.member.MemberDTO;
 
 @WebServlet("/user-inquiry/*")

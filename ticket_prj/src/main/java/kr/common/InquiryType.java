@@ -1,11 +1,11 @@
-package kr.user.inquiry;
+package kr.common;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 문의 유형의 코드, DB 저장값, 화면 표시명을 한곳에서 관리한다.
+ * 사용자와 관리자가 함께 사용하는 1:1 문의 유형을 관리한다.
  */
 public enum InquiryType {
 	RESERVATION(1, "예매문의", "예매문의"),

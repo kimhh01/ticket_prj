@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.common.InquiryType;
 import kr.user.common.UserDBConnection;
 
 public class InquiryDAO {
@@ -20,144 +21,41 @@ public class InquiryDAO {
 	}// getConnection
 
 	/**
-	 * 다음 문의 번호 조회
-	 * 
-	 * 현재 INQUIRY 테이블에 시퀀스가 없으므로
-	 * MAX(inquiry_id) + 1 방식으로 다음 번호를 구한다.
-	 */
-	private int selectNextInquiryCode(Connection con) throws SQLException {
-		int nextCode = 1;
-
-		String sql = "SELECT NVL(MAX(inquiry_id), 0) + 1 AS next_code FROM inquiry";
-
-		try (PreparedStatement pstmt = con.prepareStatement(sql);
-				ResultSet rs = pstmt.executeQuery()) {
-
-			if (rs.next()) {
-				nextCode = rs.getInt("next_code");
-			}
-		}
-
-		return nextCode;
-	}// selectNextInquiryCode
-
-	/**
-	 * 다음 문의 카테고리 번호 조회
-	 * 
-	 * 현재 INQUIRY_CATEGORY 테이블에 시퀀스가 없으므로
-	 * MAX(inquiry_category_id) + 1 방식으로 다음 번호를 구한다.
-	 */
-	private int selectNextInquiryCategoryCode(Connection con) throws SQLException {
-		int nextCode = 1;
-
-		String sql = "SELECT NVL(MAX(inquiry_category_id), 0) + 1 AS next_code FROM inquiry_category";
-
-		try (PreparedStatement pstmt = con.prepareStatement(sql);
-				ResultSet rs = pstmt.executeQuery()) {
-
-			if (rs.next()) {
-				nextCode = rs.getInt("next_code");
-			}
-		}
-
-		return nextCode;
-	}// selectNextInquiryCategoryCode
-
-	/**
 	 * 1:1 문의 등록
 	 * 
-	 * 사용자 문의 등록 시 INQUIRY와 INQUIRY_CATEGORY 두 테이블에 INSERT한다.
-	 * 둘 중 하나라도 실패하면 rollback 처리한다.
+	 * 문의번호는 INQUIRY_SEQ에서 발급하고,
+	 * 선택한 고정 카테고리 번호는 INQUIRY의 외래키로 저장한다.
 	 * 
 	 * @param inquiryDTO 등록할 문의 정보
-	 * @return INSERT 성공 건수. 정상 등록이면 2가 반환된다.
+	 * @return INSERT 성공 건수. 정상 등록이면 1이 반환된다.
 	 */
 	public int insertInquiry(InquiryDTO inquiryDTO) {
-		int result = 0;
 		InquiryType inquiryType = InquiryType.fromCode(inquiryDTO.getInquiryCategoryCode());
 		if (inquiryType == null) {
 			return 0;
 		}
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
+		String sql =
+				"INSERT INTO inquiry ( "
+				+ " inquiry_id, member_id, inquiry_title, inquiry_content, "
+				+ " reply_content, inquiry_date, reply_date, inquiry_category_id "
+				+ ") VALUES ( "
+				+ " INQUIRY_SEQ.NEXTVAL, ?, ?, ?, NULL, SYSDATE, NULL, ? "
+				+ ")";
 
-		try {
-			con = getConnection();
+		try (Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-			// INQUIRY와 INQUIRY_CATEGORY 둘 다 성공해야 하므로 자동 커밋을 끈다.
-			con.setAutoCommit(false);
+			pstmt.setString(1, inquiryDTO.getMemberCode());
+			pstmt.setString(2, inquiryDTO.getInquiryTitle());
+			pstmt.setString(3, inquiryDTO.getInquiryContent());
+			pstmt.setInt(4, inquiryType.getCode());
 
-			int inquiryCode = selectNextInquiryCode(con);
-			int inquiryCategoryCode = selectNextInquiryCategoryCode(con);
-
-			// 1. 문의글 본문 저장
-			String insertInquirySql =
-					"INSERT INTO inquiry ( "
-					+ " inquiry_id, member_id, inquiry_title, inquiry_content, "
-					+ " reply_content, inquiry_date, reply_date "
-					+ ") VALUES ( "
-					+ " ?, ?, ?, ?, NULL, SYSDATE, NULL "
-					+ ")";
-
-			pstmt = con.prepareStatement(insertInquirySql);
-			pstmt.setInt(1, inquiryCode);
-			pstmt.setString(2, inquiryDTO.getMemberCode());
-			pstmt.setString(3, inquiryDTO.getInquiryTitle());
-			pstmt.setString(4, inquiryDTO.getInquiryContent());
-
-			result += pstmt.executeUpdate();
-
-			pstmt.close();
-
-			// 2. 문의글의 문의유형 저장
-			String insertCategorySql =
-					"INSERT INTO inquiry_category ( "
-					+ " inquiry_category_id, admin_id, inquiry_id, inquiry_type "
-					+ ") VALUES ( "
-					+ " ?, NULL, ?, ? "
-					+ ")";
-
-			pstmt = con.prepareStatement(insertCategorySql);
-			pstmt.setInt(1, inquiryCategoryCode);
-			pstmt.setInt(2, inquiryCode);
-			pstmt.setString(3, inquiryType.getDbValue());
-
-			result += pstmt.executeUpdate();
-
-			// 두 INSERT가 모두 성공하면 commit
-			con.commit();
-
+			return pstmt.executeUpdate();
 		} catch (SQLException se) {
 			se.printStackTrace();
-
-			// 중간에 오류가 나면 두 테이블 모두 저장되지 않도록 rollback
-			if (con != null) {
-				try {
-					con.rollback();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-
-			result = 0;
-
-		} finally {
-			try {
-				if (pstmt != null) {
-					pstmt.close();
-				}
-
-				if (con != null) {
-					con.setAutoCommit(true);
-					con.close();
-				}
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+			return 0;
 		}
-
-		return result;
 	}// insertInquiry
 
 	/**
@@ -172,7 +70,7 @@ public class InquiryDAO {
 		String sql =
 				"SELECT i.inquiry_id, "
 				+ "      i.member_id, "
-				+ "      c.inquiry_type, "
+				+ "      i.inquiry_category_id, "
 				+ "      i.inquiry_title, "
 				+ "      i.inquiry_content, "
 				+ "      i.inquiry_date, "
@@ -184,7 +82,7 @@ public class InquiryDAO {
 				+ "      END AS inquiry_status "
 				+ "FROM inquiry i "
 				+ "JOIN inquiry_category c "
-				+ "ON i.inquiry_id = c.inquiry_id "
+				+ "ON i.inquiry_category_id = c.inquiry_category_id "
 				+ "WHERE i.member_id = ? "
 				+ "ORDER BY i.inquiry_id ASC";;
 
@@ -199,7 +97,7 @@ public class InquiryDAO {
 
 					dto.setInquiryCode(rs.getInt("inquiry_id"));
 					dto.setMemberCode(rs.getString("member_id"));
-					dto.setInquiryCategoryCode(InquiryType.fromDbValue(rs.getString("inquiry_type")).getCode());
+					dto.setInquiryCategoryCode(rs.getInt("inquiry_category_id"));
 					dto.setInquiryTitle(rs.getString("inquiry_title"));
 					dto.setInquiryContent(rs.getString("inquiry_content"));
 					dto.setInquiryDate(rs.getTimestamp("inquiry_date"));
@@ -230,7 +128,7 @@ public class InquiryDAO {
 		String sql =
 				"SELECT i.inquiry_id, "
 				+ "      i.member_id, "
-				+ "      c.inquiry_type, "
+				+ "      i.inquiry_category_id, "
 				+ "      i.inquiry_title, "
 				+ "      i.inquiry_content, "
 				+ "      i.inquiry_date, "
@@ -242,7 +140,7 @@ public class InquiryDAO {
 				+ "      END AS inquiry_status "
 				+ "FROM inquiry i "
 				+ "JOIN inquiry_category c "
-				+ "ON i.inquiry_id = c.inquiry_id "
+				+ "ON i.inquiry_category_id = c.inquiry_category_id "
 				+ "WHERE i.inquiry_id = ? "
 				+ "AND i.member_id = ?";
 
@@ -258,7 +156,7 @@ public class InquiryDAO {
 
 					inquiryDTO.setInquiryCode(rs.getInt("inquiry_id"));
 					inquiryDTO.setMemberCode(rs.getString("member_id"));
-					inquiryDTO.setInquiryCategoryCode(InquiryType.fromDbValue(rs.getString("inquiry_type")).getCode());
+					inquiryDTO.setInquiryCategoryCode(rs.getInt("inquiry_category_id"));
 					inquiryDTO.setInquiryTitle(rs.getString("inquiry_title"));
 					inquiryDTO.setInquiryContent(rs.getString("inquiry_content"));
 					inquiryDTO.setInquiryDate(rs.getTimestamp("inquiry_date"));
@@ -282,89 +180,34 @@ public class InquiryDAO {
 	 * 실제 답변 여부 확인은 Service의 updateInquiry()에서 먼저 처리한다.
 	 */
 	public int updateInquiry(InquiryDTO inquiryDTO) {
-		int result = 0;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			con = getConnection();
-			con.setAutoCommit(false);
-
-			String updateInquirySql =
-					"UPDATE inquiry "
-					+ "SET inquiry_title = ?, "
-					+ "    inquiry_content = ? "
-					+ "WHERE inquiry_id = ? "
-					+ "AND member_id = ? "
-					+ "AND reply_content IS NULL";
-
-			pstmt = con.prepareStatement(updateInquirySql);
-			pstmt.setString(1, inquiryDTO.getInquiryTitle());
-			pstmt.setString(2, inquiryDTO.getInquiryContent());
-			pstmt.setInt(3, inquiryDTO.getInquiryCode());
-			pstmt.setString(4, inquiryDTO.getMemberCode());
-
-			int inquiryResult = pstmt.executeUpdate();
-
-			pstmt.close();
-
-			// 소유자와 답변 상태 조건을 만족한 문의만 카테고리까지 수정한다.
-			if (inquiryResult != 1) {
-				con.rollback();
-				return 0;
-			}
-
-			String updateCategorySql =
-					"UPDATE inquiry_category "
-					+ "SET inquiry_type = ? "
-					+ "WHERE inquiry_id = ?";
-
-			pstmt = con.prepareStatement(updateCategorySql);
-			InquiryType inquiryType = InquiryType.fromCode(inquiryDTO.getInquiryCategoryCode());
-			if (inquiryType == null) {
-				con.rollback();
-				return 0;
-			}
-			pstmt.setString(1, inquiryType.getDbValue());
-			pstmt.setInt(2, inquiryDTO.getInquiryCode());
-
-			int categoryResult = pstmt.executeUpdate();
-
-			if (categoryResult != 1) {
-				con.rollback();
-				return 0;
-			}
-
-			con.commit();
-			result = inquiryResult + categoryResult;
-
-		} catch (SQLException se) {
-			se.printStackTrace();
-
-			if (con != null) {
-				try {
-					con.rollback();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-
-		} finally {
-			try {
-				if (pstmt != null) {
-					pstmt.close();
-				}
-
-				if (con != null) {
-					con.setAutoCommit(true);
-					con.close();
-				}
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+		InquiryType inquiryType = InquiryType.fromCode(inquiryDTO.getInquiryCategoryCode());
+		if (inquiryType == null) {
+			return 0;
 		}
 
-		return result;
+		String sql =
+				"UPDATE inquiry "
+				+ "SET inquiry_title = ?, "
+				+ "    inquiry_content = ?, "
+				+ "    inquiry_category_id = ? "
+				+ "WHERE inquiry_id = ? "
+				+ "AND member_id = ? "
+				+ "AND reply_content IS NULL";
+
+		try (Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+			pstmt.setString(1, inquiryDTO.getInquiryTitle());
+			pstmt.setString(2, inquiryDTO.getInquiryContent());
+			pstmt.setInt(3, inquiryType.getCode());
+			pstmt.setInt(4, inquiryDTO.getInquiryCode());
+			pstmt.setString(5, inquiryDTO.getMemberCode());
+
+			return pstmt.executeUpdate();
+		} catch (SQLException se) {
+			se.printStackTrace();
+			return 0;
+		}
 	}// updateInquiry
 
 	/**

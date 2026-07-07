@@ -131,7 +131,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 			%>
 			<div class="hero-slide <%=i == 0 ? "active" : ""%>">
 				<a
-					href="<%=request.getContextPath()%>/teamPage?teamCode=<%=banner.getTeamCode()%>">
+					href="<%=request.getContextPath()%>/team?teamCode=<%=banner.getTeamCode()%>">
 
 					<img
 					src="<%=request.getContextPath()%>/images/banner/<%=banner.getBannerImg()%>"
