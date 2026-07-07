@@ -3,14 +3,14 @@ package userMypage;
 import java.sql.Date;
 
 
+
 import java.util.List;
 
 import kr.user.member.MemberDTO;
 import userMypage.MyPageDAO;
 import userMypage.MyPageReservationDTO;
 import userMypage.ReservationDetailDTO;
-
-
+import kr.user.common.PasswordHashUtil;
 
 public class MyPageService {
 
@@ -37,7 +37,7 @@ public class MyPageService {
 
         String dbPass = mpDAO.selectPassword(memberId);
 
-        return pass.equals(dbPass);
+        return PasswordHashUtil.sha1(pass).equals(dbPass);
     }
 
     // 회원 정보 수정
