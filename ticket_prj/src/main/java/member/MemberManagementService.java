@@ -2,28 +2,34 @@ package member;
 
 import java.util.List;
 
+import kr.admin.common.BoardRangeDTO;
+
 public class MemberManagementService {
-	
+
 	private MemberManagementDAO memberManagementDAO;
 
-    public MemberManagementService() {
-        memberManagementDAO = new MemberManagementDAO();
-    }//MemberManagementService
+	public MemberManagementService() {
+		memberManagementDAO = new MemberManagementDAO();
+	}// MemberManagementService
 
-    public List<MemberListDTO> getMemberList(String search, String gradeFilter) {
-        return memberManagementDAO.selectMemberList(search, gradeFilter);
-    }//getMemberList
+	public int getTotalCount(String search, String gradeFilter) {
+		return memberManagementDAO.selectTotalCount(search, gradeFilter);
+	}// getTotalCount
 
-    public MemberDetailDTO getMemberDetail(String memberId) {
-        return memberManagementDAO.selectMemberDetail(memberId);
-    }//getMemberDetail
+	public List<MemberListDTO> getMemberList(BoardRangeDTO brDTO, String search, String gradeFilter) {
+		return memberManagementDAO.selectMemberList(brDTO, search, gradeFilter);
+	}// getMemberList
 
-    public List<MemberPayDTO> getPayHistory(String memberId) {
-        return memberManagementDAO.selectPayHistory(memberId);
-    }//getPayHistory
+	public MemberDetailDTO getMemberDetail(String memberId) {
+		return memberManagementDAO.selectMemberDetail(memberId);
+	}// getMemberDetail
 
-    public boolean updateMemberState(String memberId) {
-        return memberManagementDAO.updateMemberState(memberId) > 0;
-    }//updateMemberState
-    
-}//class
+	public List<MemberPayDTO> getPayHistory(String memberId) {
+		return memberManagementDAO.selectPayHistory(memberId);
+	}// getPayHistory
+
+	public boolean updateMemberState(String memberId) {
+		return memberManagementDAO.updateMemberState(memberId) > 0;
+	}// updateMemberState
+
+}// class

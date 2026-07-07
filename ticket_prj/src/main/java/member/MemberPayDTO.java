@@ -3,19 +3,20 @@ package member;
 public class MemberPayDTO {
 
 	private int reservationCode;
-    private String memberCode;
-    private String homeTeam;
-    private String awayTeam;
-    private int reservationCnt;
-    private int paymentPrice;
-    private String reservationDate;
-    private String reservationState;
-    
+	private String memberCode;
+	private String homeTeam;
+	private String awayTeam;
+	private int reservationCnt;
+	private long paymentPrice;
+	private String reservationDate;
+	private String reservationState;
+
 	public MemberPayDTO() {
-	}//MemberPayDTO
+	}// MemberPayDTO
 
 	public MemberPayDTO(int reservationCode, String memberCode, String homeTeam, String awayTeam, int reservationCnt,
-			int paymentPrice, String reservationDate, String reservationState) {
+			long paymentPrice, String reservationDate, String reservationState) {
+
 		this.reservationCode = reservationCode;
 		this.memberCode = memberCode;
 		this.homeTeam = homeTeam;
@@ -24,70 +25,78 @@ public class MemberPayDTO {
 		this.paymentPrice = paymentPrice;
 		this.reservationDate = reservationDate;
 		this.reservationState = reservationState;
-	}//MemberPayDTO
+	}// MemberPayDTO
 
 	public int getReservationCode() {
 		return reservationCode;
-	}//getReservationCode
+	}// getReservationCode
 
 	public void setReservationCode(int reservationCode) {
 		this.reservationCode = reservationCode;
-	}//setReservationCode
+	}// setReservationCode
 
 	public String getMemberCode() {
 		return memberCode;
-	}//getMemberCode
+	}// getMemberCode
 
 	public void setMemberCode(String memberCode) {
 		this.memberCode = memberCode;
-	}//setMemberCode
+	}// setMemberCode
 
 	public String getHomeTeam() {
 		return homeTeam;
-	}//getHomeTeam
+	}// getHomeTeam
 
 	public void setHomeTeam(String homeTeam) {
 		this.homeTeam = homeTeam;
-	}//setHomeTeam
+	}// setHomeTeam
 
 	public String getAwayTeam() {
 		return awayTeam;
-	}//getAwayTeam
+	}// getAwayTeam
 
 	public void setAwayTeam(String awayTeam) {
 		this.awayTeam = awayTeam;
-	}//setAwayTeam
+	}// setAwayTeam
 
 	public int getReservationCnt() {
 		return reservationCnt;
-	}//getReservationCnt
+	}// getReservationCnt
 
 	public void setReservationCnt(int reservationCnt) {
 		this.reservationCnt = reservationCnt;
-	}//setReservationCnt
+	}// setReservationCnt
 
-	public int getPaymentPrice() {
+	public long getPaymentPrice() {
 		return paymentPrice;
-	}//getPaymentPrice
+	}// getPaymentPrice
 
-	public void setPaymentPrice(int paymentPrice) {
+	public void setPaymentPrice(long paymentPrice) {
 		this.paymentPrice = paymentPrice;
-	}//setPaymentPrice
+	}// setPaymentPrice
 
 	public String getReservationDate() {
 		return reservationDate;
-	}//getReservationDate
+	}// getReservationDate
 
 	public void setReservationDate(String reservationDate) {
 		this.reservationDate = reservationDate;
-	}//setReservationDate
+	}// setReservationDate
 
 	public String getReservationState() {
 		return reservationState;
-	}//getReservationState
+	}// getReservationState
 
 	public void setReservationState(String reservationState) {
 		this.reservationState = reservationState;
-	}//setReservationState
-	
-}//class
+	}// setReservationState
+
+	@Override
+	public String toString() {
+		return "MemberPayDTO [reservationCode=" + reservationCode + ", memberCode=" + memberCode + ", homeTeam="
+				+ homeTeam + ", awayTeam=" + awayTeam + ", reservationCnt=" + reservationCnt + ", paymentPrice="
+				+ paymentPrice + ", reservationDate=" + reservationDate + ", reservationState=" + reservationState
+				+ "]";
+	}// toString
+
+}// class
