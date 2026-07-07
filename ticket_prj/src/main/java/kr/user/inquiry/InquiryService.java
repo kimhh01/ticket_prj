@@ -22,8 +22,8 @@ public class InquiryService {
 		try {
 			int result = inquiryDAO.insertInquiry(inquiryDTO);
 
-			// inquiry 1건 + inquiry_category 1건 = 총 2건 등록되면 성공
-			resultFlag = result == 2;
+			// inquiry 1건이 등록되면 성공
+			resultFlag = result == 1;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,7 +71,7 @@ public class InquiryService {
 			return false;
 		}
 
-		return inquiryDAO.updateInquiry(inquiryDTO) == 2;
+		return inquiryDAO.updateInquiry(inquiryDTO) == 1;
 	}
 
 	/**

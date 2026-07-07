@@ -1,7 +1,7 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="javax.servlet.http.HttpServletRequest"%>
 <%@page import="kr.user.inquiry.InquiryDTO"%>
-<%@page import="kr.user.inquiry.InquiryType"%>
+<%@page import="kr.common.InquiryType"%>
 <%@page import="java.util.List"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
