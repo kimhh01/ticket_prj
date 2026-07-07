@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import kr.user.common.PasswordHashUtil;
 import kr.user.common.UserDBConnection;
 import kr.user.member.MemberDTO;
 import userMypage.MyPageReservationDTO;
@@ -207,9 +208,9 @@ public class MyPageDAO {
 
             stmt = con.prepareStatement(sql.toString());
 
-            stmt.setString(1, newPass);
+            stmt.setString(1, PasswordHashUtil.sha1(newPass));
             stmt.setString(2, memberId);
-            stmt.setString(3, oldPass);
+            stmt.setString(3, PasswordHashUtil.sha1(oldPass));
 
             result = stmt.executeUpdate();
 
