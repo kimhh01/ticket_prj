@@ -1,5 +1,52 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ page import="java.util.List" %>
+
+<%@ page import="kr.user.member.MemberDTO" %>
+
+<%@ page import="userMypage.MyPageService" %>
+<%@ page import="userMypage.MyPageReservationDTO" %>
+<%@ page import="userMypage.ReservationDetailDTO" %>
+
+<% 
+MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+
+int reservationId =
+Integer.parseInt(request.getParameter("reservationId"));
+
+MyPageService service = new MyPageService();
+
+MyPageReservationDTO gameInfo =
+service.getReservationGameInfo(
+        reservationId,
+        loginMember.getMemberCode());
+
+List<ReservationDetailDTO> seatList =
+service.getReservationSeatInfo(
+        reservationId,
+        loginMember.getMemberCode());
+
+MyPageReservationDTO reservationInfo =
+service.getReservationInfo(
+        reservationId,
+        loginMember.getMemberCode());
+
+MyPageReservationDTO paymentInfo =
+service.getPaymentInfo(
+        reservationId,
+        loginMember.getMemberCode());
+ %>
+ 
+<%
+pageContext.setAttribute("loginMember", loginMember);
+pageContext.setAttribute("gameInfo", gameInfo);
+pageContext.setAttribute("seatList", seatList);
+pageContext.setAttribute("reservationInfo", reservationInfo);
+pageContext.setAttribute("paymentInfo", paymentInfo);
+%>
 
 <!DOCTYPE html>
 <html>
@@ -161,31 +208,34 @@ body{
         <table class="info-table">
             <tr>
                 <th>경기명</th>
-                <td>LG VS 삼성</td>
+               	<td>${gameInfo.gameName}</td>
             </tr>
 
             <tr>
                 <th>경기일시</th>
-                <td>2026.06.05 14:00</td>
+				<td>
+    <fmt:formatDate value="${gameInfo.gameDate}" pattern="yyyy.MM.dd"/>
+    						${gameInfo.gameStartTime}
+				</td>
             </tr>
 
             <tr>
                 <th>경기장</th>
-                <td>잠실야구장</td>
+				<td>${gameInfo.stadiumName}</td>
             </tr>
 
             <tr>
                 <th>예매상태</th>
                 <td>
                     <span class="status-badge">
-                        예매완료
+                          ${gameInfo.reservationStatus}
                     </span>
                 </td>
             </tr>
 
             <tr>
                 <th>예매번호</th>
-                <td>B245</td>
+             <td>${gameInfo.reservationCode}</td>
             </tr>
         </table>
 
@@ -193,27 +243,27 @@ body{
 
             <tr>
                 <th>예매자</th>
-                <td>김희수</td>
+              <td>${loginMember.name}</td>
             </tr>
 
             <tr>
                 <th>휴대전화</th>
-                <td>010-1234-5678</td>
+               <td>${loginMember.phone}</td>
             </tr>
 
             <tr>
                 <th>예매일시</th>
-                <td>2026.05.28 20:30</td>
+                <td>${reservationInfo.reservationDate}</td>
             </tr>
 
             <tr>
                 <th>결제금액</th>
-                <td>60,000원</td>
+                <td>${paymentInfo.paymentAmount}원</td>
             </tr>
 
             <tr>
                 <th>결제수단</th>
-                <td>신용카드</td>
+                <td>//가데이터//신용카드</td>
             </tr>
 
         </table>
@@ -237,30 +287,24 @@ body{
             <th>가격</th>
             <th>상태</th>
         </tr>
+        
+<c:forEach var="seat" items="${seatList}">
+<tr>
 
-        <tr>
-            <td>T-123-01</td>
-            <td>1루 블루석 1층 L열 12번</td>
-            <td>성인</td>
-            <td>20,000원</td>
-            <td>예매완료</td>
-        </tr>
+<td>${seat.reservationDetailCode}</td>
 
-        <tr>
-            <td>T-123-02</td>
-            <td>1루 블루석 1층 L열 13번</td>
-            <td>성인</td>
-            <td>20,000원</td>
-            <td>예매완료</td>
-        </tr>
+<td>${seat.stadiumSeatCode}</td>
 
-        <tr>
-            <td>T-123-03</td>
-            <td>1루 블루석 1층 L열 14번</td>
-            <td>성인</td>
-            <td>20,000원</td>
-            <td>예매완료</td>
-        </tr>
+<td>${seat.reservationType}</td>
+
+<td>${seat.ticketPrice}원</td>
+
+<td>${seat.reservationStatus}</td>
+
+</tr>
+</c:forEach>
+
+
 
     </table>
 

@@ -115,6 +115,7 @@ pageContext.setAttribute("cancelList", cancelList);
     </div>
     
 <!-- 예매확인 영역 -->
+
 <div id="reservationArea">
     <table class="reservation-table">
         <thead>
@@ -132,7 +133,8 @@ pageContext.setAttribute("cancelList", cancelList);
 
 <c:forEach var="dto" items="${reservationList}">
 
-<tr class="reservation-row">
+<tr class="reservation-row"
+	data-id="${dto.reservationCode}">
 
     <td>${dto.reservationCode}</td>
     <td>${dto.gameName}</td>
@@ -152,148 +154,6 @@ pageContext.setAttribute("cancelList", cancelList);
     </table>
     </div>
     
-        
-<!-- 예매 상세 팝업   -->
-
-
-    <div class="modal fade" id="reservationDetailModal" tabindex="-1">
-
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-
-        <div class="modal-content detail-modal">
-
-            <div class="modal-header">
-
-                <h3 class="modal-title">예매상세</h3>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <!-- 예매 정보 -->
-
-                <h4 class="detail-title">예매 정보</h4>
-
-                <div class="detail-info-wrap">
-
-                    <table class="detail-info-table">
-                        <tr>
-                            <th>경기명</th>
-                            <td>LG VS 삼성</td>
-                        </tr>
-                        <tr>
-                            <th>경기일시</th>
-                            <td>2026.06.05 14:00</td>
-                        </tr>
-                        <tr>
-                            <th>경기장</th>
-                            <td>잠실야구장</td>
-                        </tr>
-                        <tr>
-                            <th>예매상태</th>
-                            <td>
-                                <span class="detail-status">
-                                    예매완료
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>예매번호</th>
-                            <td>B245</td>
-                        </tr>
-                    </table>
-
-                    <table class="detail-info-table">
-                        <tr>
-                            <th>예매자</th>
-                            <td>김희수</td>
-                        </tr>
-                        <tr>
-                            <th>휴대전화</th>
-                            <td>010-1234-5678</td>
-                        </tr>
-                        <tr>
-                            <th>예매일시</th>
-                            <td>2026.05.28 20:30</td>
-                        </tr>
-                        <tr>
-                            <th>결제금액</th>
-                            <td>60,000원</td>
-                        </tr>
-                        <tr>
-                            <th>결제수단</th>
-                            <td>신용카드</td>
-                        </tr>
-                    </table>
-
-                </div>
-
-                <!-- 좌석 정보 -->
-
-                <h4 class="detail-title">
-                    좌석 / 티켓 정보
-                </h4>
-
-                <table class="table table-bordered">
-
-                    <thead>
-                        <tr>
-                            <th>티켓번호</th>
-                            <th>구역/좌석</th>
-                            <th>권종</th>
-                            <th>가격</th>
-                            <th>상태</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-                            <td>T-123-01</td>
-                            <td>1루 블루석 L열 12번</td>
-                            <td>성인</td>
-                            <td>20,000원</td>
-                            <td>예매완료</td>
-                        </tr>
-
-                        <tr>
-                            <td>T-123-02</td>
-                            <td>1루 블루석 L열 13번</td>
-                            <td>성인</td>
-                            <td>20,000원</td>
-                            <td>예매완료</td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-                <!-- 환불 안내 -->
-
-                <div class="refund-box">
-
-                    <h4>취소/환불 안내</h4>
-
-                    <ul>
-                        <li>경기 시작 7일 전까지 : 100% 환불</li>
-                        <li>경기 시작 1일 전까지 : 수수료 제외 후 환불</li>
-                        <li>경기 당일 취소 불가</li>
-                    </ul>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 
 
     <!-- 예매취소 영역 -->
@@ -315,7 +175,9 @@ pageContext.setAttribute("cancelList", cancelList);
 
         <tbody>
 
-        <tr class="cancel-row" >
+        <tr class="cancel-row" 
+        	data-id="${dto.reservationCode}" >
+        	
             <td>222222</td>
             <td>두산 VS 한화</td>
             <td>2026.06.05 14:00</td>
@@ -435,13 +297,14 @@ $(function(){
 
 	//행 클릭시 상세내역 창 열기 
 	$(".reservation-row").click(function(){
-
+		 
+		var reservationId=$(this).data("id");
+		 
     window.open(
-        "reservationDetail.jsp",
-        "reservationDetail",
-        "width=800,height=500,left=200,top=100"
-    );
-
+    		 "reservationDetail.jsp?reservationId="+reservationId,
+    	        "detail",
+    	        "width=900,height=700"
+    	    );
 });
 	
 	$(".status-btn").click(function(e){
@@ -449,25 +312,24 @@ $(function(){
 	});
 
 });
+
+//예매취소 팝업
 $(function(){
 	
 	let selectedRow = null;
 
-	$(".cancel-row .status-btn").click(function(){
-	    selectedRow = $(this).closest("tr");
+	$(".cancel-row").click(function(){
+
+	    var reservationId=$(this).data("id");
+
+	    window.open(
+	        "reservationCancel.jsp?reservationId="+reservationId,
+	        "cancel",
+	        "width=900,height=700"
+	    );
+
 	});
 	
-    $("#confirmCancel").click(function(){
-
-        // 첫 번째 팝업 닫기
-        $("#cancelModal").modal("hide");
-
-        // 두 번째 팝업 열기
-        setTimeout(function(){
-            $("#completeModal").modal("show");
-        }, 300);
-
-    });
     $("#completeModal .btn-dark").click(function(){
 
         if(selectedRow){

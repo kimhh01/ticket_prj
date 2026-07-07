@@ -144,7 +144,7 @@ public class MyPageReservationDTO {
 	
 	
 	//경기 시간 추가
-	public String getgameStartTime() {
+	public String getGameStartTime() {
 		return gameStartTime;
 	}
 

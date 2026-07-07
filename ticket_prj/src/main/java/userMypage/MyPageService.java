@@ -2,17 +2,14 @@ package userMypage;
 
 import java.sql.Date;
 
-import java.util.List;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import kr.user.common.UserDBConnection;
+import java.util.List;
+
 import kr.user.member.MemberDTO;
 import userMypage.MyPageDAO;
 import userMypage.MyPageReservationDTO;
 import userMypage.ReservationDetailDTO;
+
 
 
 public class MyPageService {
