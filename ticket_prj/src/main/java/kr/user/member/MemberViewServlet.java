@@ -13,6 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import java.util.Properties;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 @WebServlet("/member/*")
 public class MemberViewServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -201,10 +211,18 @@ public class MemberViewServlet extends HttpServlet {
 			return;
 		}
 
+		try {
+			sendTempPasswordMail(email, memberCode, tempPassword);
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("errorMessage", "임시 비밀번호 메일 발송 중 오류가 발생했습니다.");
+			forward(request, response, "findPassword.jsp");
+			return;
+		}
+
 		request.setAttribute("verifiedMemberCode", escapeHtml(memberCode));
 		request.setAttribute("verifiedName", escapeHtml(name));
 		request.setAttribute("verifiedEmail", escapeHtml(email));
-		request.setAttribute("tempPassword", escapeHtml(tempPassword));
 		forward(request, response, "findPasswordResult.jsp");
 	}
 
@@ -389,6 +407,45 @@ public class MemberViewServlet extends HttpServlet {
 				.replace(">", "&gt;")
 				.replace("\"", "&quot;")
 				.replace("'", "&#39;");
+	}
+	
+	private void sendTempPasswordMail(String toEmail, String memberCode, String tempPassword) throws Exception {
+
+		final String smtpEmail = "khs10049731@gmail.com";
+		final String smtpPassword = "bmerdctgbopoxvog";
+
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+
+		Session session = Session.getInstance(props, new Authenticator() {
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(smtpEmail, smtpPassword);
+			}
+		});
+
+		MimeMessage message = new MimeMessage(session);
+
+		message.setFrom(new InternetAddress(smtpEmail, "BallPick", "UTF-8"));
+		message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+		message.setSubject("[BallPick] 임시 비밀번호 안내", "UTF-8");
+
+		String content = ""
+				+ "<div style='font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;'>"
+				+ "<h2>BallPick 임시 비밀번호 안내</h2>"
+				+ "<p>요청하신 임시 비밀번호가 발급되었습니다.</p>"
+				+ "<p><strong>아이디</strong> : " + memberCode + "</p>"
+				+ "<p><strong>임시 비밀번호</strong> : " + tempPassword + "</p>"
+				+ "<p>로그인 후 반드시 비밀번호를 변경해 주세요.</p>"
+				+ "</div>";
+
+		message.setContent(content, "text/html; charset=UTF-8");
+
+		Transport.send(message);
 	}
 
 	/**

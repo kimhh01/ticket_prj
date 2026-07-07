@@ -13,17 +13,22 @@
 <main class="member-page">
     <section class="member-shell member-shell-narrow">
         <h1 class="member-title">비밀번호 찾기</h1>
+
         <div class="member-result">
             <div class="member-result-icon">i</div>
-            <h2>임시 비밀번호가 고객님의 이메일로 전송되었습니다.</h2>
-            <p>현재 메일 발송 기능은 준비 중이므로 검수용 임시 비밀번호를 함께 표시합니다.</p>
+            <h2>임시 비밀번호가 이메일로 전송되었습니다.</h2>
+            <p>
+                입력하신 이메일 주소로 임시 비밀번호를 발송했습니다.<br>
+                로그인 후 반드시 비밀번호를 변경해 주세요.
+            </p>
+
             <div class="member-result-summary">
                 아이디: ${verifiedMemberCode}<br>
                 이름: ${verifiedName}<br>
-                이메일: ${verifiedEmail}<br>
-                임시 비밀번호: <strong>${tempPassword}</strong>
+                이메일: ${verifiedEmail}
             </div>
         </div>
+
         <div class="member-actions">
             <a class="member-button member-button-light"
                href="<%=request.getContextPath()%>/member/find-password">다시 찾기</a>
