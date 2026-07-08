@@ -15,6 +15,38 @@
                     .replace(">", "&gt;")
                     .replace("\"", "&quot;");
     }
+
+    private String eventImageSrc(javax.servlet.http.HttpServletRequest request,
+                                 String dbValue) {
+        if (dbValue == null) {
+            return "";
+        }
+
+        String value = dbValue.trim();
+
+        if (value.isEmpty()) {
+            return "";
+        }
+
+        value = value.replace("\\", "/");
+
+        if (value.startsWith("http://") ||
+            value.startsWith("https://")) {
+            return value;
+        }
+
+        String contextPath = request.getContextPath();
+
+        if (value.startsWith(contextPath + "/")) {
+            return value;
+        }
+
+        if (value.startsWith("/")) {
+            return contextPath + value;
+        }
+
+        return contextPath + "/upload/event/" + value;
+    }
 %>
 
 <%
@@ -49,9 +81,7 @@
         !thumbnailImg.trim().isEmpty()) {
 
         thumbnailPreviewSrc =
-                request.getContextPath()
-                + "/upload/event/"
-                + thumbnailImg;
+                eventImageSrc(request, thumbnailImg);
     }
 
     String representativePreviewSrc = "";
@@ -60,21 +90,9 @@
         !representativeImg.trim().isEmpty()) {
 
         representativePreviewSrc =
-                request.getContextPath()
-                + "/upload/event/"
-                + representativeImg;
+                eventImageSrc(request, representativeImg);
     }
 
-    boolean discountChecked =
-            event.isDiscount();
-
-    /*
-     * 등록 화면 기본값
-     * 화면 시안처럼 할인 이벤트 사용을 기본 체크 상태로 둠
-     */
-    if (!editMode) {
-        discountChecked = true;
-    }
 %>
 
 <!DOCTYPE html>
@@ -83,106 +101,11 @@
 <meta charset="UTF-8">
 <title>이벤트 상세</title>
 
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-
 <style>
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-/* ── Topbar ── */
-.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    height: 56px;
-    background: #fff;
-    border-bottom: 1px solid #E5E7EB;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.topbar-logo {
-    font-size: 18px;
-    font-weight: 400;
-    color: #111;
-}
-
-.topbar-logo strong {
-    font-weight: 700;
-}
-
-.topbar-subtitle {
-    font-size: 13px;
-    color: #6B7280;
-}
-
-.topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    font-size: 13px;
-    color: #6B7280;
-}
-
-.topbar-divider {
-    width: 1px;
-    height: 14px;
-    background: #E5E7EB;
-}
-
-.topbar-right a {
-    color: #6B7280;
-    text-decoration: none;
-}
-
-.topbar-right a:hover {
-    color: #111;
-}
-
-/* ── Sidebar ── */
-.sidebar {
-    width: 200px;
-    flex-shrink: 0;
-    background: #fff;
-    border-right: 1px solid #E5E7EB;
-    padding: 12px 0;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    font-size: 14px;
-    color: #6B7280;
-    cursor: pointer;
-}
-
-.nav-item i {
-    font-size: 18px;
-}
-
-.nav-item:hover {
-    background: #F9FAFB;
-    color: #111;
-}
-
-.nav-item.active {
-    background: #FDEDF0;
-    color: #C0394B;
-    font-weight: 500;
 }
 
 body {
@@ -424,137 +347,6 @@ body {
     font-size: 14px;
 }
 
-.discount-box {
-    grid-column: 1 / 3;
-
-    margin-top: 18px;
-
-    border: 1px solid #FCA5A5;
-    border-radius: 8px;
-
-    background: #FFF7F7;
-
-    padding: 24px;
-}
-
-.discount-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-
-    margin-bottom: 18px;
-}
-
-.discount-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    font-size: 20px;
-    font-weight: 800;
-    color: #DC2626;
-}
-
-.discount-desc {
-    margin-top: 8px;
-
-    font-size: 13px;
-    color: #6B7280;
-}
-
-.discount-check {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    font-size: 14px;
-    font-weight: 700;
-    color: #374151;
-}
-
-.discount-check input {
-    width: 18px;
-    height: 18px;
-    accent-color: #DC2626;
-}
-
-.discount-panel {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1.1fr;
-    gap: 24px;
-
-    padding: 20px;
-
-    border: 1px solid #FEE2E2;
-    border-radius: 8px;
-
-    background: #fff;
-}
-
-.coupon-code-box {
-    height: 44px;
-
-    display: flex;
-    align-items: center;
-
-    padding: 0 14px;
-
-    border: 1px solid #E5E7EB;
-    border-radius: 6px;
-
-    background: #F9FAFB;
-    color: #DC2626;
-
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.discount-preview {
-    padding: 18px;
-
-    border-radius: 8px;
-
-    background: #FFF1F2;
-    color: #DC2626;
-}
-
-.discount-preview-title {
-    font-size: 14px;
-    font-weight: 800;
-    margin-bottom: 10px;
-}
-
-.discount-preview-desc {
-    font-size: 12px;
-    color: #6B7280;
-    margin-bottom: 10px;
-}
-
-.discount-price {
-    font-size: 16px;
-    font-weight: 800;
-}
-
-.discount-price .before {
-    color: #374151;
-}
-
-.discount-price .after {
-    color: #EF4444;
-}
-
-.discount-notice {
-    margin-top: 16px;
-
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    font-size: 13px;
-    font-weight: 700;
-    color: #EF4444;
-}
-
 .footer-area {
     display: flex;
     justify-content: flex-end;
@@ -600,13 +392,6 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .discount-box {
-        grid-column: 1;
-    }
-
-    .discount-panel {
-        grid-template-columns: 1fr;
-    }
 
     .image-upload-item {
         flex-direction: column;
@@ -750,7 +535,7 @@ body {
                                             if (!thumbnailPreviewSrc.isEmpty()) {
                                             %>
 
-                                                <img src="<%= thumbnailPreviewSrc %>"
+                                                <img src="<%= h(thumbnailPreviewSrc) %>"
                                                      id="thumbnailPreview"
                                                      alt="썸네일 이미지">
 
@@ -819,7 +604,7 @@ body {
                                             if (!representativePreviewSrc.isEmpty()) {
                                             %>
 
-                                                <img src="<%= representativePreviewSrc %>"
+                                                <img src="<%= h(representativePreviewSrc) %>"
                                                      id="representativePreview"
                                                      alt="대표 이미지">
 
@@ -920,97 +705,7 @@ body {
 
                     </div>
 
-                    <div class="discount-box">
 
-                        <div class="discount-head">
-
-                            <div>
-                                <div class="discount-title">
-                                    <i class="ti ti-external-link"></i>
-                                    할인 설정
-                                </div>
-
-                                <p class="discount-desc">
-                                    할인 이벤트로 설정하면 쿠폰 번호가 발급되고, 사용자가 결제 화면에서 쿠폰 번호를 입력해 할인받을 수 있습니다.
-                                </p>
-                            </div>
-
-                            <label class="discount-check">
-                                <input type="checkbox"
-                                       name="isDiscount"
-                                       id="isDiscount"
-                                       value="Y"
-                                       <%= discountChecked ? "checked" : "" %>>
-                                할인 이벤트 사용
-                            </label>
-
-                        </div>
-
-                        <div class="discount-panel"
-						     id="discountPanel">
-						
-						    <div class="form-group">
-						        <label class="form-label">
-						            쿠폰 번호
-						        </label>
-						
-						        <div class="coupon-code-box">
-						            <%
-						            if (editMode &&
-						                event.getDiscountRuleCode() > 0) {
-						            %>
-						                <%= event.getDiscountRuleCode() %>
-						            <%
-						            } else {
-						            %>
-						                등록 후 자동 발급
-						            <%
-						            }
-						            %>
-						        </div>
-						    </div>
-						
-						    <div class="form-group">
-						        <label class="form-label required">
-						            할인율 (정률 할인 %)
-						        </label>
-						
-						        <input type="number"
-						               name="discountRate"
-						               id="discountRate"
-						               class="form-control"
-						               min="0"
-						               max="100"
-						               value="<%= event.getDiscountRate() %>">
-						    </div>
-						
-						    <div class="discount-preview">
-						        <div class="discount-preview-title">
-						            할인 미리보기
-						        </div>
-						
-						        <div class="discount-preview-desc">
-						            예시) 15,000원 좌석 기준
-						        </div>
-						
-						        <div class="discount-price">
-						            <span class="before">15,000원</span>
-						            →
-						            <span class="after"
-						                  id="discountPreviewPrice">
-						                15,000원
-						            </span>
-						        </div>
-						    </div>
-						
-						</div>
-
-                        <div class="discount-notice">
-                            <i class="ti ti-info-circle-filled"></i>
-                            쿠폰 번호는 할인 이벤트 등록 시 자동 발급되며, 사용자가 결제 화면에서 입력하면 할인율이 적용됩니다.
-                        </div>
-
-                    </div>
 
                 </div>
 
@@ -1075,18 +770,6 @@ const oldRepresentativeImgInput =
 const representativeDeletedInput =
         document.getElementById('representativeDeleted');
 
-
-const isDiscountInput =
-        document.getElementById('isDiscount');
-
-const discountPanel =
-        document.getElementById('discountPanel');
-
-const discountRateInput =
-        document.getElementById('discountRate');
-
-const discountPreviewPrice =
-        document.getElementById('discountPreviewPrice');
 
 const eventForm =
         document.getElementById('eventForm');
@@ -1209,67 +892,6 @@ function clearRepresentativeImage() {
     }
 }
 
-function updateDiscountState() {
-
-    const enabled =
-            isDiscountInput && isDiscountInput.checked;
-
-    if (discountPanel) {
-        discountPanel.style.opacity = enabled ? '1' : '0.45';
-    }
-
-    if (discountRateInput) {
-        discountRateInput.disabled = !enabled;
-        discountRateInput.required = enabled;
-    }
-}
-
-function updateDiscountPreview() {
-
-    const basePrice = 15000;
-
-    let rate = 0;
-
-    if (discountRateInput &&
-        discountRateInput.value) {
-
-        rate = parseInt(discountRateInput.value, 10);
-
-        if (isNaN(rate)) {
-            rate = 0;
-        }
-    }
-
-    if (rate < 0) {
-        rate = 0;
-    }
-
-    if (rate > 100) {
-        rate = 100;
-    }
-
-    const discounted =
-            basePrice - Math.floor(basePrice * rate / 100);
-
-    if (discountPreviewPrice) {
-        discountPreviewPrice.textContent =
-                discounted.toLocaleString() + '원'
-                + ' (' + rate + '% 할인)';
-    }
-}
-
-if (isDiscountInput) {
-    isDiscountInput.addEventListener('change', function() {
-        updateDiscountState();
-    });
-}
-
-if (discountRateInput) {
-    discountRateInput.addEventListener('input', function() {
-        updateDiscountPreview();
-    });
-}
-
 if (eventForm) {
     eventForm.addEventListener('submit', function(e) {
 
@@ -1303,22 +925,9 @@ if (eventForm) {
             return;
         }
 
-        if (isDiscountInput &&
-            isDiscountInput.checked) {
-
-            if (!discountRateInput.value ||
-                parseInt(discountRateInput.value, 10) <= 0) {
-
-                alert('할인율을 1 이상 입력해주세요.');
-                e.preventDefault();
-                return;
-            }
-        }
     });
 }
 
-updateDiscountState();
-updateDiscountPreview();
 </script>
 
 </body>

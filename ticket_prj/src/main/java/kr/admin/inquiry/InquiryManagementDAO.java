@@ -10,172 +10,168 @@ import kr.admin.common.AdminDBConnection;
 import kr.admin.common.BoardRangeDTO;
 
 public class InquiryManagementDAO {
-	
-	public int selectTotalCount(String status,
+
+    public int selectTotalCount(String status, String keyword, String searchDate) {
+
+        int totalCount = 0;
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append(" SELECT COUNT(*) total_count ");
+        sql.append("   FROM INQUIRY i ");
+        sql.append("   LEFT JOIN INQUIRY_CATEGORY c ");
+        sql.append("     ON i.INQUIRY_CATEGORY_ID = c.INQUIRY_CATEGORY_ID ");
+        sql.append("  WHERE 1 = 1 ");
+
+        if ("waiting".equals(status)) {
+            sql.append("    AND i.REPLY_CONTENT IS NULL ");
+        } else if ("complete".equals(status)) {
+            sql.append("    AND i.REPLY_CONTENT IS NOT NULL ");
+        }
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("    AND ( ");
+            sql.append("          LOWER(i.INQUIRY_TITLE) LIKE ? ");
+            sql.append("       OR LOWER(i.MEMBER_ID) LIKE ? ");
+            sql.append("       OR LOWER(c.INQUIRY_TYPE) LIKE ? ");
+            sql.append("        ) ");
+        }
+
+        if (searchDate != null && !searchDate.trim().isEmpty()) {
+            sql.append("    AND TRUNC(i.INQUIRY_DATE) = TO_DATE(?, 'YYYY-MM-DD') ");
+        }
+
+        try (
+            Connection con = AdminDBConnection.getInstance().getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql.toString())
+        ) {
+
+            int index = 1;
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String searchKeyword = "%" + keyword.trim().toLowerCase() + "%";
+
+                pstmt.setString(index++, searchKeyword);
+                pstmt.setString(index++, searchKeyword);
+                pstmt.setString(index++, searchKeyword);
+            }
+
+            if (searchDate != null && !searchDate.trim().isEmpty()) {
+                pstmt.setString(index++, searchDate);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    totalCount = rs.getInt("total_count");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return totalCount;
+    }
+
+    public List<InquiryListDTO> selectMatchDashboard(
+            BoardRangeDTO range,
+            String status,
             String keyword,
-            String searchDate) {
+            String searchDate
+    ) {
 
-	int totalCount = 0;
-	
-	StringBuilder sql = new StringBuilder();
-	
-	sql.append(" SELECT COUNT(*) total_count ");
-	sql.append("   FROM INQUIRY i ");
-	sql.append("   LEFT JOIN INQUIRY_CATEGORY c ");
-	sql.append("     ON i.INQUIRY_ID = c.INQUIRY_ID ");
-	sql.append("  WHERE 1 = 1 ");
-	
-	if ("waiting".equals(status)) {
-		sql.append("    AND i.REPLY_CONTENT IS NULL ");
-	} else if ("complete".equals(status)) {
-		sql.append("    AND i.REPLY_CONTENT IS NOT NULL ");
-	}
-	
-	if (keyword != null && !keyword.trim().isEmpty()) {
-	
-		sql.append("    AND ( ");
-		sql.append("          LOWER(i.INQUIRY_TITLE) LIKE ? ");
-		sql.append("       OR LOWER(i.MEMBER_ID) LIKE ? ");
-		sql.append("        ) ");
-	}
-	
-	if (searchDate != null && !searchDate.trim().isEmpty()) {
-	
-		sql.append("    AND TRUNC(i.INQUIRY_DATE) = TO_DATE(?, 'YYYY-MM-DD') ");
-	}
-	
-	try (
-		Connection con = AdminDBConnection.getInstance().getConnection();
-		PreparedStatement pstmt = con.prepareStatement(sql.toString())
-	) {
-	
-		int index = 1;
-		
-		if (keyword != null && !keyword.trim().isEmpty()) {
-		
-			String searchKeyword =
-			    "%"
-			    + keyword.trim().toLowerCase()
-			    + "%";
-			
-			pstmt.setString(index++, searchKeyword);
-			pstmt.setString(index++, searchKeyword);
-		}
-		
-		if (searchDate != null && !searchDate.trim().isEmpty()) {
-		
-			pstmt.setString(index++, searchDate);
-		}
-		
-		try (ResultSet rs = pstmt.executeQuery()) {
-		
-			if (rs.next()) {
-				totalCount = rs.getInt("total_count");
-			}
-		}
-	
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	
-	return totalCount;
-	}
-	
-	public List<InquiryListDTO> selectMatchDashboard(BoardRangeDTO range, String status, String keyword,
-			String searchDate) {
+        List<InquiryListDTO> list = new ArrayList<>();
 
-		List<InquiryListDTO> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
 
-		StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT * ");
+        sql.append("   FROM ( ");
+        sql.append("         SELECT ROWNUM rnum, a.* ");
+        sql.append("           FROM ( ");
+        sql.append("                 SELECT i.INQUIRY_ID, ");
+        sql.append("                        c.INQUIRY_TYPE, ");
+        sql.append("                        i.INQUIRY_TITLE, ");
+        sql.append("                        i.MEMBER_ID, ");
+        sql.append("                        TO_CHAR(i.INQUIRY_DATE, 'YYYY-MM-DD') INQUIRY_DATE, ");
+        sql.append("                        CASE ");
+        sql.append("                            WHEN i.REPLY_CONTENT IS NULL THEN '답변대기' ");
+        sql.append("                            ELSE '답변완료' ");
+        sql.append("                        END STATE ");
+        sql.append("                   FROM INQUIRY i ");
+        sql.append("                   LEFT JOIN INQUIRY_CATEGORY c ");
+        sql.append("                     ON i.INQUIRY_CATEGORY_ID = c.INQUIRY_CATEGORY_ID ");
+        sql.append("                  WHERE 1 = 1 ");
 
-		sql.append(" SELECT * ");
-		sql.append("   FROM ( ");
-		sql.append("         SELECT ROWNUM rnum, a.* ");
-		sql.append("           FROM ( ");
-		sql.append("                 SELECT i.INQUIRY_ID, ");
-		sql.append("                        c.INQUIRY_TYPE, ");
-		sql.append("                        i.INQUIRY_TITLE, ");
-		sql.append("                        i.MEMBER_ID, ");
-		sql.append("                        TO_CHAR(i.INQUIRY_DATE,'YYYY-MM-DD') INQUIRY_DATE, ");
-		sql.append("                        CASE ");
-		sql.append("                            WHEN i.REPLY_CONTENT IS NULL THEN '답변대기' ");
-		sql.append("                            ELSE '답변완료' ");
-		sql.append("                        END STATE ");
-		sql.append("                   FROM INQUIRY i ");
-		sql.append("                   LEFT JOIN INQUIRY_CATEGORY c ");
-		sql.append("                     ON i.INQUIRY_ID = c.INQUIRY_ID ");
-		sql.append("                  WHERE 1 = 1 ");
+        if ("waiting".equals(status)) {
+            sql.append("                    AND i.REPLY_CONTENT IS NULL ");
+        } else if ("complete".equals(status)) {
+            sql.append("                    AND i.REPLY_CONTENT IS NOT NULL ");
+        }
 
-		if ("waiting".equals(status)) {
-			sql.append("                    AND i.REPLY_CONTENT IS NULL ");
-		} else if ("complete".equals(status)) {
-			sql.append("                    AND i.REPLY_CONTENT IS NOT NULL ");
-		}
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("                    AND ( ");
+            sql.append("                          LOWER(i.INQUIRY_TITLE) LIKE ? ");
+            sql.append("                       OR LOWER(i.MEMBER_ID) LIKE ? ");
+            sql.append("                       OR LOWER(c.INQUIRY_TYPE) LIKE ? ");
+            sql.append("                        ) ");
+        }
 
-		if (keyword != null && !keyword.trim().isEmpty()) {
+        if (searchDate != null && !searchDate.trim().isEmpty()) {
+            sql.append("                    AND TRUNC(i.INQUIRY_DATE) = TO_DATE(?, 'YYYY-MM-DD') ");
+        }
 
-			sql.append("                    AND ( ");
-			sql.append("                          LOWER(i.INQUIRY_TITLE) LIKE ? ");
-			sql.append("                       OR LOWER(i.MEMBER_ID) LIKE ? ");
-			sql.append("                        ) ");
-		}
+        sql.append("                  ORDER BY i.INQUIRY_ID DESC ");
+        sql.append("                ) a ");
+        sql.append("          WHERE ROWNUM <= ? ");
+        sql.append("       ) ");
+        sql.append("  WHERE rnum >= ? ");
 
-		if (searchDate != null && !searchDate.trim().isEmpty()) {
+        try (
+            Connection con = AdminDBConnection.getInstance().getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql.toString())
+        ) {
 
-			sql.append("                    AND TRUNC(i.INQUIRY_DATE) = TO_DATE(?, 'YYYY-MM-DD') ");
-		}
+            int index = 1;
 
-		sql.append("                  ORDER BY i.INQUIRY_ID DESC ");
-		sql.append("                ) a ");
-		sql.append("          WHERE ROWNUM <= ? ");
-		sql.append("       ) ");
-		sql.append("  WHERE rnum >= ? ");
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String searchKeyword = "%" + keyword.trim().toLowerCase() + "%";
 
-		try (Connection con = AdminDBConnection.getInstance().getConnection();
-		PreparedStatement pstmt = con.prepareStatement(sql.toString())) {
+                pstmt.setString(index++, searchKeyword);
+                pstmt.setString(index++, searchKeyword);
+                pstmt.setString(index++, searchKeyword);
+            }
 
-			int index = 1;
+            if (searchDate != null && !searchDate.trim().isEmpty()) {
+                pstmt.setString(index++, searchDate);
+            }
 
-			if (keyword != null && !keyword.trim().isEmpty()) {
+            pstmt.setInt(index++, range.getEndNum());
+            pstmt.setInt(index++, range.getStartNum());
 
-				String searchKeyword = "%" + keyword.trim().toLowerCase() + "%";
+            try (ResultSet rs = pstmt.executeQuery()) {
 
-				pstmt.setString(index++, searchKeyword);
-				pstmt.setString(index++, searchKeyword);
-			}
+                while (rs.next()) {
 
-			if (searchDate != null && !searchDate.trim().isEmpty()) {
+                    InquiryListDTO dto = new InquiryListDTO();
 
-				pstmt.setString(index++, searchDate);
-			}
+                    dto.setInquiryCode(rs.getInt("INQUIRY_ID"));
+                    dto.setInquiryType(rs.getString("INQUIRY_TYPE"));
+                    dto.setInquiryTitle(rs.getString("INQUIRY_TITLE"));
+                    dto.setMemberId(rs.getString("MEMBER_ID"));
+                    dto.setInquiryDate(rs.getString("INQUIRY_DATE"));
+                    dto.setState(rs.getString("STATE"));
 
-			pstmt.setInt(index++, range.getEndNum());
-			pstmt.setInt(index++, range.getStartNum());
+                    list.add(dto);
+                }
+            }
 
-			try (ResultSet rs = pstmt.executeQuery()) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-				while (rs.next()) {
+        return list;
+    }
 
-					InquiryListDTO dto = new InquiryListDTO();
-
-					dto.setInquiryCode(rs.getInt("INQUIRY_ID"));
-					dto.setInquiryType(rs.getString("INQUIRY_TYPE"));
-					dto.setInquiryTitle(rs.getString("INQUIRY_TITLE"));
-					dto.setMemberId(rs.getString("MEMBER_ID"));
-					dto.setInquiryDate(rs.getString("INQUIRY_DATE"));
-					dto.setState(rs.getString("STATE"));
-
-					list.add(dto);
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-	
     public InquiryDetailDTO selectInquiryDetail(int inquiryCode) {
 
         InquiryDetailDTO dto = null;
@@ -185,15 +181,13 @@ public class InquiryManagementDAO {
         sql.append(" SELECT i.INQUIRY_ID, ");
         sql.append("        i.INQUIRY_CONTENT, ");
         sql.append("        i.REPLY_CONTENT, ");
-        sql.append("        TO_CHAR(i.REPLY_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REPLY_DATE, ");
-        sql.append("        c.ADMIN_ID ");
+        sql.append("        TO_CHAR(i.REPLY_DATE, 'YYYY-MM-DD HH24:MI:SS') REPLY_DATE, ");
+        sql.append("        i.ADMIN_ID ");
         sql.append("   FROM INQUIRY i ");
-        sql.append("   LEFT JOIN INQUIRY_CATEGORY c ");
-        sql.append("     ON i.INQUIRY_ID = c.INQUIRY_ID ");
         sql.append("  WHERE i.INQUIRY_ID = ? ");
 
         try (
-        	Connection con = AdminDBConnection.getInstance().getConnection();
+            Connection con = AdminDBConnection.getInstance().getConnection();
             PreparedStatement pstmt = con.prepareStatement(sql.toString())
         ) {
 
@@ -219,92 +213,32 @@ public class InquiryManagementDAO {
 
         return dto;
     }
-	
+
     public int updateInquiryAnswer(InquiryDetailDTO inquiry) {
 
         int result = 0;
 
-        StringBuilder inquirySql = new StringBuilder();
+        StringBuilder sql = new StringBuilder();
 
-        inquirySql.append(" UPDATE INQUIRY ");
-        inquirySql.append("    SET REPLY_CONTENT = ?, ");
-        inquirySql.append("        REPLY_DATE = SYSDATE ");
-        inquirySql.append("  WHERE INQUIRY_ID = ? ");
+        sql.append(" UPDATE INQUIRY ");
+        sql.append("    SET REPLY_CONTENT = ?, ");
+        sql.append("        REPLY_DATE = SYSDATE, ");
+        sql.append("        ADMIN_ID = ? ");
+        sql.append("  WHERE INQUIRY_ID = ? ");
 
-        StringBuilder categorySql = new StringBuilder();
+        try (
+            Connection con = AdminDBConnection.getInstance().getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql.toString())
+        ) {
 
-        categorySql.append(" UPDATE INQUIRY_CATEGORY ");
-        categorySql.append("    SET ADMIN_ID = ? ");
-        categorySql.append("  WHERE INQUIRY_ID = ? ");
+            pstmt.setString(1, inquiry.getReplyContent());
+            pstmt.setString(2, inquiry.getAdminId());
+            pstmt.setInt(3, inquiry.getInquiryCode());
 
-        Connection con = null;
-        PreparedStatement inquiryPstmt = null;
-        PreparedStatement categoryPstmt = null;
-
-        try {
-
-            con = AdminDBConnection.getInstance().getConnection();
-            con.setAutoCommit(false);
-
-            inquiryPstmt = con.prepareStatement(inquirySql.toString());
-
-            inquiryPstmt.setString(1, inquiry.getReplyContent());
-            inquiryPstmt.setInt(2, inquiry.getInquiryCode());
-
-            int inquiryResult = inquiryPstmt.executeUpdate();
-
-            categoryPstmt = con.prepareStatement(categorySql.toString());
-
-            categoryPstmt.setString(1, inquiry.getAdminId());
-            categoryPstmt.setInt(2, inquiry.getInquiryCode());
-
-            int categoryResult = categoryPstmt.executeUpdate();
-
-            if (inquiryResult > 0 && categoryResult > 0) {
-                con.commit();
-                result = 1;
-            } else {
-                con.rollback();
-            }
+            result = pstmt.executeUpdate();
 
         } catch (Exception e) {
-
-            try {
-                if (con != null) {
-                    con.rollback();
-                }
-            } catch (Exception rollbackException) {
-                rollbackException.printStackTrace();
-            }
-
             e.printStackTrace();
-
-        } finally {
-
-            try {
-                if (categoryPstmt != null) {
-                    categoryPstmt.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            try {
-                if (inquiryPstmt != null) {
-                    inquiryPstmt.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            try {
-                if (con != null) {
-                    con.setAutoCommit(true);
-                    con.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         return result;

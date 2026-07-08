@@ -11,9 +11,7 @@ public class EventDetailDTO {
 	private String startDate;
 	private String endDate;
 	private String writeDate;
-	private int discountRuleCode;
-	private boolean isDiscount;
-	private int discountRate;
+
 	public int getEventCode() {
 		return eventCode;
 	}
@@ -53,18 +51,6 @@ public class EventDetailDTO {
 	public void setWriteDate(String writeDate) {
 		this.writeDate = writeDate;
 	}
-	public boolean isDiscount() {
-		return isDiscount;
-	}
-	public void setDiscount(boolean isDiscount) {
-		this.isDiscount = isDiscount;
-	}
-	public int getDiscountRate() {
-		return discountRate;
-	}
-	public void setDiscountRate(int discountRate) {
-		this.discountRate = discountRate;
-	}
 	public void setEventCode(int eventCode) {
 		this.eventCode = eventCode;
 	}
@@ -86,12 +72,7 @@ public class EventDetailDTO {
 	public void setAdminId(int adminId) {
 		this.adminId = adminId;
 	}
-	public int getDiscountRuleCode() {
-		return discountRuleCode;
-	}
-	public void setDiscountRuleCode(int discountRuleCode) {
-		this.discountRuleCode = discountRuleCode;
-	}
+
 	@Override
 	public String toString() {
 	    return "EventDetailDTO [eventCode=" + eventCode
@@ -104,9 +85,6 @@ public class EventDetailDTO {
 	            + ", startDate=" + startDate
 	            + ", endDate=" + endDate
 	            + ", writeDate=" + writeDate
-	            + ", isDiscount=" + isDiscount
-	            + ", discountRuleCode=" + discountRuleCode
-	            + ", discountRate=" + discountRate
 	            + "]";
 	}
 	

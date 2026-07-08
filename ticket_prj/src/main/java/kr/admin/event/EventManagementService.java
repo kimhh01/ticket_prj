@@ -128,14 +128,6 @@ public class EventManagementService {
                 return false;
             }
 
-            if (event.isDiscount()) {
-
-                if (event.getDiscountRate() <= 0 ||
-                    event.getDiscountRate() > 100) {
-                    return false;
-                }
-            }
-
             dao.insertEvent(event);
 
             return true;
@@ -195,14 +187,6 @@ public class EventManagementService {
             if (event.getEventContent() == null ||
                 event.getEventContent().trim().isEmpty()) {
                 return false;
-            }
-
-            if (event.isDiscount()) {
-
-                if (event.getDiscountRate() <= 0 ||
-                    event.getDiscountRate() > 100) {
-                    return false;
-                }
             }
 
             int result = dao.updateEvent(event);

@@ -30,7 +30,7 @@ body {
 }
 
 .page-title {
-	font-size: 22px;
+	font-size: 35px;
 	font-weight: 700;
 	margin-bottom: 20px;
 }
@@ -137,18 +137,15 @@ body {
 			<h2 class="page-title">회원 관리</h2>
 
 			<div class="tab-menu">
-				<a
-					href="${pageContext.request.contextPath}/manage/member/memberList.jsp">회원
-					관리</a> <a
-					href="${pageContext.request.contextPath}/manage/member/memberDiscount.jsp"
-					class="active">회원 할인</a>
+			    <a href="${pageContext.request.contextPath}/admin/member">회원 관리</a>
+			    <a href="${pageContext.request.contextPath}/admin/member/discount" class="active">회원 할인</a>
 			</div>
 
 			<section class="discount-wrap">
 				<div class="notice">VIP 회원에게 적용되는 할인율만 관리합니다.</div>
 
 				<form method="post"
-					action="${pageContext.request.contextPath}/manage/member/discountUpdate">
+      				action="${pageContext.request.contextPath}/admin/member/discount/update">
 					<div class="card">
 						<div class="card-title">VIP 회원 할인</div>
 
@@ -169,6 +166,16 @@ body {
 			</section>
 		</main>
 	</div>
+	<c:if test="${param.result eq 'discountSuccess'}">
+		<script>
+			alert("VIP 할인율이 저장되었습니다.");
+		</script>
+	</c:if>
 
+	<c:if test="${param.result eq 'discountFail'}">
+		<script>
+			alert("VIP 할인율 저장에 실패했습니다.");
+		</script>
+	</c:if>
 </body>
 </html>

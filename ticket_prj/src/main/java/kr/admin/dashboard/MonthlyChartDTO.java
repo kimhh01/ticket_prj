@@ -1,4 +1,4 @@
-package dashboard;
+package kr.admin.dashboard;
 
 public class MonthlyChartDTO {
 	

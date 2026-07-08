@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
+import kr.co.util.UploadPathUtil;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -120,9 +125,7 @@ public class StadiumManagementServlet extends HttpServlet {
     /**
      * 구장 등록 / 수정
      */
-    /**
-     * 구장 등록 / 수정
-     */
+
     private void saveStadium(HttpServletRequest request,
                              HttpServletResponse response)
             throws ServletException, IOException {
@@ -356,6 +359,14 @@ public class StadiumManagementServlet extends HttpServlet {
         Part filePart = request.getPart("stadiumSeatImg");
 
         if (filePart == null || filePart.getSize() <= 0) {
+            System.out.println("구장 이미지 업로드 파일 없음");
+            return null;
+        }
+
+        String contentType = filePart.getContentType();
+
+        if (contentType == null || !contentType.startsWith("image/")) {
+            System.out.println("허용되지 않은 구장 이미지 타입 = " + contentType);
             return null;
         }
 
@@ -371,36 +382,54 @@ public class StadiumManagementServlet extends HttpServlet {
 
         String extension = "";
 
-        int dotIndex = originalFileName.lastIndexOf(".");
+        int dotIndex =
+                originalFileName.lastIndexOf(".");
 
         if (dotIndex != -1) {
-            extension = originalFileName.substring(dotIndex);
+            extension =
+                    originalFileName.substring(dotIndex);
         }
 
         String saveFileName =
                 "stadium_" +
-                UUID.randomUUID().toString().replace("-", "") +
+                UUID.randomUUID()
+                    .toString()
+                    .replace("-", "") +
                 extension;
 
-        String uploadRealPath =
-                request.getServletContext()
-                       .getRealPath("/upload/stadium");
-
-        File uploadDir = new File(uploadRealPath);
+        File uploadDir =
+                UploadPathUtil.getImageUploadDir(
+                        getServletContext(),
+                        "stadium");
 
         if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
+            boolean created = uploadDir.mkdirs();
+            System.out.println("구장 이미지 폴더 생성 여부 = " + created);
         }
 
-        String savePath =
-                uploadRealPath + File.separator + saveFileName;
+        File saveFile =
+                new File(uploadDir, saveFileName);
 
-        filePart.write(savePath);
+        System.out.println("===== 구장 이미지 저장 =====");
+        System.out.println("원본 파일명 = " + originalFileName);
+        System.out.println("저장 파일명 = " + saveFileName);
+        System.out.println("저장 폴더 = " + uploadDir.getAbsolutePath());
+        System.out.println("저장 전체 경로 = " + saveFile.getAbsolutePath());
+
+        Files.copy(
+                filePart.getInputStream(),
+                saveFile.toPath(),
+                StandardCopyOption.REPLACE_EXISTING
+        );
+
+        System.out.println("저장 완료 exists = " + saveFile.exists());
+        System.out.println("저장 완료 isFile = " + saveFile.isFile());
+        System.out.println("저장 파일 크기 = " + saveFile.length());
 
         /*
-         * DB에 저장할 경로
+         * DB에 저장할 브라우저 요청 경로
          */
-        return "/upload/stadium/" + saveFileName;
+        return UploadPathUtil.getDbImagePath("stadium", saveFileName);
     }
 
     private int parseInt(String value) {

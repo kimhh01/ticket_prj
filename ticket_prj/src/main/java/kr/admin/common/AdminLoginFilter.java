@@ -14,26 +14,35 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @WebFilter(urlPatterns = {
-		"/manage/event",
-		"/manage/event/*",
+		"/admin/event",
+		"/admin/event/*",
 
-		"/manage/team",
-		"/manage/team/*",
+		"/admin/team",
+		"/admin/team/*",
 
-		"/manage/ticket",
-		"/manage/ticket/*",
+		"/admin/ticket",
+		"/admin/ticket/*",
 
-        "/manage/dashboard/main.jsp",
-        "/manage/dashboard/main.jsp/*",
+        "/admin/dashboard",
+        "/admin/dashboard/*",
         
-        "/manage/stadium",
-        "/manage/stadium/*",
+        "/admin/stadium",
+        "/admin/stadium/*",
         
-        "/manage/member",
-        "/manage/member/*",
+        "/admin/member",
+        "/admin/member/*",
         
-        "/manage/inquiry",
-        "/manage/inquiry/*"
+        "/admin/inquiry",
+        "/admin/inquiry/*",
+        
+        "/manage/mypage/adminMyPage.jsp",
+        "/manage/mypage/adminMyPage.jsp/*",
+        
+        "/admin/coupon",
+        "/admin/coupon/*",
+        
+        "/admin/notice",
+        "/admin/notice/*"
 })
 public class AdminLoginFilter implements Filter {
 
