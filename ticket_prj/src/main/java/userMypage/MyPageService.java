@@ -134,5 +134,14 @@ public class MyPageService {
 
         return result > 0;
     }
+    
+    //회원탈퇴
+    public boolean withdrawMember(String memberId){
+
+        int result = mpDAO.withdrawMember(memberId);
+
+        return result > 0;
+
+    }
 
 }

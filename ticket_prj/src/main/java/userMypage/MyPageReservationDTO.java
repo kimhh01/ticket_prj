@@ -50,6 +50,8 @@ public class MyPageReservationDTO {
     private int selectedMonth;
     private String periodType;
     private String tabType;
+    
+    private Date cancelDate;			// 취소일자
 
 
 	public MyPageReservationDTO(int reservationCode, String memberId, String gameName, String homeTeamName,
@@ -92,7 +94,15 @@ public class MyPageReservationDTO {
 		this.periodType = periodType;
 		this.tabType = tabType;
 	}
+	
+	
+	public Date getCancelDate() {
+	    return cancelDate;
+	}
 
+	public void setCancelDate(Date cancelDate) {
+	    this.cancelDate = cancelDate;
+	}
     
     public int getReservationCode() {
 		return reservationCode;

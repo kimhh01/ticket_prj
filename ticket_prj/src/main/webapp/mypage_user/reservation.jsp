@@ -144,6 +144,7 @@ pageContext.setAttribute("cancelList", cancelList);
     <td>
         <button class="status-btn" type="button" disabled>
             ${dto.reservationStatus}
+            
         </button>
     </td>
 </tr>
@@ -175,28 +176,31 @@ pageContext.setAttribute("cancelList", cancelList);
 
         <tbody>
 
-        <tr class="cancel-row" 
-        	data-id="${dto.reservationCode}" >
-        	
-            <td>222222</td>
-            <td>두산 VS 한화</td>
-            <td>2026.06.05 14:00</td>
-            <td>3</td>
-            <td>06.04</td>
-            <td>
-            
-            <button class="status-btn btnCancel"
-        data-bs-toggle="modal"
-        data-bs-target="#cancelModal">
-    예매취소
-</button>
-</td>
-        </tr>
-        
 
+<c:forEach var="dto" items="${cancelList}">
+
+<tr class="cancel-row"
+	data-id="${dto.reservationCode}">
+
+    <td>${dto.reservationCode}</td>
+    <td>${dto.gameName}</td>
+    <td>${dto.gameDate} ${dto.gameStartTime}</td>
+    <td>${dto.reservationQuantity}</td>
+    <td>${dto.cancelAvailableDate}</td>
+      <td>
+    <button
+        class="status-btn btnCancel"
+        data-id="${dto.reservationCode}"
+        type="button">
+        예매취소
+    </button>
+</td>
+
+</tr>
+</c:forEach>
 
         </tbody>
-
+        
     </table>
 <div class="modal fade" id="cancelModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered custom-dialog">
@@ -271,74 +275,78 @@ pageContext.setAttribute("cancelList", cancelList);
 
 <script>
 
+//예매확인 탭 클릭
 $(function(){
 
-    //예매확인 탭 클릭
-    $("#btnReservation").click(function(){
+    let reservationId = null;
 
+    $("#btnReservation").click(function(){
         $("#btnReservation").addClass("active-btn");
         $("#btnCancelTab").removeClass("active-btn");
 
         $("#reservationArea").show();
         $("#cancelArea").hide();
-
     });
 
-    // 예매취소 탭 클릭
     $("#btnCancelTab").click(function(){
-
         $("#btnCancelTab").addClass("active-btn");
         $("#btnReservation").removeClass("active-btn");
 
         $("#reservationArea").hide();
         $("#cancelArea").show();
-
     });
 
-	//행 클릭시 상세내역 창 열기 
-	$(".reservation-row").click(function(){
-		 
-		var reservationId=$(this).data("id");
-		 
-    window.open(
-    		 "reservationDetail.jsp?reservationId="+reservationId,
-    	        "detail",
-    	        "width=900,height=700"
-    	    );
-});
-	
-	$(".status-btn").click(function(e){
-	    e.stopPropagation();
-	});
+    $(".reservation-row").click(function(){
+        var reservationId = $(this).data("id");
 
-});
+        window.open(
+            "reservationDetail.jsp?reservationId=" + reservationId,
+            "detail",
+            "width=900,height=700"
+        );
+    });
 
-//예매취소 팝업
-$(function(){
-	
-	let selectedRow = null;
+    $(".btnCancel").click(function(e){
+        e.stopPropagation();
 
-	$(".cancel-row").click(function(){
+        reservationId = $(this).data("id");
 
-	    var reservationId=$(this).data("id");
+        $("#cancelModal").modal("show");
+    });
 
-	    window.open(
-	        "reservationCancel.jsp?reservationId="+reservationId,
-	        "cancel",
-	        "width=900,height=700"
-	    );
+    $("#confirmCancel").click(function(){
 
-	});
-	
+        $.ajax({
+            url: "<%=request.getContextPath()%>/mypage_user/cancelReservationProcess.jsp",
+            type: "post",
+            data: {
+                reservationId: reservationId
+            },
+            success: function(result){
+
+                if($.trim(result) == "success"){
+                    $("#cancelModal").modal("hide");
+                    $("#completeModal").modal("show");
+                } else {
+                    alert("예매취소에 실패했습니다.");
+                }
+            },
+            error: function(){
+                alert("서버 오류가 발생했습니다.");
+            }
+        });
+
+    });   // ★ confirmCancel 클릭 종료
+
     $("#completeModal .btn-dark").click(function(){
-
-        if(selectedRow){
-            selectedRow.remove();
-        }
-
+        location.reload();
     });
+
 });
+
+
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <jsp:include page="../fragment/footer.jsp"/>

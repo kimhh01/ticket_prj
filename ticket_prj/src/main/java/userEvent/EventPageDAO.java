@@ -98,22 +98,19 @@ public class EventPageDAO {
 
             StringBuilder sql = new StringBuilder();
 
-            sql.append("SELECT E.EVENT_ID, E.ADMIN_ID, ");
-            sql.append("E.EVENT_TITLE, E.EVENT_SUMMARY, E.EVENT_CONTENT, ");
-            sql.append("E.THUMBNAIL_IMG, E.REPRESENTATIVE_IMG, ");
-            sql.append("E.EVENT_START_DATE, E.EVENT_END_DATE, E.EVENT_WRITE_DATE, ");
-            sql.append("NVL(D.EVENT_DISCOUNT_RATE, 0) EVENT_DISCOUNT_RATE, ");
-            sql.append("NVL(D.TEAM_ID, 0) TEAM_ID ");
-            sql.append("FROM EVENT E ");
-            sql.append("LEFT JOIN EVENT_DISCOUNT D ");
-            sql.append("ON E.EVENT_ID = D.EVENT_ID ");
-            sql.append("WHERE E.EVENT_ID = ?");
+            sql.append("SELECT EVENT_ID, ADMIN_ID, ");
+            sql.append("EVENT_TITLE, EVENT_SUMMARY, EVENT_CONTENT, ");
+            sql.append("THUMBNAIL_IMG, REPRESENTATIVE_IMG, ");
+            sql.append("EVENT_START_DATE, EVENT_END_DATE, EVENT_WRITE_DATE ");
+            sql.append("FROM EVENT ");
+            sql.append("WHERE EVENT_ID = ?");
 
             stmt = con.prepareStatement(sql.toString());
 
             stmt.setInt(1, eventId);
 
-            rs = stmt.executeQuery();
+                
+       rs = stmt.executeQuery();
 
             if (rs.next()) {
 
@@ -129,8 +126,6 @@ public class EventPageDAO {
                 eventDTO.setEventStartDate(rs.getDate("EVENT_START_DATE"));
                 eventDTO.setEventEndDate(rs.getDate("EVENT_END_DATE"));
                 eventDTO.setEventWriteDate(rs.getDate("EVENT_WRITE_DATE"));
-                eventDTO.setEventDiscountRate(rs.getInt("EVENT_DISCOUNT_RATE"));
-                eventDTO.setTeamId(rs.getInt("TEAM_ID"));
 
             }
 

@@ -1,5 +1,7 @@
 package userMypage;
 
+import java.sql.Date;
+
 public class ReservationDetailDTO {
 
 	    private int reservationDetailCode;  // 예매상세코드
@@ -9,6 +11,7 @@ public class ReservationDetailDTO {
 	    private String reservationType;     // 예매종류
 	    private int reservationQuantity;    // 예매수량
 	    private String reservationStatus;   // 예매상태
+	    private Date cancelDate;			// 취소일자
 
 		public ReservationDetailDTO(int reservationDetailCode, int reservationCode, int ticketPrice,
 				int stadiumSeatCode, String reservationType, int reservationQuantity, String reservationStatus) {
@@ -22,6 +25,14 @@ public class ReservationDetailDTO {
 			this.reservationStatus = reservationStatus;
 		}
 	    
+		public Date getCancelDate() {
+		    return cancelDate;
+		}
+
+		public void setCancelDate(Date cancelDate) {
+		    this.cancelDate = cancelDate;
+		}
+		
 	    public int getReservationDetailCode() {
 			return reservationDetailCode;
 		}

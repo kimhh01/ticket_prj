@@ -4,15 +4,31 @@
 <%@page import="userEvent.EventDTO"%>
 <%@page import="userEvent.EventPageService"%>
 
+
+
 <%
 int eventId = Integer.parseInt(request.getParameter("eventId"));
 
 EventPageService service = new EventPageService();
-
 EventDTO event = service.searchEventDetail(eventId);
 
 pageContext.setAttribute("event", event);
 %>
+
+<%
+if(event == null){
+%>
+    <script>
+        alert("존재하지 않는 이벤트입니다.");
+        location.href="eventMain.jsp";
+    </script>
+<%
+    return;
+}
+%>
+
+<%= event.getRepresentativeImg() %>
+<%= event.getEventTitle() %>
 
 <!DOCTYPE html>
 <html>
@@ -41,7 +57,6 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
         <h2>${event.eventTitle}</h2>
         <span>${event.eventStartDate} ~ ${event.eventEndDate}</span>
     </div>
-
 
 
     <!-- 혜택안내 / 이용방법 -->

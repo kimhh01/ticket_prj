@@ -19,9 +19,7 @@ public class EventDTO {
     private Date eventEndDate;
     private Date eventWriteDate;
 
-    // EVENT_DISCOUNT 테이블
-    private int eventDiscountRate;
-    private int teamId;
+  
 
     public EventDTO() {
     }
@@ -43,8 +41,7 @@ public class EventDTO {
         this.eventStartDate = eventStartDate;
         this.eventEndDate = eventEndDate;
         this.eventWriteDate = eventWriteDate;
-        this.eventDiscountRate = eventDiscountRate;
-        this.teamId = teamId;
+        
     }
 
     public int getEventId() {
@@ -127,22 +124,6 @@ public class EventDTO {
         this.eventWriteDate = eventWriteDate;
     }
 
-    public int getEventDiscountRate() {
-        return eventDiscountRate;
-    }
-
-    public void setEventDiscountRate(int eventDiscountRate) {
-        this.eventDiscountRate = eventDiscountRate;
-    }
-
-    public int getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
-    }
-
     @Override
     public String toString() {
         return "EventDTO [eventId=" + eventId
@@ -155,8 +136,7 @@ public class EventDTO {
                 + ", eventStartDate=" + eventStartDate
                 + ", eventEndDate=" + eventEndDate
                 + ", eventWriteDate=" + eventWriteDate
-                + ", eventDiscountRate=" + eventDiscountRate
-                + ", teamId=" + teamId + "]";
+               + "]";
     }
 
 }

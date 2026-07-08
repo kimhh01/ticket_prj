@@ -158,37 +158,59 @@ $(function(){
 
         if(!$("#agree").is(":checked")){
 
-            let alertModal =
-                new bootstrap.Modal(document.getElementById("alertModal"));
-
-            alertModal.show();
+            new bootstrap.Modal(
+                document.getElementById("alertModal")
+            ).show();
 
             return;
         }
 
-        let withdrawModal =
-            new bootstrap.Modal(document.getElementById("withdrawModal"));
-
-        withdrawModal.show();
+        new bootstrap.Modal(
+            document.getElementById("withdrawModal")
+        ).show();
 
     });
 
-});
+    $("#confirmWithdraw").click(function(){
 
-$("#confirmWithdraw").click(function(){
+        $.ajax({
 
-    // 탈퇴 확인 팝업 닫기
-    bootstrap.Modal.getInstance(
-        document.getElementById("withdrawModal")
-    ).hide();
+        	url:"<%=request.getContextPath()%>/mypage_user/withDrawProcess.jsp",
+            type:"post",
 
-    // 탈퇴 완료 팝업 띄우기
-    let completeModal =
-        new bootstrap.Modal(
-            document.getElementById("completeModal")
-        );
+            success:function(result){
 
-    completeModal.show();
+                if($.trim(result)=="success"){
+
+                    bootstrap.Modal.getInstance(
+                        document.getElementById("withdrawModal")
+                    ).hide();
+
+                    new bootstrap.Modal(
+                        document.getElementById("completeModal")
+                    ).show();
+
+                }else{
+
+                    alert("회원탈퇴에 실패했습니다.");
+
+                }
+
+            },
+
+            error:function(){
+
+                alert("서버 오류가 발생했습니다.");
+
+            }
+
+        });
+
+    });
+
+    $("#completeModal .btn-dark").click(function(){
+        location.href="../index.jsp";
+    });
 
 });
 </script>
@@ -197,8 +219,5 @@ $("#confirmWithdraw").click(function(){
 </div>
 
 <jsp:include page="../fragment/footer.jsp"/>
-<style>
-@import url("myPage.css");
-</style>
 </body>
 </html>

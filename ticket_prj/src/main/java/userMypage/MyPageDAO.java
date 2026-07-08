@@ -272,10 +272,15 @@ public class MyPageDAO {
 
             sql.append("WHERE R.MEMBER_ID=? ");
             
-            //취소탭 보이는 행
+            //취소시 예매취소 탭에서 행 사라짐
             if("cancel".equals(flag)) {
                 sql.append("AND R.RESERVATION_STATUS='구매' ");
+                sql.append("AND NOT EXISTS ( ");
+                sql.append("SELECT 1 FROM RESERVATION_CENCEL RC ");
+                sql.append("WHERE RC.RESERVATION_ID = R.RESERVATION_ID ");
+                sql.append(") ");
             }
+            
             //기간 검색
             if(startDate != null && endDate != null) {
                 sql.append("AND R.RESERVATION_DATE BETWEEN ? AND ? ");
@@ -313,6 +318,7 @@ public class MyPageDAO {
                 dto.setCancelAvailableDate(rs.getDate("CANCEL_AVAILABLE_DATE"));
                 dto.setReservationQuantity(rs.getInt("RESERVATION_QUANTITY"));
                 dto.setReservationStatus(rs.getString("RESERVATION_STATUS"));
+            
 
                 list.add(dto);
 
@@ -360,10 +366,13 @@ public class MyPageDAO {
             sql.append("GS.GAME_DATE, ");
             sql.append("GS.GAME_START_TIME, ");
             sql.append("S.STADIUM_NAME, ");
-            sql.append("R.RESERVATION_STATUS ");
+            sql.append("R.RESERVATION_STATUS, ");
+            sql.append("RC.CANCEL_DATE ");
 
             sql.append("FROM RESERVATION R ");
-
+            sql.append("LEFT JOIN RESERVATION_CENCEL RC ");
+            sql.append("ON R.RESERVATION_ID = RC.RESERVATION_ID ");
+            
             sql.append("JOIN GAME_SCHEDULE GS ");
             sql.append("ON R.GAME_SCHEDULE_ID = GS.GAME_SCHEDULE_ID ");
 
@@ -396,6 +405,7 @@ public class MyPageDAO {
                 mpDTO.setGameStartTime(rs.getString("GAME_START_TIME"));
                 mpDTO.setStadiumName(rs.getString("STADIUM_NAME"));
                 mpDTO.setReservationStatus(rs.getString("RESERVATION_STATUS"));
+                mpDTO.setCancelDate(rs.getDate("CANCEL_DATE"));
 
             }
 
@@ -445,9 +455,13 @@ public class MyPageDAO {
             sql.append("WHEN '청소년' THEN SS.YOUTH_SEAT_PRICE ");
             sql.append("WHEN '어린이' THEN SS.CHILD_SEAT_PRICE ");
             sql.append("END AS TICKET_PRICE, ");
-            sql.append("R.RESERVATION_STATUS ");
+            sql.append("R.RESERVATION_STATUS, ");
+            sql.append("RC.CANCEL_DATE ");
 
             sql.append("FROM RESERVATION R ");
+            
+            sql.append("LEFT JOIN RESERVATION_CENCEL RC ");
+            sql.append("ON R.RESERVATION_ID = RC.RESERVATION_ID ");
 
             sql.append("JOIN RESERVATION_DETAIL RD ");
             sql.append("ON R.RESERVATION_ID = RD.RESERVATION_ID ");
@@ -476,6 +490,7 @@ public class MyPageDAO {
                 dto.setReservationQuantity(rs.getInt("RESERVATION_QUANTITY"));
                 dto.setTicketPrice(rs.getInt("TICKET_PRICE"));
                 dto.setReservationStatus(rs.getString("RESERVATION_STATUS"));
+                dto.setCancelDate(rs.getDate("CANCEL_DATE"));
 
                 list.add(dto);
 
@@ -634,28 +649,95 @@ public class MyPageDAO {
         UserDBConnection db = UserDBConnection.getInstance();
 
         try {
+            con = db.getConnection();
+            con.setAutoCommit(false);
+
+            StringBuilder updateSql = new StringBuilder();
+            updateSql.append("UPDATE RESERVATION ");
+            updateSql.append("SET RESERVATION_STATUS=? ");
+            updateSql.append("WHERE RESERVATION_ID=? ");
+            updateSql.append("AND MEMBER_ID=? ");
+
+            stmt = con.prepareStatement(updateSql.toString());
+            stmt.setString(1, "취소");
+            stmt.setInt(2, reservationId);
+            stmt.setString(3, memberId);
+
+            int updateResult = stmt.executeUpdate();
+            db.close(stmt, null);
+
+            StringBuilder insertSql = new StringBuilder();
+            insertSql.append("INSERT INTO RESERVATION_CENCEL ");
+            insertSql.append("(CANCEL_ID, RESERVATION_ID, CANCEL_TYPE, CANCEL_DATE) ");
+            insertSql.append("VALUES ( ");
+            insertSql.append("(SELECT NVL(MAX(CANCEL_ID), 0) + 1 FROM RESERVATION_CENCEL), ");
+            insertSql.append("?, ?, SYSDATE) ");
+
+            stmt = con.prepareStatement(insertSql.toString());
+            stmt.setInt(1, reservationId);
+            stmt.setString(2, "취소");
+
+            int insertResult = stmt.executeUpdate();
+
+            if(updateResult > 0 && insertResult > 0) {
+                con.commit();
+                result = 1;
+            } else {
+                con.rollback();
+            }
+
+        } catch(SQLException e) {
+            try {
+                if(con != null) con.rollback();
+            } catch(SQLException se) {
+                se.printStackTrace();
+            }
+            e.printStackTrace();
+
+        } finally {
+            try {
+                if(con != null) con.setAutoCommit(true);
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+
+            db.close(stmt, con);
+        }
+
+        return result;
+    }
+    
+ // 회원 탈퇴
+    public int withdrawMember(String memberId){
+
+        int result = 0;
+
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        UserDBConnection db = UserDBConnection.getInstance();
+
+        try{
 
             con = db.getConnection();
 
             StringBuilder sql = new StringBuilder();
 
-            sql.append("UPDATE RESERVATION ");
-            sql.append("SET RESERVATION_STATUS=? ");
-            sql.append("WHERE RESERVATION_ID=? ");
-            sql.append("AND MEMBER_ID=? ");
+            sql.append("UPDATE MEMBER ");
+            sql.append("SET STATE=? ");
+            sql.append("WHERE MEMBER_ID=? ");
 
             stmt = con.prepareStatement(sql.toString());
 
-            stmt.setString(1, "취소완료");
-            stmt.setInt(2, reservationId);
-            stmt.setString(3, memberId);
+            stmt.setString(1, "탈퇴");
+            stmt.setString(2, memberId);
 
             result = stmt.executeUpdate();
 
-        } catch (SQLException e) {
+        }catch(SQLException e){
             e.printStackTrace();
-        } finally {
-        	 db.close(stmt, con);
+        }finally{
+            db.close(stmt, con);
         }
 
         return result;

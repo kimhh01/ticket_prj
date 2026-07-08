@@ -1,6 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%
+MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+
+if(loginMember == null){
+    response.sendRedirect("../login/login.jsp");
+    return;
+}
+
+MyPageService service = new MyPageService();
+
+MemberDTO memberDTO =
+    service.getMyDetail(loginMember.getMemberCode());
+
+pageContext.setAttribute("memberDTO", memberDTO);
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,7 +56,11 @@
 
         <tr>
             <th>아이디</th>
-            <td>kim****</td>
+           <td>
+           
+           <%= memberDTO.getMemberCode() %>
+   			
+            </td>
         </tr>
 
         <tr>
@@ -57,12 +77,25 @@
 
         <tr>
             <th>연락처</th>
-            <td>010-****-1234</td>
+            
+            <%
+			String phone = memberDTO.getPhone();
+
+			String maskingPhone =
+   			 phone.substring(0, 4) + "****" + phone.substring(8);
+				%>
+
+			<td><%= maskingPhone %></td>
+
+            
         </tr>
 
         <tr>
             <th>주소</th>
-            <td>서울시 강남구</td>
+            
+            <td> <%= memberDTO.getAddress() %>
+            	 <%= memberDTO.getAddress2() %>
+            </td>
         </tr>
 
     </table>
@@ -301,9 +334,9 @@ $(function(){
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <jsp:include page="../fragment/footer.jsp"/>
-<style>
-@import url("myPage.css");
-</style>
+
+<%@page import="kr.user.member.MemberDTO"%>
+<%@page import="userMypage.MyPageService"%>
 
 </body>
 </html>

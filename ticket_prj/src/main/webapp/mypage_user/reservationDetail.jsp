@@ -224,14 +224,16 @@ body{
 				<td>${gameInfo.stadiumName}</td>
             </tr>
 
-            <tr>
-                <th>예매상태</th>
-                <td>
-                    <span class="status-badge">
-                          ${gameInfo.reservationStatus}
-                    </span>
-                </td>
-            </tr>
+    <tr>
+    <th>예매상태</th>
+    <td>
+        <span class="status-badge">
+            ${gameInfo.reservationStatus}
+        </span>
+
+        
+    </td>
+</tr>
 
             <tr>
                 <th>예매번호</th>
@@ -299,7 +301,15 @@ body{
 
 <td>${seat.ticketPrice}원</td>
 
-<td>${seat.reservationStatus}</td>
+<td>${seat.reservationStatus}
+<c:if test="${not empty gameInfo.cancelDate}">
+            <br>
+            <span style="font-size:12px;color:gray;">
+                취소일 : ${gameInfo.cancelDate}
+            </span>
+        </c:if>
+
+</td>
 
 </tr>
 </c:forEach>

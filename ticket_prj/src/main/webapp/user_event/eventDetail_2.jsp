@@ -4,6 +4,7 @@
     <%@page import="userEvent.EventDTO"%>
 <%@page import="userEvent.EventPageService"%>
 
+
 <%
 int eventId = Integer.parseInt(request.getParameter("eventId"));
 
@@ -12,6 +13,21 @@ EventDTO event = service.searchEventDetail(eventId);
 
 pageContext.setAttribute("event", event);
 %>
+
+<%
+if(event == null){
+%>
+    <script>
+        alert("존재하지 않는 이벤트입니다.");
+        location.href="eventMain.jsp";
+    </script>
+<%
+    return;
+}
+%>
+
+<%= event.getRepresentativeImg() %>
+<%= event.getEventTitle() %>
 
 <!DOCTYPE html>
 <html>
