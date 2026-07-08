@@ -51,5 +51,9 @@ public class MemberManagementService {
 
         return memberManagementDAO.updateVipDiscountRate(vipDiscountRate) > 0;
     }//updateVipDiscountRate
+    
+    public int refreshDormantMemberState() {
+        return memberManagementDAO.updateDormantMemberByLastLogin();
+    }//refreshDormantMemberState
 
 }//class
