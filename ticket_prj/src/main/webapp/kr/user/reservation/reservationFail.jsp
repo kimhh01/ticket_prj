@@ -8,7 +8,7 @@ session.setAttribute("teamCode", teamCode);
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>bigBall예매 - 결제실패</title>
+<title>BallPick - 결제실패</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/kr/user/reservation/reservation.css">
 <style>
     /* 실패 페이지 전용 추가 스타일 */
@@ -169,10 +169,10 @@ $(function(){
 		let teamCode = "<%=teamCode%>";
 
 		if(opener){
-			opener.location.href='${pageContext.request.contextPath}/teamPage/teamPage.jsp?teamCode='+teamCode;
+			opener.location.href='${pageContext.request.contextPath}/kr/user/team/team.jsp?teamCode='+teamCode;
 			window.close();
 		}else{
-			location.href='${pageContext.request.contextPath}/teamPage/teamPage.jsp?teamCode='+teamCode;
+			location.href='${pageContext.request.contextPath}/kr/user/team/team.jsp?teamCode='+teamCode;
 		}
 	});
 

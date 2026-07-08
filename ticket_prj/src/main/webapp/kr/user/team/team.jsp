@@ -55,7 +55,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>bigball - 예매</title>
+<title>BallPick - 예매</title>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/kr/user/team/team.css">
 <script type="text/javascript">
@@ -215,7 +215,7 @@
         updateDisplay(); // 뷰 전환 후 상태 업데이트
     });
 
-    // 페이지 로드 시 초기 상태 반영 (URL 파라미터 view=calendar 대응)
+    // 페이지 로드 시 초기 상태 반영
     updateDisplay();
 		
 

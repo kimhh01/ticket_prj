@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>야구 예매 가이드 - 티켓링크</title>
+    <title>BallPick 예매 가이드</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="reservationGuide.css">
 </head>

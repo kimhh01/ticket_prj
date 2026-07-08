@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>bigBall예매 - 예매완료</title>
+<title>BallPick - 예매완료</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/kr/user/reservation/reservation.css">
 <style>
     /* 성공 페이지 전용 추가 스타일 */

@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>bigBall예매</title>
+<title>BallPick예매</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/kr/user/reservation/reservation.css">
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
