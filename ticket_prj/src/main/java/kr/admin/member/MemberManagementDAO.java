@@ -422,5 +422,41 @@ public class MemberManagementDAO {
 
         return index;
     }//setStringParams
+    
+    /**
+     * 6개월 이상 로그인 하지 않은 회원을 휴먼 상태로 업데이트 함 
+     * @return
+     */
+    public int updateDormantMemberByLastLogin() {
+        int rowCnt = 0;
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append(" UPDATE MEMBER m ");
+        sql.append("    SET m.STATE = '휴면' ");
+        sql.append("  WHERE NVL(m.STATE, '활성') <> '휴면' ");
+        sql.append("    AND EXISTS ( ");
+        sql.append("        SELECT 1 ");
+        sql.append("          FROM CONNECTION_LOG cl ");
+        sql.append("         WHERE cl.MEMBER_ID = m.MEMBER_ID ");
+        sql.append("    ) ");
+        sql.append("    AND ( ");
+        sql.append("        SELECT TRUNC(MAX(cl.CONNECTION_DATE)) ");
+        sql.append("          FROM CONNECTION_LOG cl ");
+        sql.append("         WHERE cl.MEMBER_ID = m.MEMBER_ID ");
+        sql.append("    ) <= ADD_MONTHS(TRUNC(SYSDATE), -6) ");
+
+        try (
+            Connection con = AdminDBConnection.getInstance().getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql.toString())
+        ) {
+            rowCnt = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }//end catch
+
+        return rowCnt;
+    }//updateDormantMemberByLastLogin
 
 }//class

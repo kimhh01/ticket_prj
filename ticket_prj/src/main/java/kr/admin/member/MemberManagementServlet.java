@@ -71,6 +71,10 @@ public class MemberManagementServlet extends HttpServlet {
 
         String search = request.getParameter("search");
         String gradeFilter = request.getParameter("gradeFilter");
+        
+        // 마지막 로그인 기준 6개월 이상 지난 회원은 휴면 처리
+        int dormantUpdateCount =
+                memberManagementService.refreshDormantMemberState();
 
         int page = parseInt(request.getParameter("page"), 1);
         int pageScale = 10;
