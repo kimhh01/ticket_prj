@@ -86,7 +86,7 @@
 	
 						<div class="grade-header">
 							<span class="grade-title-text">등급 선택</span>
-							<button type="button" class="btn-refresh-img">새로고침</button>
+							<button type="button" class="btn-refresh-img" onclick="refreshSeat()">새로고침</button>
 						</div>
 	
 						<div class="seats-scroll-box-img">
@@ -127,9 +127,10 @@
 						                <span>${seat.seatName}</span>
 						            </div>
 						
-						            <span class="seat-count-text">
-						                ${seat.remainSeatNum}
-						            </span>
+						            <span class="seat-count-text"
+									      id="remain-${seat.stadiumSeatCode}">
+									    ${seat.remainSeatNum}
+									</span>
 						
 						        </div>
 							</c:forEach>
@@ -201,35 +202,35 @@
 										</td>
 									</tr>
 									<tr class="discount-row">
-    <td class="cat-cell">할인</td>
-
-    <td class="discount-cell" colspan="3">
-        <div class="coupon-area" style="margin-left: auto;">
-
-            <c:choose>
-                <c:when test="${not empty couponList}">
-                    <select id="couponSelect" class="qty-select" style="width: 180px;" onchange="changeCoupon()">
-                        <option value="0">쿠폰 선택</option>
-
-                        <c:forEach var="coupon" items="${couponList}">
-                            <option
-                                value="${coupon.couponCode}"
-                                data-rate="${coupon.couponDiscountRate}">
-                                ${coupon.couponDiscountRate}% 할인
-                            </option>
-                        </c:forEach>
-                    </select>
-                </c:when>
-
-                <c:otherwise>
-                    <span class="coupon-empty-text">사용 가능한 쿠폰이 없습니다.</span>
-                </c:otherwise>
-
-            </c:choose>
-
-        </div>
-    </td>
-</tr>
+								    <td class="cat-cell">할인</td>
+								
+								    <td class="discount-cell" colspan="3">
+								        <div class="coupon-area" style="margin-left: auto;">
+								
+								            <c:choose>
+								                <c:when test="${not empty couponList}">
+								                    <select id="couponSelect" class="qty-select" style="width: 180px;" onchange="changeCoupon()">
+								                        <option value="0">쿠폰 선택</option>
+								
+								                        <c:forEach var="coupon" items="${couponList}">
+								                            <option
+								                                value="${coupon.couponCode}"
+								                                data-rate="${coupon.couponDiscountRate}">
+								                                ${coupon.couponDiscountRate}% 할인
+								                            </option>
+								                        </c:forEach>
+								                    </select>
+								                </c:when>
+								
+								                <c:otherwise>
+								                    <span class="coupon-empty-text">사용 가능한 쿠폰이 없습니다.</span>
+								                </c:otherwise>
+								
+								            </c:choose>
+								
+								        </div>
+								    </td>
+								</tr>
 								</tbody>
 							</table>
 						</div>
@@ -251,7 +252,6 @@
 								<div class="match-title">
 									${gameInfo.teamHomeName} <span class="vs-gray">vs</span> <span class="home-badge">H</span> ${gameInfo.teamOtherName}
 								</div>
-								<div class="stadium-name">구장 코드: ${gameInfo.stadiumCode} 구장</div>
 								<div class="match-date">${gameInfo.gameDate} ${gameInfo.gameStartTime}</div>
 							</div>
 						</div>
@@ -358,7 +358,6 @@
 								<div class="match-title">
 									${gameInfo.teamHomeName} <span class="vs-gray">vs</span> <span class="home-badge">H</span> ${gameInfo.teamOtherName}
 								</div>
-								<div class="stadium-name">구장 코드: ${gameInfo.stadiumCode}</div>
 								<div class="match-date">${gameInfo.gameDate}</div>
 							</div>
 						</div>
@@ -440,6 +439,7 @@
 	    }
 	
 	    function goToTeamSelection() {
+	    	sessionStorage.removeItem("reservationEndTime");
 	        window.close();
 	    }
 		
@@ -674,37 +674,82 @@
 	    }
 	
 	    
-	    //예매 시간
+	  
 	    function closeDetailModal() {
 	        document.getElementById('detail-modal').classList.add('hidden');
 	    }
-	
+	    //예매 시간
 	    window.addEventListener("load", () => {
+
 	        generateCaptchaValue();
 
-	        let totalSeconds = 600; 
+	        // 저장된 종료시간 확인
+	        let endTime = sessionStorage.getItem("reservationEndTime");
+
+	        // 새 창을 처음 열었을 때만 생성
+	        if (!endTime) {
+	            endTime = Date.now() + (10 * 60 * 1000);
+	            sessionStorage.setItem("reservationEndTime", endTime);
+	        }
+
+	        endTime = Number(endTime);
+
 	        const timerDisplay = document.getElementById("countdown");
 
-	        if (timerDisplay) {
-	            const timer = setInterval(() => {
+	        const timer = setInterval(() => {
 
-	                let minutes = Math.floor(totalSeconds / 60);
-	                let seconds = totalSeconds % 60;
+	            const remain = Math.floor((endTime - Date.now()) / 1000);
 
-	                timerDisplay.textContent =
-	                    (minutes < 10 ? "0" : "") + minutes + ":" +
-	                    (seconds < 10 ? "0" : "") + seconds;
+	            if (remain <= 0) {
 
-	                if (totalSeconds <= 0) {
-	                    clearInterval(timer);
-	                    alert("예매 시간이 종료되었습니다.");
-	                    window.close();
-	                    return;
-	                }
-	                totalSeconds--;
-	            }, 1000);
-	        }
-	    });									
+	                clearInterval(timer);
+
+	                timerDisplay.innerText = "00:00";
+
+	                sessionStorage.removeItem("reservationEndTime");
+
+	                alert("예매 시간이 종료되었습니다.");
+	                window.close();
+	                return;
+	            }
+
+	            const minutes = Math.floor(remain / 60);
+	            const seconds = remain % 60;
+
+	            timerDisplay.innerText =
+	                String(minutes).padStart(2, "0") + ":" +
+	                String(seconds).padStart(2, "0");
+
+	        }, 1000);
+
+	    });
+	    
+	    //새로고침 버튼 클릭시 잔여좌석 재조회
+		function refreshSeat() {
+
+		    const gameScheduleCode =
+		        document.getElementById("hiddenGameScheduleCode").value;
+		
+		    fetch("${pageContext.request.contextPath}/seatRefresh?gameScheduleCode=" + gameScheduleCode)
+		        .then(response => response.json())
+		        .then(data => {
+		
+		            data.forEach(seat => {
+		
+		                const remain = document.getElementById("remain-" + seat.stadiumSeatCode);
+		
+		                if (remain) {
+		                    remain.innerText = seat.remainSeatNum;
+		                }
+		
+		            });
+		
+		        })
+		        .catch(err => {
+		            console.error(err);
+		            alert("좌석 정보를 불러오지 못했습니다.");
+		        });
+		}
 	</script>
 </body>
 </html>

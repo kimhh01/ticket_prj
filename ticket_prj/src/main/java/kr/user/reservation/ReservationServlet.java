@@ -15,10 +15,10 @@ import kr.user.member.MemberDTO;
 @WebServlet("/reservation")
 public class ReservationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private ReservationService rpService;
+	private ReservationService rService;
 
 	public ReservationServlet() {
-		rpService = new ReservationService();
+		rService = new ReservationService();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -43,12 +43,12 @@ public class ReservationServlet extends HttpServlet {
 		MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
 		try {
 			int gameScheduleCode = Integer.parseInt(request.getParameter("gameScheduleCode"));
-			ReservationDTO memberInfo = rpService.searchOrderMemberInfo(loginMember.getMemberCode());
-			ReservationDTO gameInfo = rpService.searchGame(gameScheduleCode);
-			List<ReservationDTO> couponList=rpService.getCoupon(loginMember.getMemberCode());
+			ReservationDTO memberInfo = rService.searchOrderMemberInfo(loginMember.getMemberCode());
+			ReservationDTO gameInfo = rService.searchGame(gameScheduleCode);
+			List<ReservationDTO> couponList=rService.getCoupon(loginMember.getMemberCode());
 
 			// [수정: 잔여 좌석 조회 시 내부 요금 정보도 List에 내장하여 로드되므로, 별도로 구장 코드를 통한 오적용 seatPrice 호출 영역을 제거했습니다]
-			List<ReservationDTO> seatList = rpService.searchRemainingSeat(gameInfo.getStadiumCode());
+			List<ReservationDTO> seatList = rService.searchRemainingSeat(gameInfo.getStadiumCode());
 
 			request.setAttribute("memberInfo", memberInfo);
 			request.setAttribute("gameInfo", gameInfo);
@@ -106,9 +106,9 @@ public class ReservationServlet extends HttpServlet {
 				}
 				
 				// 각각의 좌석 등급 단가 조회
-				int adultPrice = rpService.getSeatPrice(stadiumSeatCode, "성인");
-				int youthPrice = rpService.getSeatPrice(stadiumSeatCode, "청소년");
-				int childPrice = rpService.getSeatPrice(stadiumSeatCode, "어린이");
+				int adultPrice = rService.getSeatPrice(stadiumSeatCode, "성인");
+				int youthPrice = rService.getSeatPrice(stadiumSeatCode, "청소년");
+				int childPrice = rService.getSeatPrice(stadiumSeatCode, "어린이");
 				
 				if (adultPrice <= 0 || youthPrice <= 0 || childPrice <= 0) {
 				    response.sendRedirect(
@@ -159,16 +159,16 @@ public class ReservationServlet extends HttpServlet {
 				}
 
 				// 3. 서비스 트랜잭션 처리 호출
-				int reservationCode = rpService.insertTotalReservation(rpDTO, detailList);
+				int reservationCode = rService.insertTotalReservation(rpDTO, detailList);
 
 				if (reservationCode > 0) {
 					// 쿠폰 사용 완료 처리
 				    if (couponCode != null && !couponCode.isEmpty()) {
-				        rpService.updateCouponState(loginMember.getMemberCode(), couponCode);
+				        rService.updateCouponState(loginMember.getMemberCode(), couponCode);
 				    }
 					
 					// 성공 페이지 데이터 추가 조회
-					String seatName = rpService.getSeatName(stadiumSeatCode);
+					String seatName = rService.getSeatName(stadiumSeatCode);
 					request.setAttribute("reservationCode", reservationCode);
 					request.setAttribute("payPrice", payPrice);
 					request.setAttribute("reservationQuantity", totalQuantity);

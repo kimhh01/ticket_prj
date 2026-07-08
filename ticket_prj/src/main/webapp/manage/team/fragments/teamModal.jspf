@@ -403,14 +403,22 @@ function setTeamLogoPreview(imagePath) {
         return;
     }
 
+    imagePath = imagePath.trim();
+
     if (oldTeamLogoImgInput) {
         oldTeamLogoImgInput.value = imagePath;
     }
 
     let imageSrc = imagePath;
 
-    if (imagePath.startsWith('/')) {
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        imageSrc = imagePath;
+    } else if (imagePath.startsWith('${pageContext.request.contextPath}/')) {
+        imageSrc = imagePath;
+    } else if (imagePath.startsWith('/')) {
         imageSrc = '${pageContext.request.contextPath}' + imagePath;
+    } else {
+        imageSrc = '${pageContext.request.contextPath}/upload/team/' + imagePath;
     }
 
     if (previewLogo) {

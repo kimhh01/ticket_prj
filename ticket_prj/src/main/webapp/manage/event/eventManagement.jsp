@@ -8,6 +8,51 @@
          contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 
+<%!
+    private String h(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        return value.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("\"", "&quot;");
+    }
+
+    private String eventImageSrc(javax.servlet.http.HttpServletRequest request,
+                                 String dbValue) {
+        if (dbValue == null) {
+            return "";
+        }
+
+        String value = dbValue.trim();
+
+        if (value.isEmpty()) {
+            return "";
+        }
+
+        value = value.replace("\\", "/");
+
+        if (value.startsWith("http://") ||
+            value.startsWith("https://")) {
+            return value;
+        }
+
+        String contextPath = request.getContextPath();
+
+        if (value.startsWith(contextPath + "/")) {
+            return value;
+        }
+
+        if (value.startsWith("/")) {
+            return contextPath + value;
+        }
+
+        return contextPath + "/upload/event/" + value;
+    }
+%>
+
 <%
     request.setAttribute("activeMenu", "event");
 
@@ -35,9 +80,6 @@
 <meta charset="UTF-8">
 <title>이벤트 관리</title>
 
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-
 <style>
 
 *{
@@ -50,102 +92,11 @@ body{
     font-family:'Noto Sans KR', sans-serif;
     background:#F5F5F5;
 }
-/* ── Topbar ── */
-.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    height: 56px;
-    background: #fff;
-    border-bottom: 1px solid #E5E7EB;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.topbar-logo {
-    font-size: 18px;
-    font-weight: 400;
-    color: #111;
-}
-
-.topbar-logo strong {
-    font-weight: 700;
-}
-
-.topbar-subtitle {
-    font-size: 13px;
-    color: #6B7280;
-}
-
-.topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    font-size: 13px;
-    color: #6B7280;
-}
-
-.topbar-divider {
-    width: 1px;
-    height: 14px;
-    background: #E5E7EB;
-}
-
-.topbar-right a {
-    color: #6B7280;
-    text-decoration: none;
-}
-
-.topbar-right a:hover {
-    color: #111;
-}
 
 /* ── Layout ── */
 .layout {
     display: flex;
     min-height: calc(100vh - 56px);
-}
-
-/* ── Sidebar ── */
-.sidebar {
-    width: 200px;
-    flex-shrink: 0;
-    background: #fff;
-    border-right: 1px solid #E5E7EB;
-    padding: 12px 0;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    font-size: 14px;
-    color: #6B7280;
-    cursor: pointer;
-}
-
-.nav-item i {
-    font-size: 18px;
-}
-
-.nav-item:hover {
-    background: #F9FAFB;
-    color: #111;
-}
-
-.nav-item.active {
-    background: #FDEDF0;
-    color: #C0394B;
-    font-weight: 500;
 }
 
 /* ───── Layout ───── */
@@ -171,7 +122,7 @@ body{
 }
 
 .page-title{
-    font-size:32px;
+    font-size:35px;
     font-weight:700;
     color:#111827;
 }
@@ -401,47 +352,6 @@ body{
     font-size: 12px;
 }
 
-/* 세션 표시용 디자인 */
-.topbar-admin-name {
-    color: #333;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.topbar-admin-name:hover {
-    color: #e9363f;
-    text-decoration: underline;
-}
-
-.session-timer {
-    margin-left: 14px;
-    font-size: 13px;
-    color: #666;
-}
-
-.session-timer strong {
-    margin-left: 5px;
-    color: #e9363f;
-}
-
-.session-extend-btn {
-    margin-left: 6px;
-    padding: 4px 9px;
-
-    border: 1px solid #ddd;
-    border-radius: 5px;
-
-    background: #fff;
-    color: #333;
-
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.session-extend-btn:hover {
-    background: #f5f5f5;
-}
-
 </style>
 
 </head>
@@ -541,50 +451,54 @@ request.setAttribute("activeMenu", "event");
                         <td>
 
                             <%
-							    String thumbnailImg = dto.getThumbnailImg();
-							%>
-							
-							<%
-							if (thumbnailImg != null &&
-							    !thumbnailImg.trim().isEmpty()) {
-							%>
-							
-							    <img src="<%= request.getContextPath() %>/upload/event/<%= thumbnailImg %>"
-							         class="thumbnail"
-							         alt="이벤트 썸네일 이미지">
-							
-							<%
-							} else {
-							%>
-							
-							    <div class="thumbnail-empty">
-							        이미지 없음
-							    </div>
-							
-							<%
-							}
-							%>
+                                String thumbnailSrc =
+                                        eventImageSrc(request, dto.getThumbnailImg());
+                            %>
+
+                            <%
+                            if (!thumbnailSrc.isEmpty()) {
+                            %>
+
+                                <a href="<%= h(thumbnailSrc) %>"
+                                   target="_blank"
+                                   title="이미지 크게 보기">
+                                    <img src="<%= h(thumbnailSrc) %>"
+                                         class="thumbnail"
+                                         alt="이벤트 썸네일 이미지">
+                                </a>
+
+                            <%
+                            } else {
+                            %>
+
+                                <div class="thumbnail-empty">
+                                    이미지 없음
+                                </div>
+
+                            <%
+                            }
+                            %>
 
                         </td>
 
                         <td class="event-title">
-                            <%= dto.getEventTitle() %>
+                            <%= h(dto.getEventTitle()) %>
                         </td>
 
                         <td class="period">
-                            <%= dto.getStartDate() %>
+                            <%= h(dto.getStartDate()) %>
                             ~
-                            <%= dto.getEndDate() %>
+                            <%= h(dto.getEndDate()) %>
                         </td>
 
                         <td>
                             <span class="status <%= statusClass %>">
-                                <%= dto.getEventSate() %>
+                                <%= h(dto.getEventSate()) %>
                             </span>
                         </td>
 
                         <td>
-                            <%= dto.getEventWriteDate() %>
+                            <%= h(dto.getEventWriteDate()) %>
                         </td>
 
                         <td>

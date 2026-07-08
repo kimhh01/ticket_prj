@@ -30,7 +30,7 @@ body {
 }
 
 .page-title {
-    font-size: 22px;
+    font-size: 35px;
     font-weight: 700;
     margin-bottom: 20px;
 }
@@ -67,18 +67,23 @@ body {
     border-radius: 6px;
 }
 
-.search-area button {
+.search-area button,
+.search-area a {
     padding: 10px 18px;
     border: 1px solid #ddd;
     background: #fff;
     border-radius: 6px;
     cursor: pointer;
+    color: #333;
+    text-decoration: none;
+    font-size: 13px;
 }
 
-.search-area button.active {
+.search-area .active {
     background: #eef5ff;
     color: #2374ff;
     border-color: #2374ff;
+    font-weight: 700;
 }
 
 .member-table {
@@ -158,6 +163,7 @@ body {
     color: #fff;
     border-color: #ff5b68;
 }
+
 </style>
 </head>
 
@@ -172,22 +178,32 @@ body {
         <h2 class="page-title">회원 관리</h2>
 
         <div class="tab-menu">
-            <a href="${pageContext.request.contextPath}/manage/member/memberList.jsp" class="active">회원 관리</a>
-            <a href="${pageContext.request.contextPath}/manage/member/memberDiscount.jsp">회원 할인</a>
+            <a href="${pageContext.request.contextPath}/admin/member" class="active">회원 관리</a>
+            <a href="${pageContext.request.contextPath}/admin/member/discount">회원 할인</a>
         </div>
 
-        <form class="search-area" method="get">
+        <form class="search-area" method="get"
+              action="${pageContext.request.contextPath}/admin/member">
+
             <input type="text" name="search" value="${param.search}"
                    placeholder="이름, 이메일, 전화번호 검색...">
 
-            <button type="submit" class="active">검색</button>
+            <button type="submit">검색</button>
 
-            <button type="button"
-                    onclick="location.href='${pageContext.request.contextPath}/manage/member/memberList.jsp'">
+            <a href="${pageContext.request.contextPath}/admin/member"
+               class="${empty param.gradeFilter ? 'active' : ''}">
                 전체
+            </a>
+
+            <button type="submit" name="gradeFilter" value="ACTIVE"
+                    class="${param.gradeFilter eq 'ACTIVE' ? 'active' : ''}">
+                활성
             </button>
 
-            <button type="submit" name="gradeFilter" value="VIP">VIP</button>
+            <button type="submit" name="gradeFilter" value="VIP"
+                    class="${param.gradeFilter eq 'VIP' ? 'active' : ''}">
+                VIP
+            </button>
         </form>
 
         <table class="member-table">
@@ -216,12 +232,12 @@ body {
                         <c:forEach var="mlDTO" items="${memberList}">
                             <tr>
                                 <td>
-                                    <input type="checkbox" name="memberCode" value="${mlDTO.memberName}">
+                                    <input type="checkbox" name="memberId" value="${mlDTO.memberId}">
                                 </td>
 
                                 <td>
                                     <a class="member-name"
-                                       href="${pageContext.request.contextPath}/manage/member/memberDetail.jsp?memberId=${mlDTO.memberName}">
+                                       href="${pageContext.request.contextPath}/admin/member/detail?memberId=${mlDTO.memberId}">
                                         ${mlDTO.memberName}
                                     </a>
                                     <br>
@@ -245,8 +261,8 @@ body {
 
                                 <td>
                                     <c:choose>
-                                        <c:when test="${mlDTO.memberState eq '정상'}">
-                                            <span class="state-normal">정상</span>
+                                        <c:when test="${mlDTO.memberState eq '활성'}">
+                                            <span class="state-normal">활성</span>
                                         </c:when>
                                         <c:otherwise>
                                             <span class="state-stop">${mlDTO.memberState}</span>
@@ -262,18 +278,22 @@ body {
 
         <div class="pagination">
             <c:if test="${brDTO.page > 1}">
-                <a href="?page=${brDTO.page - 1}&search=${param.search}&gradeFilter=${param.gradeFilter}">이전</a>
+                <a href="${pageContext.request.contextPath}/admin/member?page=${brDTO.page - 1}&search=${param.search}&gradeFilter=${param.gradeFilter}">
+                    이전
+                </a>
             </c:if>
 
             <c:forEach var="i" begin="1" end="${brDTO.totalPage}">
-                <a href="?page=${i}&search=${param.search}&gradeFilter=${param.gradeFilter}"
+                <a href="${pageContext.request.contextPath}/admin/member?page=${i}&search=${param.search}&gradeFilter=${param.gradeFilter}"
                    class="${brDTO.page eq i ? 'active' : ''}">
                     ${i}
                 </a>
             </c:forEach>
 
             <c:if test="${brDTO.page < brDTO.totalPage}">
-                <a href="?page=${brDTO.page + 1}&search=${param.search}&gradeFilter=${param.gradeFilter}">다음</a>
+                <a href="${pageContext.request.contextPath}/admin/member?page=${brDTO.page + 1}&search=${param.search}&gradeFilter=${param.gradeFilter}">
+                    다음
+                </a>
             </c:if>
         </div>
     </main>

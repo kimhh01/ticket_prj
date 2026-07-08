@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>bigBall예매 - 예매완료</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/reservationPage/reservation.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/kr/user/reservation/reservation.css">
 <style>
     /* 성공 페이지 전용 추가 스타일 */
     .logo-area{
@@ -157,6 +157,8 @@
 </body>
 <script type="text/javascript">
 $(function(){
+	sessionStorage.removeItem("reservationEndTime");
+	
 	$(".btn-home").click(function(){
 		if(opener){
 			opener.location.href='${pageContext.request.contextPath}/kr/user/main/main.jsp';

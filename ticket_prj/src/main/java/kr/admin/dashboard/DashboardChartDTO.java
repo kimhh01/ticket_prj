@@ -1,4 +1,4 @@
-package dashboard;
+package kr.admin.dashboard;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix ="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <c:set var="activeMenu" value="member" scope="request" />
 
@@ -42,7 +42,7 @@ body {
 }
 
 .page-title {
-	font-size: 22px;
+	font-size: 30px;
 	font-weight: 700;
 }
 
@@ -190,6 +190,7 @@ body {
 	color: #ff5b68;
 	font-weight: 600;
 }
+
 </style>
 </head>
 
@@ -201,15 +202,22 @@ body {
 		<jsp:include page="../common/sideBar.jsp" />
 
 		<main class="content">
-			<div class="breadcrumb">회원 관리 &gt; 회원상세</div>
+			<div class="breadcrumb">
+			    <a href="${pageContext.request.contextPath}/admin/member"
+			       style="text-decoration:none; color:#777;">회원 관리</a>
+			    &gt; ${mlDTO.memberName}
+			</div>
 
 			<div class="page-header">
 				<h2 class="page-title">회원 상세 정보</h2>
 
 				<form method="post"
-					action="${pageContext.request.contextPath}/manage/member/memberStateUpdate">
-					<input type="hidden" name="memberId" value="${mdDTO.memberCode}">
-					<button type="submit" class="btn-warning">휴면 해제</button>
+				      action="${pageContext.request.contextPath}/admin/member/state">
+				    <input type="hidden" name="memberId" value="${mdDTO.memberId}">
+				
+				    <c:if test="${mlDTO.memberState eq '휴면'}">
+				        <button type="submit" class="btn-warning">휴면 해제</button>
+				    </c:if>
 				</form>
 			</div>
 
@@ -243,7 +251,7 @@ body {
 					</div>
 
 					<div>
-						<strong>${mdDTO.totalPayment}</strong> <span>총 결제 금액</span>
+						<strong>${mdDTO.totalPayment}원</strong> <span>총 결제 금액</span>
 					</div>
 				</div>
 			</section>
@@ -346,6 +354,16 @@ body {
 			</section>
 		</main>
 	</div>
+<c:if test="${param.result eq 'stateSuccess'}">
+<script>
+    alert("휴면 해제되었습니다.");
+</script>
+</c:if>
 
+<c:if test="${param.result eq 'stateFail'}">
+<script>
+    alert("휴면 해제에 실패했습니다.");
+</script>
+</c:if>
 </body>
 </html>

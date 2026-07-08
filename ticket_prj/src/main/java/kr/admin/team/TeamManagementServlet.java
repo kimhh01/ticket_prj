@@ -2,6 +2,11 @@ package kr.admin.team;
 
 import java.io.IOException;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
+import kr.co.util.UploadPathUtil;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -337,29 +342,42 @@ public class TeamManagementServlet extends HttpServlet {
                 UUID.randomUUID().toString().replace("-", "") +
                 extension;
 
-        String uploadRealPath =
-                request.getServletContext()
-                       .getRealPath("/upload/team");
-
-        System.out.println("team uploadRealPath = " + uploadRealPath);
-
-        File uploadDir = new File(uploadRealPath);
+        /*
+         * web.xml의 upload.image.root + /team
+         * 예:
+         * C:/Users/user/git/ticket_prj/ticket_prj/src/main/webapp/images/team
+         */
+        File uploadDir =
+                UploadPathUtil.getImageUploadDir(
+                        getServletContext(),
+                        "team_logo");
 
         if (!uploadDir.exists()) {
             boolean created = uploadDir.mkdirs();
             System.out.println("팀 로고 업로드 폴더 생성 여부 = " + created);
         }
 
-        String savePath =
-                uploadRealPath + File.separator + saveFileName;
+        File saveFile =
+                new File(uploadDir, saveFileName);
 
-        filePart.write(savePath);
+        System.out.println("===== 팀 로고 저장 =====");
+        System.out.println("원본 파일명 = " + originalFileName);
+        System.out.println("저장 파일명 = " + saveFileName);
+        System.out.println("저장 폴더 = " + uploadDir.getAbsolutePath());
+        System.out.println("저장 전체 경로 = " + saveFile.getAbsolutePath());
 
-        File savedFile = new File(savePath);
+        Files.copy(
+                filePart.getInputStream(),
+                saveFile.toPath(),
+                StandardCopyOption.REPLACE_EXISTING
+        );
 
-        System.out.println("팀 로고 저장 완료 여부 = " + savedFile.exists());
-        System.out.println("팀 로고 저장 크기 = " + savedFile.length());
+        System.out.println("팀 로고 저장 완료 여부 = " + saveFile.exists());
+        System.out.println("팀 로고 저장 크기 = " + saveFile.length());
 
-        return "/upload/team/" + saveFileName;
+        /*
+         * DB에는 파일명만 저장
+         */
+        return saveFileName;
     }
 }

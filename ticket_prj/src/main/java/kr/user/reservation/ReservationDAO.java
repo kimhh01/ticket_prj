@@ -299,7 +299,7 @@ public class ReservationDAO {
 	}
 	
 	
-	// 좌석 코드(ID)로 좌석 이름(예: 1루 자유석) 조회
+	//좌석 이름 조회
 	public String selectSeatName(int stadiumSeatCode) throws SQLException {
 	    String seatName = "";
 	    Connection con = null;

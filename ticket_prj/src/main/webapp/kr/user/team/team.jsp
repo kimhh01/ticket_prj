@@ -93,7 +93,7 @@
 		$(".guideBtn").click(
 				function() {
 					window.open(contextPath
-							+ "/user_reservationGuide/reservationGuide.jsp",
+							+ "/kr/user/reservationGuide/reservationGuide.jsp",
 							"_blank", "width=900,height=700");
 				});
 
@@ -331,7 +331,7 @@
 					<c:forEach var="game" items="${gameList}">
 						<c:set var="isHome"
 							value="${not empty tDTO and game.teamHomeName eq tDTO.teamHomeName}" />
-						<c:set var="isUpcoming" value="${game.gameDate.time > now.time}" />
+						<c:set var="isUpcoming" value="${game.gameDate.time >= now.time}" />
 
 						<div class="game-row ${isHome ? 'home-game' : 'away-game'}">
 							<div class="game-date">
@@ -482,7 +482,6 @@
 	</div>
 
 
-	<%-- [탭 2] 공지사항 컨텐츠 영역 임시로 만듬 --%>
 	<div id="tab-notice" class="tab-content">
 		<section class="notice-detail-wrap">
 			<c:forEach var="notice" items="${noticeList}">
@@ -491,7 +490,7 @@
 					<article class="notice-item" data-category="reservation">
 						<div class="notice-meta">
 							<span>${notice.noticeTitle}</span> | <span>${notice.noticeWriteDate}
-							</span><span class="notice-btn">▼</span>
+							</span>
 						</div>
 					</article>
 				</div>
@@ -507,8 +506,9 @@
 	<div id="tab-league" class="tab-content">
 		<section class="league-guide-wrap">
 			<div>
-				<img
-					src="${pageContext.request.contextPath}/images/notice/${leagueImg}" />
+				<img src="${pageContext.request.contextPath}/images/notice/${leagueList[0]}">
+				<img src="${pageContext.request.contextPath}/images/notice/${leagueList[1]}">
+				<img src="${pageContext.request.contextPath}/images/notice/${leagueList[2]}">
 			</div>
 		</section>
 	</div>

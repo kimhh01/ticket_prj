@@ -85,7 +85,7 @@
 
                 out.println("<script>");
                 out.println("alert('관리자 정보가 수정되었습니다.');");
-                out.println("location.href='" + contextPath + "/manage/main/adminMain.jsp';");
+                out.println("location.href='" + contextPath + "/manage/mypage/adminMyPage.jsp';");
                 out.println("</script>");
                 return;
 
@@ -529,7 +529,7 @@ body {
                 <div class="button-area">
                     <button type="button"
                             class="btn btn-cancel"
-                            onclick="location.href='<%= contextPath %>/manage/main/adminMain.jsp'">
+                            onclick="location.href='<%= contextPath %>/admin/dashboard'">
                         취소
                     </button>
 

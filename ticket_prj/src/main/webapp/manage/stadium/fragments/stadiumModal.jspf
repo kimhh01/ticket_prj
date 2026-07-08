@@ -303,22 +303,29 @@ function setStadiumImagePreview(imagePath) {
         return;
     }
 
+    imagePath = imagePath.trim();
+
     /*
-     * hidden에는 DB 저장용 원본 경로를 넣음
-     * 예: /upload/stadium/stadium_xxx.png
+     * hidden에는 DB에 저장된 원본값 유지
+     * DB가 파일명만 저장하는 구조면 파일명만 들어감
      */
     if (oldImg) {
         oldImg.value = imagePath;
     }
 
     /*
-     * img src에는 contextPath를 붙여서 실제 브라우저 접근 경로로 만듦
-     * 예: /ticket_copy_prj/upload/stadium/stadium_xxx.png
+     * img src에는 브라우저가 접근 가능한 URL로 변환
      */
     let imageSrc = imagePath;
 
-    if (imagePath.startsWith('/')) {
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        imageSrc = imagePath;
+    } else if (imagePath.startsWith('${pageContext.request.contextPath}/')) {
+        imageSrc = imagePath;
+    } else if (imagePath.startsWith('/')) {
         imageSrc = '${pageContext.request.contextPath}' + imagePath;
+    } else {
+        imageSrc = '${pageContext.request.contextPath}/upload/stadium/' + imagePath;
     }
 
     if (previewImg) {
