@@ -496,7 +496,7 @@
 				</div>
 
 				<div class="notice-detail-body">
-					<img src="">
+					<img src="${pageContext.request.contextPath }/images/notice/notice.png" style="width: 928px; height: 500px;">
 				</div>
 			</c:forEach>
 		</section>
@@ -506,9 +506,9 @@
 	<div id="tab-league" class="tab-content">
 		<section class="league-guide-wrap">
 			<div>
-				<img src="${pageContext.request.contextPath}/images/notice/${leagueList[0]}">
-				<img src="${pageContext.request.contextPath}/images/notice/${leagueList[1]}">
-				<img src="${pageContext.request.contextPath}/images/notice/${leagueList[2]}">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList}1.png">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList}2.png">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList}3.png">
 			</div>
 		</section>
 	</div>

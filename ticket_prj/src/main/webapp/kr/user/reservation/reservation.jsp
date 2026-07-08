@@ -559,8 +559,8 @@
 	            return;
 	        }
 	        
-	        if (parseInt(document.getElementById("hiddenReservationQuantity").value) > 3) {
-	            alert("티켓은 최대 3매까지만 구매 가능합니다.");
+	        if (parseInt(document.getElementById("hiddenReservationQuantity").value) > 4) {
+	            alert("티켓은 최대 4매까지만 구매 가능합니다.");
 	            return;
 	        }
 	        document.getElementById('step-nav-3').classList.remove('active');
