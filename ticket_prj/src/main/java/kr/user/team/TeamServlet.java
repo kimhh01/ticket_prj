@@ -59,18 +59,28 @@ import javax.servlet.http.HttpServletResponse;
 
 			Calendar cal = Calendar.getInstance();
 
-			for(TeamDTO dto : gameList){
+			Calendar todayCal = Calendar.getInstance();
+			todayCal.set(Calendar.HOUR_OF_DAY, 0);
+			todayCal.set(Calendar.MINUTE, 0);
+			todayCal.set(Calendar.SECOND, 0);
+			todayCal.set(Calendar.MILLISECOND, 0);
+
+			Date today = todayCal.getTime();
+
+			for (TeamDTO dto : gameList) {
+
 			    cal.setTime(dto.getGameDate());
 			    cal.add(Calendar.DAY_OF_MONTH, -7);
 			    Date openDate = cal.getTime();
+
 			    dto.setReservationOpen(
-			        now.compareTo(openDate) >= 0 &&
-			        now.before(dto.getGameDate())
+			        !today.before(openDate) &&
+			        !today.after(dto.getGameDate())
 			    );
 			}
 			
 			List<TeamDTO> noticeList=tpService.getNotice(teamCode);
-			String leagueImg=tpService.getLeagueGuide(teamCode);
+			List<String> leagueList = tpService.getLeagueGuide(teamCode);
 			TeamDTO tDTO = tpService.getTeamInfo(teamCode);
 			
 			
@@ -89,7 +99,7 @@ import javax.servlet.http.HttpServletResponse;
 			request.setAttribute("tDTO", tDTO);
 			request.setAttribute("gameList", gameList);
 			request.setAttribute("noticeList", noticeList);
-			request.setAttribute("leagueImg", leagueImg);
+			request.setAttribute("leagueList", leagueList);
 			
 			RequestDispatcher rd = request.getRequestDispatcher("kr/user/team/team.jsp");
 			rd.forward(request, response);

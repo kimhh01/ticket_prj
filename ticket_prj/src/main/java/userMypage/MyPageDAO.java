@@ -302,7 +302,6 @@ public class MyPageDAO {
             rs = stmt.executeQuery();
             
             while(rs.next()) {
-            	 System.out.println("조회됨");
 
                 MyPageReservationDTO dto = new MyPageReservationDTO();
 
