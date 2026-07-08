@@ -13,6 +13,24 @@ if(loginMember == null){
     return;
 }
 
+//이메일 오류 검사
+String email = request.getParameter("email");
+
+String emailPattern =
+        "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+
+if(email == null || !email.matches(emailPattern)){
+%>
+
+<script>
+alert("올바른 이메일 형식으로 입력해주세요.");
+history.back();
+</script>
+
+<%
+    return;
+}
+
 // 수정할 정보
 MemberDTO memberDTO = new MemberDTO();
 

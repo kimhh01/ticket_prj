@@ -85,6 +85,21 @@ $(function(){
         location.href="memberInfo.jsp";
     });
 
+    $("form").submit(function(){
+
+        var email = $("input[name='email']").val().trim();
+
+        // 이메일 형식 검사
+        var emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+        if(!emailPattern.test(email)){
+            alert("올바른 이메일 형식으로 입력해주세요.");
+            $("input[name='email']").focus();
+            return false;
+        }
+
+    });
+
 });
 </script>
 </head>

@@ -4,15 +4,28 @@
     <%@page import="userEvent.EventDTO"%>
 <%@page import="userEvent.EventPageService"%>
 
+<%@page import="java.util.List"%>
+<%@page import="userEvent.CouponDTO"%>
+<%@page import="userEvent.CouponService"%>
+
+<%
+CouponService couponService = new CouponService();
+
+List<CouponDTO> couponList = couponService.searchCoupon();
+
+pageContext.setAttribute("couponList", couponList);
+%>
 
 <%
 int eventId = Integer.parseInt(request.getParameter("eventId"));
 
-EventPageService service = new EventPageService();
-EventDTO event = service.searchEventDetail(eventId);
+EventPageService eventService = new EventPageService();
+EventDTO event = eventService.searchEventDetail(eventId);
 
 pageContext.setAttribute("event", event);
 %>
+
+
 
 <%
 if(event == null){
@@ -25,9 +38,6 @@ if(event == null){
     return;
 }
 %>
-
-<%= event.getRepresentativeImg() %>
-<%= event.getEventTitle() %>
 
 <!DOCTYPE html>
 <html>
@@ -61,6 +71,13 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
     <h2>${event.eventTitle}</h2>
     <span>${event.eventStartDate} ~ ${event.eventEndDate}</span>
 </div>
+
+<button
+type="button"
+class="coupon-btn"
+onclick="location.href='couponDownload.jsp?couponCode=CP002'">
+쿠폰 다운로드
+</button>
 
     <!-- 혜택안내 / 이용방법 -->
    <div class="event-info-wrap2">

@@ -348,9 +348,15 @@ body{
 
 <div class="bottom-btn">
 
-    <button onclick="window.close()">
+    <button type="button" onclick="window.close()">
         닫기
     </button>
+
+    <button type="button" class="btn btn-dark"
+onclick="if(confirm('예매를 취소하시겠습니까?')) {
+    location.href='cancelReservationProcess.jsp?reservationId=<%=reservationId%>';}">
+    예매취소
+</button>
 
 </div>
 

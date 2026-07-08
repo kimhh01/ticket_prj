@@ -132,6 +132,11 @@
 .period-search button:first-of-type{
     margin-left:0;
 }
+.period-search button.period-active{
+    background:#222;
+    color:#fff;
+    border:1px solid #222;
+}
 
 .month-search{
     gap:8px;

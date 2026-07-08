@@ -14,6 +14,9 @@ import kr.user.member.MemberDTO;
 import userMypage.MyPageReservationDTO;
 import userMypage.ReservationDetailDTO;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class MyPageDAO {
 
     // 회원 요약 정보 조회
@@ -246,7 +249,7 @@ public class MyPageDAO {
             
             
             
-            //SQL
+         // SQL
             sql.append("SELECT ");
             sql.append("R.RESERVATION_ID, ");
             sql.append("TH.TEAM_SHORT_NAME || ' VS ' || TA.TEAM_SHORT_NAME AS GAME_NAME, ");
@@ -254,9 +257,13 @@ public class MyPageDAO {
             sql.append("GS.GAME_START_TIME, ");
             sql.append("GS.GAME_DATE - 7 AS CANCEL_AVAILABLE_DATE, ");
             sql.append("RD.RESERVATION_QUANTITY, ");
-            sql.append("R.RESERVATION_STATUS ");
+            sql.append("R.RESERVATION_STATUS, ");
+            sql.append("RC.CANCEL_DATE ");
 
             sql.append("FROM RESERVATION R ");
+
+            sql.append("LEFT JOIN RESERVATION_CENCEL RC ");
+            sql.append("ON RC.RESERVATION_ID = R.RESERVATION_ID ");
 
             sql.append("JOIN GAME_SCHEDULE GS ");
             sql.append("ON R.GAME_SCHEDULE_ID = GS.GAME_SCHEDULE_ID ");
@@ -266,30 +273,39 @@ public class MyPageDAO {
 
             sql.append("JOIN TEAM TA ");
             sql.append("ON GS.TEAM_OTHER = TA.TEAM_ID ");
-
             sql.append("JOIN RESERVATION_DETAIL RD ");
             sql.append("ON R.RESERVATION_ID = RD.RESERVATION_ID ");
 
             sql.append("WHERE R.MEMBER_ID=? ");
-            
-            //취소시 예매취소 탭에서 행 사라짐
-            if("cancel".equals(flag)) {
+
+            if("reservation".equals(flag)) {
+
                 sql.append("AND R.RESERVATION_STATUS='구매' ");
-                sql.append("AND NOT EXISTS ( ");
-                sql.append("SELECT 1 FROM RESERVATION_CENCEL RC ");
-                sql.append("WHERE RC.RESERVATION_ID = R.RESERVATION_ID ");
-                sql.append(") ");
+
+            } else if("cancel".equals(flag)) {
+
+                sql.append("AND R.RESERVATION_STATUS='취소' ");
+
             }
+
+         
             
-            //기간 검색
+            
+         // 기간 검색
             if(startDate != null && endDate != null) {
                 sql.append("AND R.RESERVATION_DATE BETWEEN ? AND ? ");
             }
 
             sql.append("ORDER BY R.RESERVATION_DATE DESC ");
             
+            
             System.out.println(sql.toString());
             System.out.println("memberId = " + memberId);
+            
+            //기간검색 콘솔출력 확인  (캡쳐후삭제)
+            System.out.println("startDate = " + startDate);
+            System.out.println("endDate = " + endDate);
+            System.out.println("flag = " + flag);
             
             stmt = con.prepareStatement(sql.toString());
 
@@ -305,23 +321,38 @@ public class MyPageDAO {
             }
 
             rs = stmt.executeQuery();
-            
+
+            Map<Integer, MyPageReservationDTO> map = new LinkedHashMap<>();
+
             while(rs.next()) {
 
-                MyPageReservationDTO dto = new MyPageReservationDTO();
+                int reservationId = rs.getInt("RESERVATION_ID");
 
-                dto.setReservationCode(rs.getInt("RESERVATION_ID"));
-                dto.setGameName(rs.getString("GAME_NAME"));
-                dto.setGameDate(rs.getDate("GAME_DATE"));
-                dto.setGameStartTime(rs.getString("GAME_START_TIME"));
-                dto.setCancelAvailableDate(rs.getDate("CANCEL_AVAILABLE_DATE"));
-                dto.setReservationQuantity(rs.getInt("RESERVATION_QUANTITY"));
-                dto.setReservationStatus(rs.getString("RESERVATION_STATUS"));
-            
+                MyPageReservationDTO dto = map.get(reservationId);
 
-                list.add(dto);
+                if(dto == null) {
 
+                    dto = new MyPageReservationDTO();
+
+                    dto.setReservationCode(reservationId);
+                    dto.setGameName(rs.getString("GAME_NAME"));
+                    dto.setGameDate(rs.getDate("GAME_DATE"));
+                    dto.setGameStartTime(rs.getString("GAME_START_TIME"));
+                    dto.setCancelAvailableDate(rs.getDate("CANCEL_AVAILABLE_DATE"));
+                    dto.setReservationStatus(rs.getString("RESERVATION_STATUS"));
+                    dto.setCancelDate(rs.getDate("CANCEL_DATE"));
+                    dto.setReservationQuantity(0);
+
+                    map.put(reservationId, dto);
+                }
+
+                dto.setReservationQuantity(
+                    dto.getReservationQuantity()
+                    + rs.getInt("RESERVATION_QUANTITY")
+                );
             }
+
+            list.addAll(map.values());
             
         } catch(SQLException e) {
 

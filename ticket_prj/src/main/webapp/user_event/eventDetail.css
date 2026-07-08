@@ -338,3 +338,30 @@
     white-space:pre-line;
 
 }
+
+/* 이벤트 버튼  */
+
+.coupon-btn{
+    display:block;
+    width:200px;
+    margin:30px 0 30px;
+
+    padding:14px 0;
+
+    background:#111;
+    color:#fff;
+
+    border:0;
+    border-radius:10px;
+
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.5px;
+
+    cursor:pointer;
+    transition:0.25s ease;
+}
+
+.coupon-btn:hover{
+    background:#d7263d;
+}

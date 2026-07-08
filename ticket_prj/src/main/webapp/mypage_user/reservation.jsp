@@ -2,6 +2,10 @@
     pageEncoding="UTF-8"%>
 
 <%@page import="java.sql.Date"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.YearMonth"%>
+<%@page import="java.util.List"%>
+
 <%@page import="java.util.List"%>
 <%@page import="userMypage.MyPageReservationDTO"%>
 <%@page import="userMypage.MyPageService"%>
@@ -20,8 +24,52 @@ if(loginMember == null){
 
 MyPageService service = new MyPageService();
 
+
+//날짜조
 Date startDate = null;
 Date endDate = null;
+
+String period = request.getParameter("period");
+String yearParam = request.getParameter("year");
+String monthParam = request.getParameter("month");
+String tab = request.getParameter("tab");
+
+if(tab == null){
+    tab = "reservation";
+}
+
+LocalDate today = LocalDate.now();
+LocalDate startLocal = null;
+LocalDate endLocal = null;
+
+if(period != null && !"".equals(period)){
+
+    endLocal = today;
+
+    if("15".equals(period)){
+        startLocal = today.minusDays(15);
+    } else {
+        startLocal = today.minusMonths(Integer.parseInt(period));
+    }
+
+} else if(yearParam != null && monthParam != null &&
+          !"".equals(yearParam) && !"".equals(monthParam)){
+
+    int year = Integer.parseInt(yearParam);
+    int month = Integer.parseInt(monthParam);
+
+    YearMonth ym = YearMonth.of(year, month);
+
+    startLocal = ym.atDay(1);
+    endLocal = ym.atEndOfMonth();
+}
+
+if(startLocal != null && endLocal != null){
+    startDate = Date.valueOf(startLocal);
+    endDate = Date.valueOf(endLocal);
+}
+
+
 
 List<MyPageReservationDTO> reservationList =
         service.getReservationList(
@@ -92,24 +140,58 @@ pageContext.setAttribute("cancelList", cancelList);
         <div class="period-search">
             <span>기간별 조회</span>
 
-            <button>15일</button>
-            <button class="period-active">1개월</button>
-            <button>2개월</button>
-            <button>3개월</button>
+       <button type="button"
+class="<%= "15".equals(period) ? "period-active" : "" %>"
+onclick="location.href='reservation.jsp?tab=<%=tab%>&period=15'">
+15일
+</button>
+      <button type="button"
+class="<%= "1".equals(period) ? "period-active" : "" %>"
+onclick="location.href='reservation.jsp?tab=<%=tab%>&period=1'">
+1개월
+</button> 
+<button type="button"
+class="<%= "2".equals(period) ? "period-active" : "" %>"
+onclick="location.href='reservation.jsp?tab=<%=tab%>&period=2'">
+2개월
+</button>
+<button type="button"
+class="<%= "3".equals(period) ? "period-active" : "" %>"
+onclick="location.href='reservation.jsp?tab=<%=tab%>&period=3'">
+3개월
+</button>
+       
+       
+
         </div>
 
         <div class="month-search">
             <span>월별 조회</span>
 
-            <select>
-                <option>연도</option>
-            </select>
+          <select id="year">
+<%
+int currentYear = LocalDate.now().getYear();
 
-            <select>
-                <option>월</option>
-            </select>
+for(int i=currentYear; i>=2023; i--){
+%>
+    <option value="<%=i%>"><%=i%></option>
+<%
+}
+%>
+</select>
 
-            <button>조회</button>
+<select id="month">
+<%
+for(int i=1;i<=12;i++){
+%>
+    <option value="<%=i%>"><%=i%>월</option>
+<%
+}
+%>
+</select>
+<button type="button" id="searchMonthBtn">
+조회
+</button>
         </div>
 
     </div>
@@ -144,7 +226,6 @@ pageContext.setAttribute("cancelList", cancelList);
     <td>
         <button class="status-btn" type="button" disabled>
             ${dto.reservationStatus}
-            
         </button>
     </td>
 </tr>
@@ -169,8 +250,8 @@ pageContext.setAttribute("cancelList", cancelList);
             <th>티켓명</th>
             <th>관람일시</th>
             <th>매수</th>
-              <th>취소가능일</th>
-                <th>예매취소</th>
+              <th>티켓취소일</th>
+                <th>상태</th>
         </tr>
         </thead>
 
@@ -186,13 +267,12 @@ pageContext.setAttribute("cancelList", cancelList);
     <td>${dto.gameName}</td>
     <td>${dto.gameDate} ${dto.gameStartTime}</td>
     <td>${dto.reservationQuantity}</td>
-    <td>${dto.cancelAvailableDate}</td>
-      <td>
-    <button
-        class="status-btn btnCancel"
-        data-id="${dto.reservationCode}"
-        type="button">
-        예매취소
+    
+    <td>${dto.cancelDate}</td>
+
+<td>
+    <button class="status-btn" type="button" disabled>
+        ${dto.reservationStatus}
     </button>
 </td>
 
@@ -202,55 +282,8 @@ pageContext.setAttribute("cancelList", cancelList);
         </tbody>
         
     </table>
-<div class="modal fade" id="cancelModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered custom-dialog">
-        <div class="modal-content custom-modal">
 
-            <div class="modal-body text-left">
-                <h4>취소하시겠습니까?</h4>
 
-                <div class="modal-btn-area">
-                
-                <button type="button"
-                            class="btn btn-dark text-"
-                            id="confirmCancel">
-                        확인
-                    </button>
-                
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        닫기
-                    </button>
-
-                    
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-</div>
-
-<div class="modal fade" id="completeModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered custom-dialog">
-        <div class="modal-content custom-modal">
-
-            <div class="modal-body text-left">
-                <h4>예매취소되었습니다.</h4>
-
-                <div class="modal-btn-area">
-                    <button type="button"
-                            class="btn btn-dark"
-                            data-bs-dismiss="modal">
-                        확인
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
 </div>
 
 
@@ -278,72 +311,52 @@ pageContext.setAttribute("cancelList", cancelList);
 //예매확인 탭 클릭
 $(function(){
 
-    let reservationId = null;
+    // 처음 열릴 때 탭 유지
+    if("<%=tab%>" == "cancel"){
 
-    $("#btnReservation").click(function(){
-        $("#btnReservation").addClass("active-btn");
-        $("#btnCancelTab").removeClass("active-btn");
-
-        $("#reservationArea").show();
-        $("#cancelArea").hide();
-    });
-
-    $("#btnCancelTab").click(function(){
         $("#btnCancelTab").addClass("active-btn");
         $("#btnReservation").removeClass("active-btn");
 
         $("#reservationArea").hide();
         $("#cancelArea").show();
+
+    }
+
+    // 예매확인
+    $("#btnReservation").click(function(){
+        location.href="reservation.jsp?tab=reservation";
     });
 
+    // 예매취소
+    $("#btnCancelTab").click(function(){
+        location.href="reservation.jsp?tab=cancel";
+    });
+
+    // 상세창
     $(".reservation-row").click(function(){
-        var reservationId = $(this).data("id");
+
+        var reservationId=$(this).data("id");
 
         window.open(
-            "reservationDetail.jsp?reservationId=" + reservationId,
+            "reservationDetail.jsp?reservationId="+reservationId,
             "detail",
             "width=900,height=700"
         );
+
     });
 
-    $(".btnCancel").click(function(e){
-        e.stopPropagation();
+    // 월별조회
+    $("#searchMonthBtn").click(function(){
 
-        reservationId = $(this).data("id");
+        var year=$("#year").val();
+        var month=$("#month").val();
 
-        $("#cancelModal").modal("show");
-    });
+        location.href="reservation.jsp?tab=<%=tab%>&year="+year+"&month="+month;
 
-    $("#confirmCancel").click(function(){
-
-        $.ajax({
-            url: "<%=request.getContextPath()%>/mypage_user/cancelReservationProcess.jsp",
-            type: "post",
-            data: {
-                reservationId: reservationId
-            },
-            success: function(result){
-
-                if($.trim(result) == "success"){
-                    $("#cancelModal").modal("hide");
-                    $("#completeModal").modal("show");
-                } else {
-                    alert("예매취소에 실패했습니다.");
-                }
-            },
-            error: function(){
-                alert("서버 오류가 발생했습니다.");
-            }
-        });
-
-    });   // ★ confirmCancel 클릭 종료
-
-    $("#completeModal .btn-dark").click(function(){
-        location.reload();
     });
 
 });
-
+  
 
 </script>
 
