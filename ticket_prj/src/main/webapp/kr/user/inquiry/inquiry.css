@@ -556,6 +556,9 @@
 		color: #555;
 		font-weight: 700;
 	}
+	.inquiry-list-row {
+		cursor: pointer;
+	}
 	.inquiry-list-table th:nth-child(1), .inquiry-list-table td:nth-child(1)
 		{
 		width: 70px;
@@ -579,7 +582,7 @@
 		color: #222;
 		text-decoration: none;
 	}
-	.inquiry-list-title a:hover {
+	.inquiry-list-row:hover .inquiry-list-title a {
 		color: var(--inquiry-red);
 		text-decoration: underline;
 	}

@@ -1,4 +1,4 @@
-package kr.common;
+package kr.user.common;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

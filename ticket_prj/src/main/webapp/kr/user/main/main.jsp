@@ -215,7 +215,8 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 				if (canReserve) {
 				%>
 				<a class="reserve-btn"
-					href="<%=request.getContextPath()%>/reservation?gameScheduleCode=<%=game.getGameScheduleCode()%>">
+					href="<%=request.getContextPath()%>/reservation?gameScheduleCode=<%=game.getGameScheduleCode()%>"
+					onclick="window.open(this.href, 'reservation', 'width=1200,height=800,top=100,left=200,resizable=no'); return false;">
 					예매하기 </a>
 				<%
 				} else {
