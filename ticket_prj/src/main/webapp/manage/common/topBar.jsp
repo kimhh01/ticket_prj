@@ -3,6 +3,113 @@
 
 <%@ page import="kr.admin.adminLogin.AdminInfoDTO" %>
 
+<style>
+
+/* ── Topbar ── */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #E5E7EB;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topbar-logo {
+    font-size: 18px;
+    font-weight: 400;
+    color: #111;
+}
+
+.topbar-logo strong {
+    font-weight: 700;
+}
+
+.topbar-subtitle {
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.topbar-divider {
+    width: 1px;
+    height: 14px;
+    background: #E5E7EB;
+}
+
+.topbar-right a {
+    color: #6B7280;
+    text-decoration: none;
+}
+
+.topbar-right a:hover {
+    color: #111;
+}
+
+.topbar-logo {
+	color: #e50020;
+	font-weight: 900px;
+}
+
+/* 세션 표시용 디자인 */
+.topbar-admin-name {
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.topbar-admin-name:hover {
+    color: #e9363f;
+    text-decoration: underline;
+}
+
+.session-timer {
+    margin-left: 14px;
+    font-size: 13px;
+    color: #666;
+}
+
+.session-timer strong {
+    margin-left: 5px;
+    color: #e9363f;
+}
+
+.session-extend-btn {
+    margin-left: 6px;
+    padding: 4px 9px;
+
+    border: 1px solid #ddd;
+    border-radius: 5px;
+
+    background: #fff;
+    color: #333;
+
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.session-extend-btn:hover {
+    background: #f5f5f5;
+}
+</style>
+
 <%!
     private String topbarH(String value) {
 
@@ -40,7 +147,7 @@
 
 <header class="topbar">
     <div class="topbar-left">
-        <span class="topbar-logo">ticket<strong>LINK</strong></span>
+        <span class="topbar-logo"><strong>BallPick⚾</strong></span>
         <span class="topbar-subtitle">야구 관리자</span>
     </div>
 

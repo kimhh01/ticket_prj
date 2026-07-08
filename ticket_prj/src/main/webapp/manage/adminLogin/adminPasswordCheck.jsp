@@ -243,7 +243,7 @@ body {
 
                     <button type="button"
                             class="btn btn-cancel"
-                            onclick="location.href='<%= request.getContextPath() %>/manage/dashboard/main.jsp';">
+                            onclick="location.href='<%= request.getContextPath() %>/admin/dashboard';">
                         취소
                     </button>
 

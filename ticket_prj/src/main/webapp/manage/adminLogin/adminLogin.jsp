@@ -155,6 +155,11 @@ button{width:100%;height:40px;border:0;border-radius:6px;background:#e9363f;
 	color:white;font-weight:bold;cursor:pointer;}
 button:hover{background:#d92f37;}
 
+.topbar-logo {
+	color: #e50020;
+	font-weight: 900px;
+	font-size: large;
+}
 
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -197,8 +202,8 @@ $(function(){
 <body>
 <div id="wrap">
 <div id="header">
-	<img src="../images/logo.png" class="logo" alt="ticket">
-	<span>관리자</span>
+    <span class="topbar-logo"><strong>BallPick⚾</strong></span>
+
 </div>
 
 <div id="container">

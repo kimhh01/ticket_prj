@@ -4,6 +4,52 @@
 <%@ page import="kr.admin.team.TeamInfoDTO" %>
 <%@ page import="kr.admin.common.TeamOptionDTO" %>
 <%@ page import="kr.admin.common.StadiumOptionDTO" %>
+
+<%!
+    private String teamLogoSrc(javax.servlet.http.HttpServletRequest request,
+                               String dbValue) {
+        if (dbValue == null) {
+            return "";
+        }
+
+        String value = dbValue.trim();
+
+        if (value.isEmpty()) {
+            return "";
+        }
+
+        value = value.replace("\\", "/");
+
+        if (value.startsWith("http://") ||
+            value.startsWith("https://")) {
+            return value;
+        }
+
+        String contextPath = request.getContextPath();
+
+        if (value.startsWith(contextPath + "/")) {
+            return value;
+        }
+
+        if (value.startsWith("/")) {
+            return contextPath + value;
+        }
+
+        return contextPath + "/upload/team_logo/" + value;
+    }
+
+    private String h(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        return value.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("\"", "&quot;");
+    }
+%>
+
 <%
 // 활성 메뉴 설정 → sidebar.jsp에서 참조
     request.setAttribute("activeMenu", "teamManagement");
@@ -34,51 +80,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>야구 팀 관리 - ticketLINK</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Noto Sans KR', sans-serif; background: #F5F5F5; }
 
-        /* ── Topbar ── */
-        .topbar {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; height: 56px;
-            background: #fff;
-            border-bottom: 1px solid #E5E7EB;
-            position: sticky; top: 0; z-index: 100;
-        }
-        .topbar-left { display: flex; align-items: center; gap: 8px; }
-        .topbar-logo { font-size: 18px; font-weight: 400; color: #111; }
-        .topbar-logo strong { font-weight: 700; }
-        .topbar-subtitle { font-size: 13px; color: #6B7280; }
-        .topbar-right { display: flex; align-items: center; gap: 16px; font-size: 13px; color: #6B7280; }
-        .topbar-divider { width: 1px; height: 14px; background: #E5E7EB; }
-        .topbar-right a { color: #6B7280; text-decoration: none; }
-        .topbar-right a:hover { color: #111; }
-
         /* ── Layout ── */
         .layout { display: flex; min-height: calc(100vh - 56px); }
 
-        /* ── Sidebar ── */
-        .sidebar {
-            width: 200px; flex-shrink: 0;
-            background: #fff;
-            border-right: 1px solid #E5E7EB;
-            padding: 12px 0;
-        }
-        .nav-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 20px;
-            font-size: 14px; color: #6B7280;
-            cursor: pointer;
-        }
-        .nav-item i { font-size: 18px; }
-        .nav-item:hover { background: #F9FAFB; color: #111; }
-        .nav-item.active { background: #FDEDF0; color: #C0394B; font-weight: 500; }
-
         /* ── Main ── */
         .main { flex: 1; padding: 28px 32px; }
-        .page-title { font-size: 20px; font-weight: 500; margin-bottom: 20px; color: #111; }
+        .page-title { font-size: 35px; font-weight: 700; margin-bottom: 20px; color: #111; }
 
         /* ── Card ── */
         .card {
@@ -537,46 +548,6 @@
     word-break: keep-all;
 }
 
-/* 세션 표시용 디자인 */
-.topbar-admin-name {
-    color: #333;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.topbar-admin-name:hover {
-    color: #e9363f;
-    text-decoration: underline;
-}
-
-.session-timer {
-    margin-left: 14px;
-    font-size: 13px;
-    color: #666;
-}
-
-.session-timer strong {
-    margin-left: 5px;
-    color: #e9363f;
-}
-
-.session-extend-btn {
-    margin-left: 6px;
-    padding: 4px 9px;
-
-    border: 1px solid #ddd;
-    border-radius: 5px;
-
-    background: #fff;
-    color: #333;
-
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.session-extend-btn:hover {
-    background: #f5f5f5;
-}
 </style>
 </head>
 <body>
@@ -762,18 +733,12 @@
 			
 			                if (teamLogoImg != null && !teamLogoImg.trim().isEmpty()) {
 			
-			                    String logoSrc = request.getContextPath();
-			
-			                    if (teamLogoImg.startsWith("/")) {
-			                        logoSrc += teamLogoImg;
-			                    } else {
-			                        logoSrc += "/" + teamLogoImg;
-			                    }
+			                	String logoSrc = teamLogoSrc(request, teamLogoImg);
 			                %>
 			
-			                <img src="<%= logoSrc %>"
-			                     alt="<%= t.getTeamName() %> 로고"
-			                     class="team-logo-img">
+							<img src="<%= h(logoSrc) %>"
+							     alt="<%= h(t.getTeamName()) %> 로고"
+							     class="team-logo-img">
 			
 			                <%
 			                } else {
