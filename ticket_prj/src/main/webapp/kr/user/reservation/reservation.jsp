@@ -328,19 +328,19 @@
 							</div>
 							<div class="consent-item">
 								<div class="consent-left">
-									<input type="checkbox" id="check-consent-3"> <span>개인정보 제 3자 제공에 동의합니다. (필수)</span>
+									<input type="checkbox" id="check-consent-2"> <span>개인정보 제 3자 제공에 동의합니다. (필수)</span>
 								</div>
 								<span class="link-detail" onclick="openDetailModal(2)">[상세보기]</span>
 							</div>
 							<div class="consent-item">
 								<div class="consent-left">
-									<input type="checkbox" id="check-consent-4"> <span>KBO리그 SAFE캠페인에 동의합니다. (필수)</span>
+									<input type="checkbox" id="check-consent-3"> <span>KBO리그 SAFE캠페인에 동의합니다. (필수)</span>
 								</div>
 								<span class="link-detail" onclick="openDetailModal(3)">[상세보기]</span>
 							</div>
 							<div class="consent-item">
 								<div class="consent-left">
-									<input type="checkbox" id="check-consent-5"> <span>암표매매 행위에 따른 제재사항 동의 (필수)</span>
+									<input type="checkbox" id="check-consent-4"> <span>암표매매 행위에 따른 제재사항 동의 (필수)</span>
 								</div>
 								<span class="link-detail" onclick="openDetailModal(4)">[상세보기]</span>
 							</div>
@@ -580,9 +580,9 @@
 	
 	    function triggerFinalPayment() {
 	        if (!document.getElementById('check-consent-1').checked || 
+	            !document.getElementById('check-consent-2').checked || 
 	            !document.getElementById('check-consent-3').checked || 
-	            !document.getElementById('check-consent-4').checked || 
-	            !document.getElementById('check-consent-5').checked) {
+	            !document.getElementById('check-consent-4').checked) {
 	            alert("필수동의 항목에 동의하셔야 합니다.");
 	            return;
 	        }
@@ -638,7 +638,7 @@
 	                  "3. 보유/이용 기간\n" +
 	                  " - 예매일로부터 5년 후 파기"
 	        },
-	        3: {
+	        2: {
 	            title: "개인정보 제3자 정보제공",
 	            text: "예매티켓 대행처리 목적으로 기재된 개인정보를 가맹점 및 제휴사에 제공하고자 합니다.\n\n" +
 	                  "1. 개인정보를 제공받는 자\n" +
@@ -650,7 +650,7 @@
 	                  "4. 보유 및 이용기간\n" +
 	                  " - 이용 목적이 달성되거나 구단 사이의 계약 만료 후 지체없이 파기"
 	        },
-	        4: {
+	        3: {
 	            title: "KBO리그 SAFE 캠페인 동의",
 	            text: "<SAFE 캠페인의 의의>\n" +
 	                  " - SAFE 캠페인은 더 안전하고 쾌적한 야구장 관람 문화를 만들기 위해 다양한 안전관람수칙을 준수하는 야구 팬들과 구단이 함께 만드는 수칙입니다.\n\n" +
@@ -658,7 +658,7 @@
 	                  " - 1인당 가방 1개 및 쇼핑백 1개에 한하여 반입 가능합니다.\n" +
 	                  " - 캔 및 유리병 종류의 주류, 음료 등은 관람객의 안전을 저해할 수 있어 경기장 내 일체 반입이 금지됩니다."
 	        },
-	        5: {
+	        4: {
 	            title: "프로스포츠 암표매매 행위 제재 동의",
 	            text: "티켓 불법 재판매 및 암표 거래 시 형사 처벌 대상이 될 수 있으며, 암표 거래 연루 티켓은 구단의 재량에 의해 사전 통보 없이 일방적으로 취소 처리 및 아이디 영구 이용 정지 조치가 취해질 수 있음에 동의합니다."
 	        }

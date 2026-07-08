@@ -90,12 +90,13 @@
 		});
 
 		//예매 가이드 사이트 새 창으로 여는 함수
-		$(".guideBtn").click(
-				function() {
-					window.open(contextPath
-							+ "/kr/user/reservationGuide/reservationGuide.jsp",
-							"_blank", "width=900,height=700");
-				});
+		$(".guideBtn").click(function () {
+		    window.open(
+		        contextPath + "/reservationGuide",
+		        "_blank",
+		        "width=900,height=700"
+		    );
+		});
 
 		//구단 사이트로 이동하는 새 창을 여는 함수
 		$(".introduceBtn").click(function() {
