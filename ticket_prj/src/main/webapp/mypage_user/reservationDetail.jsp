@@ -265,7 +265,7 @@ body{
 
             <tr>
                 <th>결제수단</th>
-                <td>//가데이터//신용카드</td>
+                <td>${paymentInfo.paymentAmount}원</td>
             </tr>
 
         </table>
@@ -302,6 +302,14 @@ body{
 <td>${seat.ticketPrice}원</td>
 
 <td>${seat.reservationStatus}
+
+<c:if test="${not empty gameInfo.cancelDate}">
+            <br>
+            <span style="font-size:12px;color:gray;">
+                예매일 : ${gameInfo.cancelDate}
+            </span>
+        </c:if>
+        
 <c:if test="${not empty gameInfo.cancelDate}">
             <br>
             <span style="font-size:12px;color:gray;">
