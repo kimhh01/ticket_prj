@@ -101,7 +101,7 @@ public class ReservationServlet extends HttpServlet {
 				if (totalQuantity <= 0 || totalQuantity > 3) {
 				    response.sendRedirect(
 				        request.getContextPath()
-				        + "kr/user/reservation/reservationFail.jsp?message=잘못된 예매 수량입니다.");
+				        + "/kr/user/reservation/reservationFail.jsp?message=잘못된 예매 수량입니다.");
 				    return;
 				}
 				
@@ -113,7 +113,7 @@ public class ReservationServlet extends HttpServlet {
 				if (adultPrice <= 0 || youthPrice <= 0 || childPrice <= 0) {
 				    response.sendRedirect(
 				        request.getContextPath()
-				        + "kr/user/reservation/reservationFail.jsp?message=존재하지 않는 좌석입니다.");
+				        + "/kr/user/reservation/reservationFail.jsp?message=존재하지 않는 좌석입니다.");
 				    return;
 				}
 				
@@ -177,13 +177,13 @@ public class ReservationServlet extends HttpServlet {
 					request.getRequestDispatcher("kr/user/reservation/reservationSuccess.jsp").forward(request, response);
 				} else {
 					response.sendRedirect(request.getContextPath()
-							+ "kr/user/reservation/reservationFail.jsp?code=DB_ERR&message=DB_Save_Failed");
+							+ "/kr/user/reservation/reservationFail.jsp?code=DB_ERR&message=DB_Save_Failed");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 
 				response.sendRedirect(request.getContextPath()
-						+ "kr/user/reservation/reservationFail.jsp?code=SYSTEM_ERR&message=" + e.getMessage());
+						+ "/kr/user/reservation/reservationFail.jsp?code=SYSTEM_ERR&message=" + e.getMessage());
 			}
 		}
 
