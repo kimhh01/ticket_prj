@@ -169,10 +169,13 @@ public class ReservationServlet extends HttpServlet {
 					
 					// 성공 페이지 데이터 추가 조회
 					String seatName = rService.getSeatName(stadiumSeatCode);
+					ReservationDTO gameInfo = rService.searchGame(gameScheduleCode);
+					
 					request.setAttribute("reservationCode", reservationCode);
 					request.setAttribute("payPrice", payPrice);
 					request.setAttribute("reservationQuantity", totalQuantity);
 					request.setAttribute("selectedSeatName", seatName);
+					request.setAttribute("gameInfo", gameInfo);
 
 					request.getRequestDispatcher("kr/user/reservation/reservationSuccess.jsp").forward(request, response);
 				} else {
