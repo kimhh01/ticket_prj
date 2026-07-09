@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>문의 등록 완료 | BallPick</title>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/kr/user/inquiry/inquiry.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/kr/user/inquiry/inquiry.css?v=20260709-1">
 
 <style>
 .success-wrap {

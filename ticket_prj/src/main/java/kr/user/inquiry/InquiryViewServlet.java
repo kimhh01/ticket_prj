@@ -237,7 +237,7 @@ public class InquiryViewServlet extends HttpServlet {
 			}
 
 			// 답변 완료된 문의는 수정 불가
-			if (!"답변대기".equals(inquiry.getInquiryStatus())) {
+			if (!inquiryService.checkReplyStatus(inquiryCode, loginMember.getMemberCode())) {
 				response.sendRedirect(request.getContextPath() + "/user-inquiry/detail?inquiryCode=" + inquiryCode);
 				return;
 			}
@@ -268,6 +268,19 @@ public class InquiryViewServlet extends HttpServlet {
 			return;
 		}
 
+		boolean editable = inquiryService.checkReplyStatus(inquiryCode, loginMember.getMemberCode());
+		if (!editable) {
+			prepareCategories(request);
+			request.setAttribute("inquiryCode", inquiryCode);
+			request.setAttribute("selectedCategoryCode", form.categoryCode);
+			request.setAttribute("formTitle", escapeHtml(form.title));
+			request.setAttribute("formContent", escapeHtml(form.content));
+			request.setAttribute("errorMessage", "이미 답변이 등록된 문의는 수정할 수 없습니다.");
+
+			forward(request, response, "edit.jsp");
+			return;
+		}
+
 		InquiryDTO inquiryDTO = new InquiryDTO();
 		inquiryDTO.setInquiryCode(inquiryCode);
 		inquiryDTO.setMemberCode(loginMember.getMemberCode());
@@ -285,7 +298,7 @@ public class InquiryViewServlet extends HttpServlet {
 			request.setAttribute("selectedCategoryCode", form.categoryCode);
 			request.setAttribute("formTitle", escapeHtml(form.title));
 			request.setAttribute("formContent", escapeHtml(form.content));
-			request.setAttribute("errorMessage", "이미 답변이 등록된 문의는 수정할 수 없습니다.");
+			request.setAttribute("errorMessage", "문의 수정에 실패했습니다. 다시 시도해 주세요.");
 
 			forward(request, response, "edit.jsp");
 		}
@@ -359,7 +372,7 @@ public class InquiryViewServlet extends HttpServlet {
 	private FormData readForm(HttpServletRequest request) {
 		int categoryCode = parseInt(request.getParameter("inquiryCategoryCode"));
 		String title = trim(request.getParameter("inquiryTitle"));
-		String content = trim(request.getParameter("inquiryContent"));
+		String content = normalizeLineBreaks(request.getParameter("inquiryContent"));
 
 		return new FormData(categoryCode, title, content);
 	}
@@ -379,7 +392,7 @@ public class InquiryViewServlet extends HttpServlet {
 			return "제목은 1자 이상 100자 이하로 입력해 주세요.";
 		}
 
-		if (form.content.isEmpty() || form.content.length() > 255) {
+		if (form.content.trim().isEmpty() || form.content.length() > 255) {
 			return "문의 내용은 1자 이상 255자 이하로 입력해 주세요.";
 		}
 
@@ -423,6 +436,15 @@ public class InquiryViewServlet extends HttpServlet {
 	 */
 	private String trim(String value) {
 		return value == null ? "" : value.trim();
+	}
+
+	/**
+	 * textarea는 화면에서는 줄바꿈을 \n 1글자로 세지만,
+	 * 폼 전송 과정에서 \r\n으로 들어올 수 있어 서버 길이와 화면 카운터가 달라질 수 있다.
+	 * 저장/검증 전에 \n으로 통일해서 255/255 표시와 서버 검증 기준을 맞춘다.
+	 */
+	private String normalizeLineBreaks(String value) {
+		return value == null ? "" : value.replace("\r\n", "\n").replace("\r", "\n");
 	}
 
 	/**

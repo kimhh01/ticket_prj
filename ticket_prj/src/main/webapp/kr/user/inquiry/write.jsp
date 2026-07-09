@@ -34,7 +34,7 @@ String formContent = request.getAttribute("formContent") == null ? "" : (String)
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>1:1 문의하기 | BallPick</title>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/kr/user/inquiry/inquiry.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/kr/user/inquiry/inquiry.css?v=20260709-1">
 </head>
 <body>
 <jsp:include page="/fragment/header.jsp" />
@@ -109,7 +109,7 @@ String formContent = request.getAttribute("formContent") == null ? "" : (String)
         let message = "";
         if (category.value === "") message = "문의 유형을 선택해 주세요.";
         else if (title.value.trim().length < 1 || title.value.trim().length > 100) message = "제목은 1자 이상 100자 이하로 입력해 주세요.";
-        else if (content.value.trim().length < 1 || content.value.trim().length > 255) message = "문의 내용은 1자 이상 255자 이하로 입력해 주세요.";
+        else if (content.value.trim().length < 1 || content.value.length > 255) message = "문의 내용은 1자 이상 255자 이하로 입력해 주세요.";
 
         if (message !== "") {
             event.preventDefault();
