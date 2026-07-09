@@ -1,7 +1,7 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="javax.servlet.http.HttpServletRequest"%>
 <%@page import="kr.user.inquiry.InquiryDTO"%>
-<%@page import="kr.common.InquiryType"%>
+<%@page import="kr.user.common.InquiryType"%>
 <%@page import="java.util.List"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -29,7 +29,7 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>내 문의내역 | BallPick</title>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/kr/user/inquiry/inquiry.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/kr/user/inquiry/inquiry.css?v=20260709-1">
 </head>
 <body>
 <jsp:include page="/fragment/header.jsp" />
@@ -73,7 +73,8 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 									? "inquiry-status-done"
 									: "inquiry-status-wait";
 						%>
-							<tr>
+							<tr class="inquiry-list-row"
+								onclick="window.location.href='<%=request.getContextPath()%>/user-inquiry/detail?inquiryCode=<%= inquiry.getInquiryCode() %>'">
 								<td><%= displayNo %></td>
 								<td><%= getCategoryName(inquiry.getInquiryCategoryCode()) %></td>
 								<td class="inquiry-list-title">

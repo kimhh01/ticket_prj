@@ -145,6 +145,11 @@ public class MemberViewServlet extends HttpServlet {
 		request.changeSessionId();
 		session.setAttribute("loginMember", loginMember);
 
+		// 접속로그 저장 실패가 정상 로그인을 막지는 않도록 서버 로그만 남긴다.
+		if (!memberService.recordLogin(loginMember.getMemberCode(), request.getRemoteAddr())) {
+			getServletContext().log("회원 접속로그 저장 실패: " + loginMember.getMemberCode());
+		}
+
 		String redirectPath = getSafeRedirectPath(request.getParameter("redirect"));
 		response.sendRedirect(request.getContextPath()
 				+ (redirectPath.isEmpty() ? "/main" : redirectPath));

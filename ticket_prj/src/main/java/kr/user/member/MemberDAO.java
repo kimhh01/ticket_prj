@@ -413,5 +413,26 @@ public class MemberDAO {
 		return cnt;
 	}
 
+	/**
+	 * 로그인에 성공한 회원의 접속 이력을 저장한다.
+	 */
+	public int insertConnectionLog(String memberCode, String ipAddress) {
+		String sql =
+			" INSERT INTO CONNECTION_LOG (MEMBER_ID, IP_ADDRESS, CONNECTION_DATE) " +
+			" VALUES (?, ?, SYSDATE) ";
+
+		try (Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+			pstmt.setString(1, memberCode);
+			pstmt.setString(2, ipAddress);
+
+			return pstmt.executeUpdate();
+		} catch (SQLException se) {
+			se.printStackTrace();
+			return 0;
+		}
+	}
+
 
 }

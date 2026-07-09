@@ -22,6 +22,13 @@ public class MemberService {
 	}
 
 	/**
+	 * 로그인에 성공한 회원의 접속 이력을 저장한다.
+	 */
+	public boolean recordLogin(String memberCode, String ipAddress) {
+		return memberDAO.insertConnectionLog(memberCode, ipAddress) == 1;
+	}
+
+	/**
 	 * 회원가입 정보를 DB에 저장한다.
 	 */
 	public boolean register(MemberDTO memberDTO) {

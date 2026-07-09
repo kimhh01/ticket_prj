@@ -427,12 +427,19 @@
 
 .inquiry-detail-row dd {
 	color: #333;
+	min-width: 0;
+	max-width: 100%;
+	overflow: hidden;
+	overflow-wrap: anywhere;
+	word-break: break-all;
 }
 
 .inquiry-detail-row-content dd {
 	min-height: 180px;
 	white-space: pre-wrap;
 	line-height: 1.8;
+	overflow-wrap: anywhere;
+	word-break: break-all;
 }
 
 .inquiry-status {
@@ -556,6 +563,9 @@
 		color: #555;
 		font-weight: 700;
 	}
+	.inquiry-list-row {
+		cursor: pointer;
+	}
 	.inquiry-list-table th:nth-child(1), .inquiry-list-table td:nth-child(1)
 		{
 		width: 70px;
@@ -579,7 +589,7 @@
 		color: #222;
 		text-decoration: none;
 	}
-	.inquiry-list-title a:hover {
+	.inquiry-list-row:hover .inquiry-list-title a {
 		color: var(--inquiry-red);
 		text-decoration: underline;
 	}
