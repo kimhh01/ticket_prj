@@ -84,6 +84,11 @@
         dailyList =
                 new java.util.ArrayList<DailyChartDTO>();
     }
+    
+    String crawlerMsg =
+            (String) session.getAttribute("crawlerMsg");
+
+    session.removeAttribute("crawlerMsg");
 %>
 
 <!DOCTYPE html>
@@ -398,6 +403,69 @@ body {
     color: #111827;
 }
 
+/* == 크롤링 버튼 디자인 */
+.crawler-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+    padding: 22px 25px;
+
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 16px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
+}
+
+.crawler-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.crawler-desc {
+    margin-top: 7px;
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.crawler-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 11px 18px;
+
+    background: #111827;
+    color: #fff;
+
+    border: none;
+    border-radius: 9px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.crawler-btn:hover {
+    background: #374151;
+}
+
+.crawler-btn i {
+    font-size: 17px;
+}
+
+@media (max-width: 1100px) {
+    .crawler-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
 canvas {
     max-height: 310px;
 }
@@ -415,6 +483,19 @@ canvas {
 </head>
 
 <body>
+
+<%
+    if (crawlerMsg != null && !crawlerMsg.trim().isEmpty()) {
+%>
+<script>
+    alert("<%= crawlerMsg.replace("\\", "\\\\")
+                         .replace("\"", "\\\"")
+                         .replace("\r", "")
+                         .replace("\n", "\\n") %>");
+</script>
+<%
+    }
+%>
 
 <%@ include file="../common/topBar.jsp" %>
 
@@ -512,6 +593,32 @@ canvas {
             </div>
 
         </div>
+        
+        <div class="crawler-box">
+
+		    <div>
+		        <div class="crawler-title">
+		            KBO 팀 경기 기록 갱신
+		        </div>
+		
+		        <div class="crawler-desc">
+		            KBO 순위 데이터를 크롤링한 뒤 GAME_RECORD 테이블에 최신 팀 기록을 반영합니다.
+		        </div>
+		    </div>
+		
+		    <form method="post"
+		          action="${pageContext.request.contextPath}/admin/dashboard/kboRecord/run"
+		          onsubmit="return confirmCrawlerRun(this);">
+		
+		        <button type="submit"
+		                class="crawler-btn">
+		            <i class="ti ti-refresh"></i>
+		            기록 즉시 갱신
+		        </button>
+		
+		    </form>
+		
+		</div>
 
         <div class="chart-row">
 
@@ -546,6 +653,24 @@ canvas {
 </div>
 
 <script>
+
+function confirmCrawlerRun(form) {
+
+    if (!confirm("KBO 팀 경기 기록을 지금 갱신하시겠습니까?")) {
+        return false;
+    }
+
+    const button =
+            form.querySelector("button[type='submit']");
+
+    if (button) {
+        button.disabled = true;
+        button.innerHTML =
+                '<i class="ti ti-loader-2"></i> 갱신 중...';
+    }
+
+    return true;
+}
 $(function() {
 
     if (typeof ChartDataLabels !== 'undefined') {
