@@ -333,17 +333,17 @@ $(function(){
     });
 
     // 상세창
-    $(".reservation-row").click(function(){
+$(".reservation-row, .cancel-row").click(function(){
 
-        var reservationId=$(this).data("id");
+    var reservationId=$(this).data("id");
 
-        window.open(
-            "reservationDetail.jsp?reservationId="+reservationId,
-            "detail",
-            "width=900,height=700"
-        );
+    window.open(
+        "reservationDetail.jsp?reservationId="+reservationId,
+        "detail",
+        "width=900,height=700"
+    );
 
-    });
+});
 
     // 월별조회
     $("#searchMonthBtn").click(function(){

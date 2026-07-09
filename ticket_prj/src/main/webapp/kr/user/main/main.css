@@ -484,11 +484,11 @@
 }
 
 .event-banner {
-	height: 180px;
+	height: 200px;
 	border-radius: 18px;
 	overflow: hidden;
-	background: #fff;
-	border: 1px solid #e5e5e5;
+	
+
 	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
 }
 

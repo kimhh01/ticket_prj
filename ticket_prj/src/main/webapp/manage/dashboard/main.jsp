@@ -674,15 +674,17 @@ $(function() {
             data: {
                 labels: [
                     "예매 완료",
-                    "취소"
+                    "취소",
+                    "대기중"
                 ],
                 datasets: [
                     {
                         data: [
                             <%= chartDTO.getBookingCount() %>,
-                            <%= chartDTO.getCancelCount() %>
+                            <%= chartDTO.getCancelCount() %>,
+                            <%= chartDTO.getWaitingCount() %>
                         ],
-                        borderWidth: 2
+                        borderWidth: 3
                     }
                 ]
             },

@@ -200,6 +200,17 @@
     color:#2f80ff;
 }
 
+/* --------------취소내역에 커서 올라갔을때     */
+
+.cancel-row{
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.cancel-row:hover td{
+    color:#2f80ff;
+}
+
 /* ---------상세 팝업창  */
 .detail-modal{
     border-radius:12px;
@@ -605,8 +616,14 @@
 }
 
 .cancel-btn{
-    background:#fff;
-    border:1px solid #ddd;
+   background:#18181f;
+    color:#fff;
+    border:0;
+}
+
+.cancel-btn:hover{
+    background:#FF0000;
+    border-color:#333;
 }
 
 .save-btn{
@@ -614,3 +631,8 @@
     color:#fff;
     border:0;
 }
+.save-btn:hover{
+    background:#FF0000;
+    border-color:#333;
+}
+

@@ -46,6 +46,22 @@
 
         return value.equals(target) ? "selected=\"selected\"" : "";
     }
+    
+    private String statusClass(String state) {
+        if (state == null || state.trim().isEmpty() || "-".equals(state)) {
+            return "status-end";
+        }
+
+        if (state.contains("예정")) {
+            return "status-ready";
+        }
+
+        if (state.contains("취소") || state.contains("매진") || state.contains("종료")) {
+            return "status-end";
+        }
+
+        return "status-progress";
+    }
 %>
 
 <%
@@ -433,6 +449,40 @@ body{
     color:#EF4444;
     font-weight:700;
 }
+
+.status{
+    font-size:13px;
+    font-weight:700;
+}
+
+.status-progress{
+    color:#EF4444;
+}
+
+.status-ready{
+    color:#2563EB;
+}
+
+.status-end{
+    color:#9CA3AF;
+}
+
+.cancel-done{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:56px;
+    height:32px;
+
+    border-radius:6px;
+
+    background:#F3F4F6;
+    color:#9CA3AF;
+
+    font-size:13px;
+    font-weight:600;
+}
 </style>
 </head>
 
@@ -584,6 +634,7 @@ body{
                         <th style="width:90px;">수량</th>
                         <th style="width:130px;">결제금액</th>
                         <th style="width:170px;">예매일</th>
+                        <th style="width:110px;">상태</th>
                         <th style="width:100px;">관리</th>
                     </tr>
                 </thead>
@@ -595,7 +646,7 @@ body{
                 %>
 
                     <tr>
-                        <td colspan="9">
+                        <td colspan="10">
                             <div class="empty-body">
                                 <i class="ti ti-search-off empty-icon"></i>
 
@@ -645,32 +696,59 @@ body{
                             <%=nf.format(ticket.getPaymentPrice())%>원
                         </td>
 
-                        <td>
-                            <%=h(ticket.getReservationDate())%>
-                        </td>
-
-                        <td>
-                            <div class="action-area">
-                                <form method="post"
-                                      action="<%=contextPath%>/admin/ticket/cancel"
-                                      onsubmit="return confirm('해당 예매를 취소하시겠습니까?');">
-
-                                    <input type="hidden"
-                                           name="reservationCode"
-                                           value="<%=ticket.getReservationCode()%>">
-
-                                    <input type="hidden"
-                                           name="returnUrl"
-                                           value="<%=h(returnUrl)%>">
-
-                                    <button type="submit"
-                                            class="cancel-btn">
-                                        예매취소
-                                    </button>
-
-                                </form>
-                            </div>
-                        </td>
+						<td>
+						    <%=h(ticket.getReservationDate())%>
+						</td>
+						
+						<%
+						    String reservationState = ticket.getReservationState();
+						    boolean canceled = "취소".equals(reservationState);
+						%>
+						
+						<td>
+						    <span class="status <%=statusClass(reservationState)%>">
+						        <%= canceled ? "취소됨" : h(reservationState) %>
+						    </span>
+						</td>
+						
+						<td>
+						    <%
+						    if (canceled) {
+						    %>
+						
+						        <span class="cancel-done">
+						            취소됨
+						        </span>
+						
+						    <%
+						    } else {
+						    %>
+						
+						        <div class="action-area">
+						            <form method="post"
+						                  action="<%=contextPath%>/admin/ticket/cancel"
+						                  onsubmit="return confirm('해당 예매를 취소하시겠습니까?');">
+						
+						                <input type="hidden"
+						                       name="reservationCode"
+						                       value="<%=ticket.getReservationCode()%>">
+						
+						                <input type="hidden"
+						                       name="returnUrl"
+						                       value="<%=h(returnUrl)%>">
+						
+						                <button type="submit"
+						                        class="cancel-btn">
+						                    취소
+						                </button>
+						
+						            </form>
+						        </div>
+						
+						    <%
+						    }
+						    %>
+						</td>
                     </tr>
 
                 <%

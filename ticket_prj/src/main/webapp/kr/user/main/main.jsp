@@ -333,11 +333,13 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 	<section class="event-section" id="event">
 		<h2 class="section-title">이벤트</h2>
 
+
 		<div class="event-list">
+
 
 			<!-- 이벤트 1 : 신규 회원 이벤트 -->
 			<div class="event-banner">
-				<a href="<%=request.getContextPath()%>/user_event/eventDetail_1.jsp">
+			<a href="<%=request.getContextPath()%>/user_event/eventDetail.jsp?eventId=1">
 					<img
 					src="<%=request.getContextPath()%>/images/event/event1_banner.png"
 					alt="신규 회원 이벤트"
@@ -346,14 +348,14 @@ SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd (E)", Locale.KOREAN);
 				</a>
 			</div>
 
-			<!-- 이벤트 2 : 구단 할인 이벤트 -->
+			<!-- 이벤트 2 : 여름 할인 이벤트 -->
 			<div class="event-banner">
-				<a href="<%=request.getContextPath()%>/user_event/eventDetail_2.jsp">
+			<a href="<%=request.getContextPath()%>/user_event/eventDetail.jsp?eventId=2">
 					<img
-					src="<%=request.getContextPath()%>/images/event/event2_banner.png"
-					alt="구단 할인 이벤트"
+					src="<%=request.getContextPath()%>/images/event/summer_coupon_thumnail.png"
+					alt="여름 할인 이벤트"
 					onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-					<div class="event-empty" style="display: none;">구단 할인 이벤트 이미지</div>
+					<div class="event-empty" style="display: none;">여름 할인 20% 할인 이벤트</div>
 				</a>
 			</div>
 

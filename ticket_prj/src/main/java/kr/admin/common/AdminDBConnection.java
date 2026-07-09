@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 
 public final class AdminDBConnection {
 
-    private static final String JNDI_NAME = "java:comp/env/jdbc/dbcp";
+    private static final String JNDI_NAME = "java:comp/env/jdbc/ticketDB";
 
     private final DataSource dataSource;
 

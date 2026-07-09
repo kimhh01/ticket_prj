@@ -88,10 +88,7 @@ public class TicketManagementService {
         return dao.selectReservationTotalCount(scheduleCode, zoneCode);
     }
 
-    public List<TicketReservationListDTO> getReservationList(
-            int scheduleCode,
-            int zoneCode,
-            BoardRangeDTO range) {
+	public List<TicketReservationListDTO> getReservationList(int scheduleCode, int zoneCode, BoardRangeDTO range) {
 
         return dao.selectReservationList(scheduleCode, zoneCode, range);
     }

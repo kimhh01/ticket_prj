@@ -13,15 +13,6 @@ MemberDTO memberDTO = service.getMyDetail(loginMember.getMemberCode());
 
 %>
 
-<%
-out.println(loginMember.getMemberCode());
-out.println("<br>");
-
-out.println("SMS : [" + memberDTO.getSmsReceiveYN() + "]");
-out.println("<br>");
-
-out.println("EMAIL : [" + memberDTO.getEmailReceiveYN() + "]");
-%>
 
 <%
 String[] phone = memberDTO.getPhone().split("-");

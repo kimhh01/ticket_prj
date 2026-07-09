@@ -103,15 +103,65 @@
     </div>
 </div>
 
+
+        
+		<!--회원 탈퇴 비밀번호 확인  -->
+		
+<div class="modal fade" id="checkPwModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">비밀번호 확인</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <p>회원 탈퇴를 위해 비밀번호를 입력해주세요.</p>
+
+                <input type="password"
+                       id="checkCurrentPw"
+                       class="form-control"
+                       placeholder="현재 비밀번호">
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    취소
+                </button>
+
+                <button type="button"
+                        class="btn btn-dark"
+                        id="pwCheckBtn">
+                    확인
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 탈퇴 반복 확인창  -->	
 <div class="modal fade" id="withdrawModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
-            <div class="modal-body p-5">
+            <div class="modal-body p-5 text-center">
                 정말 탈퇴하시겠습니까?
             </div>
 
-            <div class="modal-footer border-0">
+            <div class="modal-footer border-0 justify-content-center">
+
                 <button type="button"
                         class="btn btn-dark"
                         id="confirmWithdraw">
@@ -123,12 +173,15 @@
                         data-bs-dismiss="modal">
                     취소
                 </button>
+
             </div>
 
         </div>
     </div>
-</div>
-
+</div>	
+	
+	
+	
 <div class="modal fade" id="completeModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -154,23 +207,55 @@
 <script>
 $(function(){
 
-    $("#withdrawBtn").click(function(){
+	$("#withdrawBtn").click(function(){
 
-        if(!$("#agree").is(":checked")){
+	    if(!$("#agree").is(":checked")){
+	    	new bootstrap.Modal(
+	    		    document.getElementById("alertModal")
+	    		).show();
+	        return;
+	    }
 
-            new bootstrap.Modal(
-                document.getElementById("alertModal")
-            ).show();
+	    new bootstrap.Modal(
+	        document.getElementById("checkPwModal")
+	    ).show();
 
-            return;
-        }
+	});
 
-        new bootstrap.Modal(
-            document.getElementById("withdrawModal")
-        ).show();
+	$("#pwCheckBtn").click(function(){
 
-    });
+	    $.ajax({
+	    	
+	    	 url:"checkWithdrawPassword.jsp", 
+	        type:"post",
+	        data:{
+	            pass:$("#checkCurrentPw").val()
+	        },
 
+	        success:function(result){
+
+	            if($.trim(result)=="success"){
+
+	                bootstrap.Modal.getInstance(
+	                    document.getElementById("checkPwModal")
+	                ).hide();
+
+	                new bootstrap.Modal(
+	                    document.getElementById("withdrawModal")
+	                ).show();
+
+	            }else{
+
+	                alert("비밀번호가 일치하지 않습니다.");
+
+	            }
+
+	        }
+
+	    });
+
+	});
+	
     $("#confirmWithdraw").click(function(){
 
         $.ajax({
