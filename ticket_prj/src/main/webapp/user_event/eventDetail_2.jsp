@@ -72,6 +72,7 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
     <span>${event.eventStartDate} ~ ${event.eventEndDate}</span>
 </div>
 
+
 <button
 type="button"
 class="coupon-btn"
@@ -79,116 +80,103 @@ onclick="location.href='couponDownload.jsp?couponCode=CP002'">
 쿠폰 다운로드
 </button>
 
-    <!-- 혜택안내 / 이용방법 -->
-   <div class="event-info-wrap2">
+     <!-- 혜택안내 / 이용방법 -->
+    <div class="event-info-wrap">
 
-    <!-- 혜택안내 -->
-    <div class="benefit-area2">
+        <div class="benefit-area">
 
-        <h3>① 혜택 안내</h3>
-        
+            <h3>① 혜택 안내</h3>
 
-        <table class="benefit-table">
+            <table class="benefit-table">
+                <tr>
+                    <th>항목</th>
+                    <th>내용</th>
+                </tr>
 
-            <tr>
-                <th>항목</th>
-                <th>내용</th>
-            </tr>
+                <tr>
+                    <td>대상</td>
+                    <td>BallPick 회원 누구나</td>
+                </tr>
 
-            <tr>
-                <td>대상</td>
-                <td>키움 히어로즈 홈경기 예매 고객</td>
-            </tr>
+                <tr>
+                    <td>혜택</td>
+                    <td>예매 시 20% 할인 쿠폰 제공</td>
+                </tr>
 
-            <tr>
-                <td>혜택</td>
-                <td>티켓 2,000원 할인</td>
-            </tr>
+                <tr>
+                    <td>적용 경기</td>
+                    <td>이벤트 기간 내 전 구단 일반 경기 (일부 경기 제외)</td>
+                </tr>
 
-            <tr>
-                <td>적용 경기</td>
-                <td>6월 홈경기 대상, 일부 특별 경기 제외</td>
-            </tr>
+                <tr>
+                    <td>사용 기간</td>
+                    <td>이벤트 기간 내 1회 사용 가능</td>
+                </tr>
 
-            <tr>
-                <td>사용 기간</td>
-                <td>이벤트 기간 내 1회 사용 가능</td>
-            </tr>
+                <tr>
+                    <td>적용 방법</td>
+                    <td>쿠폰 다운로드 후 결제 단계에서 적용</td>
+                </tr>
+            </table>
 
-            <tr>
-                <td>적용 방법</td>
-                <td>결제 단계에서 자동 할인 적용</td>
-            </tr>
+        </div>
 
-        </table>
+        <div class="method-area">
+
+            <h3>② 이용 방법</h3>
+
+            <div class="step-wrap">
+
+                <div class="step-box">
+                    <div class="step-num">1</div>
+                    <div class="step-icon">👤</div>
+                    <p>상단 쿠폰 다운로드</p>
+                </div>
+
+                <div class="arrow">〉</div>
+
+                <div class="step-box">
+                    <div class="step-num">2</div>
+                    <div class="step-icon">🏟</div>
+                    <p>홈경기 선택</p>
+                </div>
+
+                <div class="arrow">〉</div>
+
+                <div class="step-box">
+                    <div class="step-num">3</div>
+                    <div class="step-icon">🎟</div>
+                    <p>결제 시<br>'여름 할인 쿠폰(20%)' 선택</p>
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
+    <!-- 유의사항 -->
+    <div class="notice-area">
 
-    <!-- 이용방법 -->
-    <div class="method-area2">
-		<h3>2.이용방법</h3>
-		
-    <div class="step-wrap2">
+        <h3>③ 유의사항</h3>
 
-        <div class="step-box2">
-            <div class="step-num2">1</div>
-            <div class="step-icon2">
-                <i class="bi bi-display"></i>
-            </div>
-            <p>이벤트 페이지 접속</p>
-        </div>
+        <div class="notice-box">
 
-        <div class="arrow2">〉</div>
+            <div class="notice-icon">!</div>
 
-        <div class="step-box2">
-            <div class="step-num2">2</div>
-            <div class="step-icon2">
-                <i class="bi bi-building"></i>
-            </div>
-            <p>키움 홈경기 선택</p>
-        </div>
+            <ul>
+                <li>할인 쿠폰은 1인 1회만 다운로드 가능합니다.</li>
+                <li>이벤트 기간 내에만 사용할 수 있습니다.</li>
+                <li>일부 특가 경기 및 이벤트 경기는 할인 대상에서 제외됩니다.</li>
+                <li>다른 쿠폰 및 할인 혜택과 중복 사용할 수 없습니다.</li>
+            </ul>
 
-        <div class="arrow2">〉</div>
-
-        <div class="step-box2">
-            <div class="step-num2">3</div>
-            <div class="step-icon2">
-                <i class="bi bi-credit-card"></i>
-            </div>
-            <p>결제 시 자동 할인</p>
         </div>
 
     </div>
-</div>
-</div>
-
-<!-- 유의사항 -->
-<div class="notice-area2">
-
-    <h3>③ 유의사항</h3>
-
-    <div class="notice-box2">
-
-        <div class="notice-icon2">
-            !
-        </div>
-
-        <ul>
-            <li>타 할인 혜택과 중복 적용이 제한될 수 있습니다.</li>
-            <li>일부 좌석 및 일부 경기는 할인 대상에서 제외될 수 있습니다.</li>
-            <li>할인 혜택은 1인 1회만 사용 가능합니다.</li>
-            <li>상세 조건은 예매 페이지에서 확인 가능합니다.</li>
-        </ul>
-
-    </div>
-
-</div>
 
 </div>
 
 <jsp:include page="../fragment/footer.jsp"/>
-
-
 </body>
 </html>

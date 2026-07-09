@@ -616,19 +616,13 @@
 }
 
 .cancel-btn{
-    background:#FF0000;
+   background:#18181f;
     color:#fff;
-    border:1px solid #111;
-
-    padding:8px 18px;
-    border-radius:4px;
-
-    cursor:pointer;
-    transition:.2s;
+    border:0;
 }
 
 .cancel-btn:hover{
-    background:#000000;
+    background:#FF0000;
     border-color:#333;
 }
 
@@ -636,5 +630,9 @@
     background:#18181f;
     color:#fff;
     border:0;
+}
+.save-btn:hover{
+    background:#FF0000;
+    border-color:#333;
 }
 

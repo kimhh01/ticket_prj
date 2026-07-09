@@ -74,12 +74,7 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
 
 
 
-<button
-type="button"
-class="coupon-btn"
-onclick="location.href='couponDownload.jsp?couponCode=CP001'">
-쿠폰 다운로드
-</button>
+
 
 
 
@@ -106,22 +101,22 @@ onclick="location.href='couponDownload.jsp?couponCode=CP001'">
 
                 <tr>
                     <td>혜택</td>
-                    <td>첫 예매 시 3,000원 할인</td>
+                    <td>첫 예매 시 10% 할인 쿠폰 발급</td>
                 </tr>
 
                 <tr>
                     <td>적용 경기</td>
-                    <td>일부 특별 경기 제외, 일반 홈경기 적용</td>
+                    <td>이벤트 기간 내 전 구단 일반 경기 (일부 경기 제외)</td>
                 </tr>
 
                 <tr>
                     <td>사용 기간</td>
-                    <td>가입 후 30일 이내 1회 사용 가능</td>
+                    <td>이벤트 기간 내 1회 사용 가능</td>
                 </tr>
 
                 <tr>
                     <td>적용 방법</td>
-                    <td>결제 단계에서 자동 할인 적용</td>
+                    <td>결제 단계에서 쿠폰 선택 적용</td>
                 </tr>
             </table>
 
@@ -136,7 +131,7 @@ onclick="location.href='couponDownload.jsp?couponCode=CP001'">
                 <div class="step-box">
                     <div class="step-num">1</div>
                     <div class="step-icon">👤</div>
-                    <p>회원가입</p>
+                    <p>회원가입시<br> 자동발급</p>
                 </div>
 
                 <div class="arrow">〉</div>
@@ -152,7 +147,7 @@ onclick="location.href='couponDownload.jsp?couponCode=CP001'">
                 <div class="step-box">
                     <div class="step-num">3</div>
                     <div class="step-icon">🎟</div>
-                    <p>결제 시 자동 할인</p>
+                    <p>결제 시 '신규 회원 쿠폰(10%)' 선택</p>
                 </div>
 
             </div>
