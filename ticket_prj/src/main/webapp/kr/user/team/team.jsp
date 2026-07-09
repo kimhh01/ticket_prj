@@ -507,9 +507,9 @@
 	<div id="tab-league" class="tab-content">
 		<section class="league-guide-wrap">
 			<div>
-				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList}1.png">
-				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList}2.png">
-				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList}3.png">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[0]}">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[1]}">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[2]}">
 			</div>
 		</section>
 	</div>

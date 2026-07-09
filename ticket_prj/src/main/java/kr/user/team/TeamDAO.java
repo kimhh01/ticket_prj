@@ -218,7 +218,8 @@ public class TeamDAO {
 			selectTeamImg
 			.append("	select notice_img	")
 			.append("	from notice	")
-			.append("	where notice_tab = 2 and team_id = ?	");
+			.append("	where notice_tab = 2 and team_id = ?	")
+			.append("	order by notice_id	");
 			
 			pstmt=con.prepareStatement(selectTeamImg.toString());
 				pstmt.setInt(1, teamCode);
