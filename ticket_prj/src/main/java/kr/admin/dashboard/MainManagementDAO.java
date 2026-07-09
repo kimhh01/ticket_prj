@@ -340,11 +340,11 @@ public class MainManagementDAO {
         sql.append("  WHERE 1 = 1 ");
 
         if (hasText(startDate)) {
-            sql.append(" AND reg_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append(" AND inquiry_date >= TO_DATE(?, 'YYYY-MM-DD') ");
         }
 
         if (hasText(endDate)) {
-            sql.append(" AND reg_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+            sql.append(" AND inquiry_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
         }
 
         try (
@@ -403,13 +403,13 @@ public class MainManagementDAO {
 
             sql.append(" SELECT ");
             sql.append("        NVL(SUM(CASE ");
-            sql.append("            WHEN reg_date >= TO_DATE(?, 'YYYY-MM-DD') ");
-            sql.append("             AND reg_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+            sql.append("            WHEN inquiry_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("             AND inquiry_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
             sql.append("            THEN 1 ELSE 0 END), 0) ");
             sql.append("      - NVL(SUM(CASE ");
-            sql.append("            WHEN reg_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("            WHEN inquiry_date >= TO_DATE(?, 'YYYY-MM-DD') ");
             sql.append("                 - ((TO_DATE(?, 'YYYY-MM-DD') + 1) - TO_DATE(?, 'YYYY-MM-DD')) ");
-            sql.append("             AND reg_date < TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("             AND inquiry_date < TO_DATE(?, 'YYYY-MM-DD') ");
             sql.append("            THEN 1 ELSE 0 END), 0) AS trend ");
             sql.append("   FROM inquiry ");
 
@@ -417,12 +417,12 @@ public class MainManagementDAO {
 
             sql.append(" SELECT ");
             sql.append("        NVL(SUM(CASE ");
-            sql.append("            WHEN reg_date >= TRUNC(SYSDATE, 'MM') ");
-            sql.append("             AND reg_date < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) ");
+            sql.append("            WHEN inquiry_date >= TRUNC(SYSDATE, 'MM') ");
+            sql.append("             AND inquiry_date < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) ");
             sql.append("            THEN 1 ELSE 0 END), 0) ");
             sql.append("      - NVL(SUM(CASE ");
-            sql.append("            WHEN reg_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1) ");
-            sql.append("             AND reg_date < TRUNC(SYSDATE, 'MM') ");
+            sql.append("            WHEN inquiry_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1) ");
+            sql.append("             AND inquiry_date < TRUNC(SYSDATE, 'MM') ");
             sql.append("            THEN 1 ELSE 0 END), 0) AS trend ");
             sql.append("   FROM inquiry ");
         }
@@ -682,7 +682,7 @@ public class MainManagementDAO {
         return selectBookingCnt("", "");
     }
 
-    // 예매 상태 - 기간 검색
+ // 예매 상태 - 기간 검색
     public DashboardChartDTO selectBookingCnt(String startDate,
                                               String endDate) {
 
@@ -692,8 +692,19 @@ public class MainManagementDAO {
         StringBuilder sql =
                 new StringBuilder();
 
-        sql.append(" SELECT NVL(SUM(CASE WHEN pay_state = '구매' THEN 1 ELSE 0 END), 0) AS booking, ");
-        sql.append("        NVL(SUM(CASE WHEN pay_state = '취소' THEN 1 ELSE 0 END), 0) AS cancel ");
+        sql.append(" SELECT ");
+        sql.append("        NVL(SUM(CASE ");
+        sql.append("            WHEN reservation_status IN ('구매완료', '구매') ");
+        sql.append("            THEN 1 ELSE 0 END), 0) AS booking, ");
+
+        sql.append("        NVL(SUM(CASE ");
+        sql.append("            WHEN reservation_status IN ('취소', '취소완료') ");
+        sql.append("            THEN 1 ELSE 0 END), 0) AS cancel, ");
+
+        sql.append("        NVL(SUM(CASE ");
+        sql.append("            WHEN reservation_status IN ('대기중', '대기') ");
+        sql.append("            THEN 1 ELSE 0 END), 0) AS waiting ");
+
         sql.append("   FROM reservation ");
         sql.append("  WHERE 1 = 1 ");
 
@@ -729,10 +740,14 @@ public class MainManagementDAO {
                     int cancelCount =
                             rs.getInt("cancel");
 
+                    int waitingCount =
+                            rs.getInt("waiting");
+
                     dto.setBookingCount(bookingCount);
                     dto.setCancelCount(cancelCount);
+                    dto.setWaitingCount(waitingCount);
                     dto.setTotalCount(
-                            bookingCount + cancelCount);
+                            bookingCount + cancelCount + waitingCount);
                 }
             }
 
