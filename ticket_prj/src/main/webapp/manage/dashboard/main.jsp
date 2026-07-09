@@ -3,9 +3,9 @@
          pageEncoding="UTF-8"%>
 
 <%@ page import="java.util.List"%>
-<%@ page import="dashboard.DashboardChartDTO"%>
-<%@ page import="dashboard.MonthlyChartDTO"%>
-<%@ page import="dashboard.DailyChartDTO"%>
+<%@ page import="kr.admin.dashboard.DashboardChartDTO"%>
+<%@ page import="kr.admin.dashboard.MonthlyChartDTO"%>
+<%@ page import="kr.admin.dashboard.DailyChartDTO"%>
 
 <%
     /*
