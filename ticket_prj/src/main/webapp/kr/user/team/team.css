@@ -596,6 +596,9 @@
         color: #666;
         margin-bottom: 15px;
     }
+    .league-img{
+    	width: 920px;
+    }
     
     /* 표(Table) 스타일 */
     .info-table {

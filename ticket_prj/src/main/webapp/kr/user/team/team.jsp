@@ -506,10 +506,10 @@
 	<%-- [탭 3] 리그안내 컨텐츠 영역 --%>
 	<div id="tab-league" class="tab-content">
 		<section class="league-guide-wrap">
-			<div>
-				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[0]}">
-				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[1]}">
-				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[2]}">
+			<div class="league-img">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[0]}" style="width: 928px;">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[1]}" style="width: 928px;">
+				<img src="${pageContext.request.contextPath}/images/league_guide/${leagueList[2]}" style="width: 928px;">
 			</div>
 		</section>
 	</div>
