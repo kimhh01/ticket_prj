@@ -420,7 +420,6 @@ public class TicketManagementDAO {
         sql.append("             ON r.RESERVATION_ID = rd.RESERVATION_ID ");
         sql.append("          WHERE r.GAME_SCHEDULE_ID = ? ");
         sql.append("            AND rd.STADIUM_SEAT_ID = ? ");
-        sql.append("            AND r.RESERVATION_STATUS <> '취소' ");
         sql.append("          GROUP BY r.RESERVATION_ID ");
         sql.append("   ) ");
 
@@ -445,10 +444,7 @@ public class TicketManagementDAO {
         return totalCount;
     }
 
-    public List<TicketReservationListDTO> selectReservationList(
-            int scheduleCode,
-            int zoneCode,
-            BoardRangeDTO range) {
+	public List<TicketReservationListDTO> selectReservationList(int scheduleCode, int zoneCode, BoardRangeDTO range) {
 
         List<TicketReservationListDTO> list =
                 new ArrayList<TicketReservationListDTO>();
@@ -473,7 +469,6 @@ public class TicketManagementDAO {
         sql.append("                     ON r.RESERVATION_ID = rd.RESERVATION_ID ");
         sql.append("                  WHERE r.GAME_SCHEDULE_ID = ? ");
         sql.append("                    AND rd.STADIUM_SEAT_ID = ? ");
-        sql.append("                    AND r.RESERVATION_STATUS <> '취소' ");
         sql.append("                  GROUP BY r.RESERVATION_ID, ");
         sql.append("                           m.NAME, ");
         sql.append("                           m.PHONE, ");
@@ -550,7 +545,6 @@ public class TicketManagementDAO {
         sql.append("           JOIN STADIUM_SEAT ss ");
         sql.append("             ON rd.STADIUM_SEAT_ID = ss.STADIUM_SEAT_ID ");
         sql.append("          WHERE 1 = 1 ");
-        sql.append("            AND r.RESERVATION_STATUS <> '취소' ");
 
         appendSearchCondition(sql, paramList, startDate, endDate, team, stadium, phone);
 
@@ -603,7 +597,8 @@ public class TicketManagementDAO {
         sql.append("                        MIN(ss.SEAT_NAME) seat_name, ");
         sql.append("                        SUM(rd.RESERVATION_QUANTITY) reservation_cnt, ");
         sql.append("                        r.PAY_PRICE payment_price, ");
-        sql.append("                        TO_CHAR(r.RESERVATION_DATE, 'YYYY-MM-DD HH24:MI') reservation_date ");
+        sql.append("                        TO_CHAR(r.RESERVATION_DATE, 'YYYY-MM-DD HH24:MI') reservation_date, ");
+        sql.append("                        r.RESERVATION_STATUS reservation_state ");
         sql.append("                   FROM RESERVATION r ");
         sql.append("                   JOIN RESERVATION_DETAIL rd ");
         sql.append("                     ON r.RESERVATION_ID = rd.RESERVATION_ID ");
@@ -620,7 +615,6 @@ public class TicketManagementDAO {
         sql.append("                   JOIN STADIUM_SEAT ss ");
         sql.append("                     ON rd.STADIUM_SEAT_ID = ss.STADIUM_SEAT_ID ");
         sql.append("                  WHERE 1 = 1 ");
-        sql.append("                    AND r.RESERVATION_STATUS <> '취소' ");
 
         appendSearchCondition(sql, paramList, startDate, endDate, team, stadium, phone);
 
@@ -632,7 +626,8 @@ public class TicketManagementDAO {
         sql.append("                           gs.GAME_DATE, ");
         sql.append("                           gs.GAME_START_TIME, ");
         sql.append("                           r.PAY_PRICE, ");
-        sql.append("                           r.RESERVATION_DATE ");
+        sql.append("                           r.RESERVATION_DATE, ");
+        sql.append("                           r.RESERVATION_STATUS ");
         sql.append("                  ORDER BY r.RESERVATION_DATE DESC, r.RESERVATION_ID DESC ");
         sql.append("           ) A ");
         sql.append("          WHERE ROWNUM <= ? ");
@@ -661,6 +656,7 @@ public class TicketManagementDAO {
                     dto.setReservationCnt(rs.getInt("reservation_cnt"));
                     dto.setPaymentPrice(rs.getInt("payment_price"));
                     dto.setReservationDate(rs.getString("reservation_date"));
+                    dto.setReservationState(rs.getString("reservation_state"));
 
                     list.add(dto);
                 }
