@@ -49,13 +49,6 @@ public class ReservationDTO {
 	private int childSeatPrice;//어린이좌석가격
 	private String couponCode;//쿠폰코드
 	private int couponDiscountRate;//쿠폰 할인율
-	public int getReservationCode() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	public void setReservationCode(int reservationId) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 }

@@ -41,6 +41,7 @@ public class ReservationDAO {
 
 	        if (rs.next()) {
 	            reservationId = rs.getInt(1);
+	            System.out.println("SEQ = " + reservationId);
 	        }
 	    } finally {
 	        udbc.close(rs, pstmt, null);
@@ -72,7 +73,6 @@ public class ReservationDAO {
 			pstmt.setInt(6, rpDTO.getGameScheduleCode());
 			
 			rowCnt = pstmt.executeUpdate();
-			
 			
 		}finally {
 			udbc.close(null, pstmt, null);
