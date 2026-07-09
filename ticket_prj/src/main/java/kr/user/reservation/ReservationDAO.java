@@ -41,7 +41,6 @@ public class ReservationDAO {
 
 	        if (rs.next()) {
 	            reservationId = rs.getInt(1);
-	            System.out.println("SEQ = " + reservationId);
 	        }
 	    } finally {
 	        udbc.close(rs, pstmt, null);
@@ -199,7 +198,6 @@ public class ReservationDAO {
 				rpDTO.setGameDate(rs.getDate("game_date"));
 				rpDTO.setGameStartTime(rs.getString("game_start_time"));
 				rpDTO.setStadiumCode(rs.getInt("stadium_code"));
-				System.out.println(rpDTO.getStadiumSeatCode());
 			} else {
 				System.out.println("경기 정보 없음 " + gameScheduleCode);
 			}
