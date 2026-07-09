@@ -26,20 +26,55 @@ public class MainManagementService {
         return mainManagementDAO.selectBookingTrend();
     }
 
+    public int getBookingTrend(String startDate,
+                               String endDate) {
+        return mainManagementDAO.selectBookingTrend(
+                startDate,
+                endDate);
+    }
+
     public int getTotalMember() {
         return mainManagementDAO.selectTotalMember();
+    }
+
+    public int getTotalMember(String startDate,
+                              String endDate) {
+        return mainManagementDAO.selectTotalMember(
+                startDate,
+                endDate);
     }
 
     public int getMemberTrend() {
         return mainManagementDAO.selectMemberTrend();
     }
 
+    public int getMemberTrend(String startDate,
+                              String endDate) {
+        return mainManagementDAO.selectMemberTrend(
+                startDate,
+                endDate);
+    }
+
     public int getTotalInquiry() {
         return mainManagementDAO.selectTotalInquiry();
     }
 
+    public int getTotalInquiry(String startDate,
+                               String endDate) {
+        return mainManagementDAO.selectTotalInquiry(
+                startDate,
+                endDate);
+    }
+
     public int getInquiryTrend() {
         return mainManagementDAO.selectInquiryTrend();
+    }
+
+    public int getInquiryTrend(String startDate,
+                               String endDate) {
+        return mainManagementDAO.selectInquiryTrend(
+                startDate,
+                endDate);
     }
 
     public long getTotalRevenue() {
@@ -55,6 +90,13 @@ public class MainManagementService {
 
     public double getRevenueTrend() {
         return mainManagementDAO.selectRevenueTrend();
+    }
+
+    public double getRevenueTrend(String startDate,
+                                  String endDate) {
+        return mainManagementDAO.selectRevenueTrend(
+                startDate,
+                endDate);
     }
 
     public List<MonthlyChartDTO> getMonthlyTrends() {

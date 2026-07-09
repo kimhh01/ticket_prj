@@ -66,9 +66,6 @@ public class AdminDashboardController extends HttpServlet {
         request.setAttribute("startDate", startDate);
         request.setAttribute("endDate", endDate);
 
-        /*
-         * 예약/매출 관련 데이터는 날짜 검색 적용
-         */
         request.setAttribute(
                 "totalBooking",
                 mainManagementService.getTotalBooking(
@@ -76,8 +73,44 @@ public class AdminDashboardController extends HttpServlet {
                         endDate));
 
         request.setAttribute(
+                "bookingTrend",
+                mainManagementService.getBookingTrend(
+                        startDate,
+                        endDate));
+
+        request.setAttribute(
+                "totalMember",
+                mainManagementService.getTotalMember(
+                        startDate,
+                        endDate));
+
+        request.setAttribute(
+                "memberTrend",
+                mainManagementService.getMemberTrend(
+                        startDate,
+                        endDate));
+
+        request.setAttribute(
+                "totalInquiry",
+                mainManagementService.getTotalInquiry(
+                        startDate,
+                        endDate));
+
+        request.setAttribute(
+                "inquiryTrend",
+                mainManagementService.getInquiryTrend(
+                        startDate,
+                        endDate));
+
+        request.setAttribute(
                 "totalRevenue",
                 mainManagementService.getTotalRevenue(
+                        startDate,
+                        endDate));
+
+        request.setAttribute(
+                "revenueTrend",
+                mainManagementService.getRevenueTrend(
                         startDate,
                         endDate));
 
@@ -99,17 +132,6 @@ public class AdminDashboardController extends HttpServlet {
         request.setAttribute("bookingData", bookingData);
         request.setAttribute("monthlyData", monthlyData);
         request.setAttribute("dailyData", dailyData);
-
-        /*
-         * 회원 수, 문의 수는 현재 테이블 날짜 컬럼을 확실히 모르니까 전체 기준 유지
-         */
-        request.setAttribute(
-                "totalMember",
-                mainManagementService.getTotalMember());
-
-        request.setAttribute(
-                "totalInquiry",
-                mainManagementService.getTotalInquiry());
 
         System.out.println("===== Dashboard 검색 조건 =====");
         System.out.println("startDate = " + startDate);

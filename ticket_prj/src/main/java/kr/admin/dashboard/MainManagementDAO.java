@@ -103,33 +103,138 @@ public class MainManagementDAO {
         return result;
     }
 
+ // 예매 증감
     public int selectBookingTrend() {
-        return 0;
+        return selectBookingTrend("", "");
     }
 
-    // 총 회원 수
+    // 예매 증감 - 기간 검색
+    public int selectBookingTrend(String startDate,
+                                  String endDate) {
+
+        int result = 0;
+
+        StringBuilder sql =
+                new StringBuilder();
+
+        if (hasText(startDate) && hasText(endDate)) {
+
+            sql.append(" SELECT ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN reservation_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("             AND reservation_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+            sql.append("            THEN 1 ELSE 0 END), 0) ");
+            sql.append("      - NVL(SUM(CASE ");
+            sql.append("            WHEN reservation_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("                 - ((TO_DATE(?, 'YYYY-MM-DD') + 1) - TO_DATE(?, 'YYYY-MM-DD')) ");
+            sql.append("             AND reservation_date < TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("            THEN 1 ELSE 0 END), 0) AS trend ");
+            sql.append("   FROM reservation ");
+
+        } else {
+
+            sql.append(" SELECT ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN reservation_date >= TRUNC(SYSDATE, 'MM') ");
+            sql.append("             AND reservation_date < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) ");
+            sql.append("            THEN 1 ELSE 0 END), 0) ");
+            sql.append("      - NVL(SUM(CASE ");
+            sql.append("            WHEN reservation_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1) ");
+            sql.append("             AND reservation_date < TRUNC(SYSDATE, 'MM') ");
+            sql.append("            THEN 1 ELSE 0 END), 0) AS trend ");
+            sql.append("   FROM reservation ");
+        }
+
+        try (
+            Connection con =
+                    AdminDBConnection.getInstance().getConnection();
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql.toString())
+        ) {
+
+            if (hasText(startDate) && hasText(endDate)) {
+                ps.setString(1, startDate.trim());
+                ps.setString(2, endDate.trim());
+                ps.setString(3, startDate.trim());
+                ps.setString(4, endDate.trim());
+                ps.setString(5, startDate.trim());
+                ps.setString(6, startDate.trim());
+            }
+
+            try (
+                ResultSet rs =
+                        ps.executeQuery()
+            ) {
+
+                if (rs.next()) {
+                    result =
+                            rs.getInt("trend");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+ // 총 회원 수 - 전체
     public int selectTotalMember() {
+        return selectTotalMember("", "");
+    }
+
+    // 총 회원 수 - 기간 검색
+    public int selectTotalMember(String startDate,
+                                 String endDate) {
 
         int result = 0;
 
-        String sql =
-                " SELECT COUNT(*) " +
-                "   FROM member ";
+        StringBuilder sql =
+                new StringBuilder();
+
+        sql.append(" SELECT COUNT(*) ");
+        sql.append("   FROM member ");
+        sql.append("  WHERE 1 = 1 ");
+
+        if (hasText(startDate)) {
+            sql.append(" AND join_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+        }
+
+        if (hasText(endDate)) {
+            sql.append(" AND join_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+        }
 
         try (
             Connection con =
                     AdminDBConnection.getInstance().getConnection();
 
             PreparedStatement ps =
-                    con.prepareStatement(sql);
-
-            ResultSet rs =
-                    ps.executeQuery()
+                    con.prepareStatement(sql.toString())
         ) {
 
-            if (rs.next()) {
-                result =
-                        rs.getInt(1);
+            int index = 1;
+
+            if (hasText(startDate)) {
+                ps.setString(index, startDate.trim());
+                index++;
+            }
+
+            if (hasText(endDate)) {
+                ps.setString(index, endDate.trim());
+                index++;
+            }
+
+            try (
+                ResultSet rs =
+                        ps.executeQuery()
+            ) {
+
+                if (rs.next()) {
+                    result =
+                            rs.getInt(1);
+                }
             }
 
         } catch (Exception e) {
@@ -139,33 +244,74 @@ public class MainManagementDAO {
         return result;
     }
 
+ // 회원 증감
     public int selectMemberTrend() {
-        return 0;
+        return selectMemberTrend("", "");
     }
 
-    // 총 문의 수
-    public int selectTotalInquiry() {
+    // 회원 증감 - 기간 검색
+    public int selectMemberTrend(String startDate,
+                                 String endDate) {
 
         int result = 0;
 
-        String sql =
-                " SELECT COUNT(*) " +
-                "   FROM inquiry ";
+        StringBuilder sql =
+                new StringBuilder();
+
+        if (hasText(startDate) && hasText(endDate)) {
+
+            sql.append(" SELECT ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN join_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("             AND join_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+            sql.append("            THEN 1 ELSE 0 END), 0) ");
+            sql.append("      - NVL(SUM(CASE ");
+            sql.append("            WHEN join_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("                 - ((TO_DATE(?, 'YYYY-MM-DD') + 1) - TO_DATE(?, 'YYYY-MM-DD')) ");
+            sql.append("             AND join_date < TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("            THEN 1 ELSE 0 END), 0) AS trend ");
+            sql.append("   FROM member ");
+
+        } else {
+
+            sql.append(" SELECT ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN join_date >= TRUNC(SYSDATE, 'MM') ");
+            sql.append("             AND join_date < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) ");
+            sql.append("            THEN 1 ELSE 0 END), 0) ");
+            sql.append("      - NVL(SUM(CASE ");
+            sql.append("            WHEN join_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1) ");
+            sql.append("             AND join_date < TRUNC(SYSDATE, 'MM') ");
+            sql.append("            THEN 1 ELSE 0 END), 0) AS trend ");
+            sql.append("   FROM member ");
+        }
 
         try (
             Connection con =
                     AdminDBConnection.getInstance().getConnection();
 
             PreparedStatement ps =
-                    con.prepareStatement(sql);
-
-            ResultSet rs =
-                    ps.executeQuery()
+                    con.prepareStatement(sql.toString())
         ) {
 
-            if (rs.next()) {
-                result =
-                        rs.getInt(1);
+            if (hasText(startDate) && hasText(endDate)) {
+                ps.setString(1, startDate.trim());
+                ps.setString(2, endDate.trim());
+                ps.setString(3, startDate.trim());
+                ps.setString(4, endDate.trim());
+                ps.setString(5, startDate.trim());
+                ps.setString(6, startDate.trim());
+            }
+
+            try (
+                ResultSet rs =
+                        ps.executeQuery()
+            ) {
+
+                if (rs.next()) {
+                    result =
+                            rs.getInt("trend");
+                }
             }
 
         } catch (Exception e) {
@@ -175,8 +321,145 @@ public class MainManagementDAO {
         return result;
     }
 
+    // 총 문의 수 - 전체
+    public int selectTotalInquiry() {
+        return selectTotalInquiry("", "");
+    }
+
+    // 총 문의 수 - 기간 검색
+    public int selectTotalInquiry(String startDate,
+                                  String endDate) {
+
+        int result = 0;
+
+        StringBuilder sql =
+                new StringBuilder();
+
+        sql.append(" SELECT COUNT(*) ");
+        sql.append("   FROM inquiry ");
+        sql.append("  WHERE 1 = 1 ");
+
+        if (hasText(startDate)) {
+            sql.append(" AND reg_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+        }
+
+        if (hasText(endDate)) {
+            sql.append(" AND reg_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+        }
+
+        try (
+            Connection con =
+                    AdminDBConnection.getInstance().getConnection();
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql.toString())
+        ) {
+
+            int index = 1;
+
+            if (hasText(startDate)) {
+                ps.setString(index, startDate.trim());
+                index++;
+            }
+
+            if (hasText(endDate)) {
+                ps.setString(index, endDate.trim());
+                index++;
+            }
+
+            try (
+                ResultSet rs =
+                        ps.executeQuery()
+            ) {
+
+                if (rs.next()) {
+                    result =
+                            rs.getInt(1);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    // 문의 증감
     public int selectInquiryTrend() {
-        return 0;
+        return selectInquiryTrend("", "");
+    }
+
+    // 문의 증감 - 기간 검색
+    public int selectInquiryTrend(String startDate,
+                                  String endDate) {
+
+        int result = 0;
+
+        StringBuilder sql =
+                new StringBuilder();
+
+        if (hasText(startDate) && hasText(endDate)) {
+
+            sql.append(" SELECT ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN reg_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("             AND reg_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+            sql.append("            THEN 1 ELSE 0 END), 0) ");
+            sql.append("      - NVL(SUM(CASE ");
+            sql.append("            WHEN reg_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("                 - ((TO_DATE(?, 'YYYY-MM-DD') + 1) - TO_DATE(?, 'YYYY-MM-DD')) ");
+            sql.append("             AND reg_date < TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("            THEN 1 ELSE 0 END), 0) AS trend ");
+            sql.append("   FROM inquiry ");
+
+        } else {
+
+            sql.append(" SELECT ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN reg_date >= TRUNC(SYSDATE, 'MM') ");
+            sql.append("             AND reg_date < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) ");
+            sql.append("            THEN 1 ELSE 0 END), 0) ");
+            sql.append("      - NVL(SUM(CASE ");
+            sql.append("            WHEN reg_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1) ");
+            sql.append("             AND reg_date < TRUNC(SYSDATE, 'MM') ");
+            sql.append("            THEN 1 ELSE 0 END), 0) AS trend ");
+            sql.append("   FROM inquiry ");
+        }
+
+        try (
+            Connection con =
+                    AdminDBConnection.getInstance().getConnection();
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql.toString())
+        ) {
+
+            if (hasText(startDate) && hasText(endDate)) {
+                ps.setString(1, startDate.trim());
+                ps.setString(2, endDate.trim());
+                ps.setString(3, startDate.trim());
+                ps.setString(4, endDate.trim());
+                ps.setString(5, startDate.trim());
+                ps.setString(6, startDate.trim());
+            }
+
+            try (
+                ResultSet rs =
+                        ps.executeQuery()
+            ) {
+
+                if (rs.next()) {
+                    result =
+                            rs.getInt("trend");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     // 총 결제 금액 - 전체
@@ -188,7 +471,7 @@ public class MainManagementDAO {
     public long selectTotalRevenue(String startDate,
                                    String endDate) {
 
-        long result = 0;
+    	long result = 0;
 
         StringBuilder sql =
                 new StringBuilder();
@@ -234,8 +517,99 @@ public class MainManagementDAO {
         return result;
     }
 
+ // 매출 증감률
     public double selectRevenueTrend() {
-        return 0.0;
+        return selectRevenueTrend("", "");
+    }
+
+    // 매출 증감률 - 기간 검색
+    public double selectRevenueTrend(String startDate,
+                                     String endDate) {
+
+        double result = 0.0;
+
+        long currentRevenue = 0;
+        long previousRevenue = 0;
+
+        StringBuilder sql =
+                new StringBuilder();
+
+        if (hasText(startDate) && hasText(endDate)) {
+
+            sql.append(" SELECT ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN reservation_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("             AND reservation_date < TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+            sql.append("            THEN total_price ELSE 0 END), 0) AS current_revenue, ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN reservation_date >= TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("                 - ((TO_DATE(?, 'YYYY-MM-DD') + 1) - TO_DATE(?, 'YYYY-MM-DD')) ");
+            sql.append("             AND reservation_date < TO_DATE(?, 'YYYY-MM-DD') ");
+            sql.append("            THEN total_price ELSE 0 END), 0) AS previous_revenue ");
+            sql.append("   FROM reservation ");
+
+        } else {
+
+            sql.append(" SELECT ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN reservation_date >= TRUNC(SYSDATE, 'MM') ");
+            sql.append("             AND reservation_date < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) ");
+            sql.append("            THEN total_price ELSE 0 END), 0) AS current_revenue, ");
+            sql.append("        NVL(SUM(CASE ");
+            sql.append("            WHEN reservation_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1) ");
+            sql.append("             AND reservation_date < TRUNC(SYSDATE, 'MM') ");
+            sql.append("            THEN total_price ELSE 0 END), 0) AS previous_revenue ");
+            sql.append("   FROM reservation ");
+        }
+
+        try (
+            Connection con =
+                    AdminDBConnection.getInstance().getConnection();
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql.toString())
+        ) {
+
+            if (hasText(startDate) && hasText(endDate)) {
+                ps.setString(1, startDate.trim());
+                ps.setString(2, endDate.trim());
+                ps.setString(3, startDate.trim());
+                ps.setString(4, endDate.trim());
+                ps.setString(5, startDate.trim());
+                ps.setString(6, startDate.trim());
+            }
+
+            try (
+                ResultSet rs =
+                        ps.executeQuery()
+            ) {
+
+                if (rs.next()) {
+                    currentRevenue =
+                            rs.getLong("current_revenue");
+
+                    previousRevenue =
+                            rs.getLong("previous_revenue");
+                }
+            }
+
+            if (previousRevenue == 0) {
+                if (currentRevenue == 0) {
+                    result = 0.0;
+                } else {
+                    result = 100.0;
+                }
+            } else {
+                result =
+                        ((double)(currentRevenue - previousRevenue)
+                                / previousRevenue) * 100.0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     // 월별 예매 차트 - 전체
