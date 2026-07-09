@@ -247,7 +247,9 @@ public class MyPageDAO {
             con = db.getConnection();
             StringBuilder sql = new StringBuilder();
             
-            
+            System.out.println("startDate = " + startDate);
+            System.out.println("endDate = " + endDate);
+            System.out.println("flag = " + flag);
             
          // SQL
             sql.append("SELECT ");
@@ -273,7 +275,13 @@ public class MyPageDAO {
 
             sql.append("JOIN TEAM TA ");
             sql.append("ON GS.TEAM_OTHER = TA.TEAM_ID ");
-            sql.append("JOIN RESERVATION_DETAIL RD ");
+            
+            sql.append("JOIN ( ");
+            sql.append("SELECT RESERVATION_ID, ");
+            sql.append("SUM(RESERVATION_QUANTITY) RESERVATION_QUANTITY ");
+            sql.append("FROM RESERVATION_DETAIL ");
+            sql.append("GROUP BY RESERVATION_ID ");
+            sql.append(") RD ");
             sql.append("ON R.RESERVATION_ID = RD.RESERVATION_ID ");
 
             sql.append("WHERE R.MEMBER_ID=? ");
@@ -293,7 +301,7 @@ public class MyPageDAO {
             
          // 기간 검색
             if(startDate != null && endDate != null) {
-                sql.append("AND R.RESERVATION_DATE BETWEEN ? AND ? ");
+            	sql.append("AND TRUNC(R.RESERVATION_DATE) BETWEEN ? AND ? ");
             }
 
             sql.append("ORDER BY R.RESERVATION_DATE DESC ");
