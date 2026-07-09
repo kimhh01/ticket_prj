@@ -185,6 +185,7 @@ onclick="location.href='couponDownload.jsp?couponCode=CP002'">
 
 </div>
 
+</div>
 
 <jsp:include page="../fragment/footer.jsp"/>
 

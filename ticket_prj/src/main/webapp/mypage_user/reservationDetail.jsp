@@ -177,10 +177,24 @@ body{
 .bottom-btn button{
     width:140px;
     height:50px;
-    border:1px solid #ddd;
-    background:#fff;
     border-radius:6px;
     font-weight:600;
+    cursor:pointer;
+}
+.bottom-btn button:first-child{
+    background:#fff;
+    border:1px solid #ddd;
+    color:#333;
+}
+
+.bottom-btn .cancel-btn{
+    background:#111;
+    border:1px solid #111;
+    color:#fff;
+}
+
+.bottom-btn .cancel-btn:hover{
+    background:#333;
 }
 
 </style>
@@ -263,10 +277,6 @@ body{
                 <td>${paymentInfo.paymentAmount}원</td>
             </tr>
 
-            <tr>
-                <th>결제수단</th>
-                <td>${paymentInfo.paymentAmount}원</td>
-            </tr>
 
         </table>
 
@@ -303,12 +313,7 @@ body{
 
 <td>${seat.reservationStatus}
 
-<c:if test="${not empty gameInfo.cancelDate}">
-            <br>
-            <span style="font-size:12px;color:gray;">
-                예매일 : ${gameInfo.cancelDate}
-            </span>
-        </c:if>
+
         
 <c:if test="${not empty gameInfo.cancelDate}">
             <br>
@@ -345,18 +350,22 @@ body{
     </div>
 
 </div>
-
 <div class="bottom-btn">
 
     <button type="button" onclick="window.close()">
         닫기
     </button>
 
-    <button type="button" class="btn btn-dark"
-onclick="if(confirm('예매를 취소하시겠습니까?')) {
-    location.href='cancelReservationProcess.jsp?reservationId=<%=reservationId%>';}">
-    예매취소
-</button>
+    <c:if test="${gameInfo.reservationStatus eq '구매'}">
+        <button
+            type="button"
+            class="cancel-btn"
+            onclick="if(confirm('예매를 취소하시겠습니까?')){
+                location.href='cancelReservationProcess.jsp?reservationId=<%=reservationId%>';
+            }">
+            예매취소
+        </button>
+    </c:if>
 
 </div>
 
