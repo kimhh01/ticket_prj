@@ -98,7 +98,7 @@ public class ReservationServlet extends HttpServlet {
 				int totalQuantity = adultQty + youthQty + childQty;
 				
 				// 전체 예매 수량 한도 검증
-				if (totalQuantity <= 0 || totalQuantity > 5) {
+				if (totalQuantity <= 0 || totalQuantity > 4) {
 				    response.sendRedirect(
 				        request.getContextPath()
 				        + "/kr/user/reservation/reservationFail.jsp?message=잘못된 예매 수량입니다.");
