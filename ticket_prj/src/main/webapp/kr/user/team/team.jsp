@@ -497,7 +497,7 @@
 				</div>
 
 				<div class="notice-detail-body">
-					<img src="${pageContext.request.contextPath }/images/notice/notice.png" style="width: 928px; height: 500px;">
+					<img src="${pageContext.request.contextPath }/images/notice/${notice.noticeImg}" style="width: 928px; height: 500px;">
 				</div>
 			</c:forEach>
 		</section>

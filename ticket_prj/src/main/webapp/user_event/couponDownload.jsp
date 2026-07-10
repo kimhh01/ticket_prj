@@ -8,7 +8,8 @@ MemberDTO loginMember =
     (MemberDTO)session.getAttribute("loginMember");
 
 if(loginMember == null){
-    response.sendRedirect("../login/login.jsp");
+	
+    response.sendRedirect("../kr/user/member/login.jsp");
     return;
 }
 
